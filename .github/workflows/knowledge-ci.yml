@@ -1,0 +1,35 @@
+name: Knowledge CI
+
+on:
+  pull_request:
+    paths:
+      - "fowoco-knowledge/**"
+      - ".github/workflows/knowledge-ci.yml"
+      - "pyproject.toml"
+  push:
+    branches: [main]
+    paths:
+      - "fowoco-knowledge/**"
+      - ".github/workflows/knowledge-ci.yml"
+      - "pyproject.toml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: fowoco-knowledge/pyproject.toml
+      - name: Install package
+        run: python -m pip install -e "./fowoco-knowledge[dev]"
+      - name: Validate context pack
+        run: python -m fowoco_knowledge validate
+      - name: Run tests
+        run: python -m pytest fowoco-knowledge/tests --cov=fowoco_knowledge --cov-report=term

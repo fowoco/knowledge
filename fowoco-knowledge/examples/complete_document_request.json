@@ -1,0 +1,20 @@
+{
+  "request_id": "REQ-DEMO-001",
+  "reference_at": "2026-07-16T09:00:00+09:00",
+  "input_mode": "WORKER_MESSAGE",
+  "utterance": "WRK-DEMO-001에게 2026년 7월 24일 오후 5시까지 여권 사본을 총무팀에 제출해달라고 안내해줘",
+  "workflow_id": "WF-DOC-001",
+  "intent_candidates": [
+    {
+      "intent": "DOCUMENT_REQUEST",
+      "confidence": 0.94
+    }
+  ],
+  "domains": ["DOCUMENT"],
+  "slots": {
+    "worker_id": "WRK-DEMO-001",
+    "document_type": "PASSPORT_COPY",
+    "due_at": "2026-07-24T17:00:00+09:00",
+    "submission_channel": "HR_OFFICE"
+  }
+}
