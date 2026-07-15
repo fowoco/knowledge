@@ -1,0 +1,42 @@
+# Contributing
+
+## Branch
+
+`<type>/<short-description>` 형식을 사용합니다.
+
+- `feat/worker-document-workflow`
+- `data/add-payroll-gold-cases`
+- `fix/relative-date-validation`
+- 자동화 도구가 만드는 브랜치는 `agent/<short-description>` 사용
+
+## Commit
+
+Conventional Commits를 따릅니다.
+
+| Type | 사용 시점 |
+| --- | --- |
+| `feat` | 사용자 또는 Agent 기능 추가 |
+| `fix` | 동작 오류 수정 |
+| `data` | Context Pack·라벨·출처 데이터 변경 |
+| `docs` | 문서만 변경 |
+| `test` | 테스트 추가·수정 |
+| `refactor` | 동작 변경 없는 구조 개선 |
+| `chore` | 도구·설정·의존성 변경 |
+
+예시: `feat(knowledge): bootstrap validated workflow context pack`
+
+## Knowledge 변경 규칙
+
+1. 공식 절차 변경은 `source_id`, URL, 검증일을 함께 갱신
+2. 법령·행정 지식은 한 명 작성 후 다른 팀원 한 명 이상 검수
+3. 인터뷰 기반 문장은 개인·회사 식별정보를 제거하고 `INTERVIEW_DERIVED_ANON`으로 표시
+4. 합성 문장은 실제 사례로 표현하지 않고 `TEAM_SYNTHETIC`으로 표시
+5. 평가 데이터는 학습·프롬프트 예시 데이터와 분리
+6. `make check` 통과 후 Pull Request 생성
+
+## Pull Request
+
+- 한 PR은 하나의 Workflow 또는 하나의 기술 목적에 집중
+- 데이터 변경 시 추가·수정·삭제 건수와 라벨 분포 기재
+- 공식자료 변경 시 출처와 확인일 기재
+- 개인정보·원본 인터뷰·원본 신분서류 업로드 금지

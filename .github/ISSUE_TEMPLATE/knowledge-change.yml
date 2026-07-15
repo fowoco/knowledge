@@ -1,0 +1,53 @@
+name: Knowledge 변경
+description: 공식자료·Workflow·체크리스트·Context Pack 변경을 제안합니다.
+title: "[Knowledge] "
+labels: ["documentation"]
+body:
+  - type: dropdown
+    id: change_type
+    attributes:
+      label: 변경 유형
+      options:
+        - 공식 출처 추가·갱신
+        - Workflow 추가·수정
+        - 필수 Slot·체크리스트 변경
+        - 모호표현·Guardrail 변경
+        - 다국어·쉬운 한국어 규칙 변경
+    validations:
+      required: true
+  - type: input
+    id: affected
+    attributes:
+      label: 영향받는 ID
+      description: 예) WF-STY-001, DOCUMENT_REQUEST
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: 공식 출처 URL
+      description: 출처가 없는 팀 정책이면 그 사실을 명시합니다.
+    validations:
+      required: true
+  - type: input
+    id: effective_date
+    attributes:
+      label: 시행일 또는 확인일
+      placeholder: YYYY-MM-DD
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 변경 내용과 근거
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: 확인
+      options:
+        - label: 개인정보 또는 원본 신분서류를 포함하지 않았습니다.
+          required: true
+        - label: 기관 제출을 자동화하거나 법적 결론을 생성하지 않습니다.
+          required: true
