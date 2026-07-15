@@ -1,0 +1,308 @@
+version: 0.1.0
+policy:
+  state_model: [DRAFT, NEEDS_INFO, READY_FOR_REVIEW, APPROVED, IN_PROGRESS, WAITING_WORKER, WAITING_EXTERNAL, COMPLETED, CANCELLED]
+  all_external_actions_require_human: true
+  completion_requires_evidence: true
+  composite_request_strategy: split_and_confirm
+
+workflows:
+  - id: WF-WRK-001
+    name: 문서 기반 근로자 등록 초안
+    intent: WORKER_ONBOARDING
+    domains: [WORKER_PROFILE, DOCUMENT]
+    sensitivity: high
+    supported_input_modes: [AGENT_TASK, INTERNAL_REQUEST]
+    triggers:
+      - type: file_upload
+        accepted_types: [application/pdf, image/jpeg, image/png]
+    required_slots_ref: WF-WRK-001
+    source_ids: [SRC-MOEL-CONTRACT-2026, SRC-EPS-FORMS]
+    steps:
+      - id: ingest_document
+        actor: SYSTEM
+        action: 암호화 저장소에 원본을 저장하고 문서 ID만 발급
+        output: source_document_id
+      - id: extract_fields
+        actor: AI
+        action: OCR 결과에서 이름·국적·체류기간·계약기간 후보값 추출
+        output: worker_profile_draft
+      - id: validate_fields
+        actor: RULE_ENGINE
+        action: 날짜 형식·필수값·문서 간 불일치 검사
+        output: validation_report
+      - id: review_draft
+        actor: HR
+        action: 원본과 후보값 대조 후 수정·승인
+        output: approved_worker_profile
+        gate: required
+      - id: persist_profile
+        actor: SYSTEM
+        action: 승인된 필드만 운영 DB에 저장
+        output: worker_id
+    completion_evidence: [hr_approval_id, worker_id]
+
+  - id: WF-STY-001
+    name: 체류기간 만료 사전 준비
+    intent: EXPIRY_RENEWAL
+    domains: [STAY, DOCUMENT]
+    sensitivity: high
+    supported_input_modes: [AGENT_TASK, INTERNAL_REQUEST]
+    triggers:
+      - type: schedule
+        field: stay_expiry_date
+        reminder_days: [90, 60, 30, 7]
+        note: 내부 준비 알림일이며 법정 제출기한을 의미하지 않음
+      - type: natural_language
+    required_slots_ref: WF-STY-001
+    source_ids: [SRC-HIKOREA, SRC-KEIS-REQUIRED-DOCS, SRC-HOLIDAY-API]
+    checklist_id: CHK-STAY-RENEW-001
+    steps:
+      - id: create_task
+        actor: RULE_ENGINE
+        action: 근로자·만료일·남은 내부 업무일을 포함한 업무카드 생성
+        output: stay_renewal_task
+      - id: load_current_checklist
+        actor: WORKFLOW_AGENT
+        action: 최신 확인 상태인 체크리스트와 공식 링크 조회
+        output: preparation_checklist
+      - id: compare_documents
+        actor: RULE_ENGINE
+        action: 보유 문서의 존재·유효기간·검증 상태 비교
+        output: missing_or_expired_documents
+      - id: request_worker_documents
+        actor: LANGUAGE_AGENT
+        action: 근로자가 제출해야 할 자료만 쉬운 한국어·모국어 초안으로 생성
+        output: worker_notice_draft
+        gate: hr_approval
+      - id: manual_external_process
+        actor: HR
+        action: 공식 사이트 또는 기관에서 최신 구비서류를 확인하고 직접 처리
+        output: external_submission_status
+      - id: close_task
+        actor: HR
+        action: 처리 증빙과 차기 확인일을 등록하고 완료
+        output: completed_task
+    completion_evidence: [hr_approval_id, external_receipt_or_note, next_review_at]
+
+  - id: WF-CON-001
+    name: 근로계약 갱신 준비
+    intent: EXPIRY_RENEWAL
+    domains: [CONTRACT, DOCUMENT]
+    sensitivity: high
+    supported_input_modes: [WORKER_MESSAGE, AGENT_TASK, INTERNAL_REQUEST]
+    triggers:
+      - type: schedule
+        field: contract_end_date
+        reminder_days: [90, 60, 30, 7]
+        note: 사업장 내부 준비일
+      - type: natural_language
+    required_slots_ref: WF-CON-001
+    source_ids: [SRC-MOEL-CONTRACT-2026, SRC-EPS-FORMS]
+    checklist_id: CHK-CONTRACT-RENEW-001
+    steps:
+      - id: confirm_company_intent
+        actor: HR
+        action: 재계약 검토 대상과 회사 의사 확인
+        output: company_intent
+      - id: confirm_worker_intent
+        actor: LANGUAGE_AGENT
+        action: 근로자에게 계속 근무 의사를 묻는 안내 초안 생성
+        output: worker_intent_request
+        gate: hr_approval
+      - id: prepare_contract
+        actor: WORKFLOW_AGENT
+        action: 최신 표준양식 링크와 기존 계약 필드 비교표 제공
+        output: contract_preparation_pack
+      - id: review_and_sign
+        actor: HR
+        action: 근로조건 검토와 당사자 서명 진행
+        output: signed_contract_record
+      - id: close_task
+        actor: HR
+        action: 계약기간과 후속 외부 절차 상태 갱신
+        output: completed_task
+    completion_evidence: [worker_intent, signed_contract_record, hr_approval_id]
+
+  - id: WF-DOC-001
+    name: 근로자 서류 요청 및 제출 추적
+    intent: DOCUMENT_REQUEST
+    domains: [DOCUMENT, STAY, CONTRACT, INSURANCE, GENERAL_ADMIN]
+    sensitivity: medium
+    supported_input_modes: [WORKER_MESSAGE, AGENT_TASK]
+    triggers:
+      - type: natural_language
+      - type: missing_document
+    required_slots_ref: WF-DOC-001
+    source_ids: [SRC-KEIS-REQUIRED-DOCS, SRC-EPS-LANGUAGE]
+    steps:
+      - id: validate_request
+        actor: AMBIGUITY_AGENT
+        action: 대상·정확한 서류명·기한·제출처 확인
+        output: normalized_request
+      - id: generate_notice
+        actor: LANGUAGE_AGENT
+        action: 쉬운 한국어와 근로자 언어 안내문 생성
+        output: notice_draft
+      - id: approve_notice
+        actor: HR
+        action: 원문·핵심값·번역문 검토 후 발송 승인
+        output: approved_notice
+        gate: required
+      - id: collect_response
+        actor: WORKER
+        action: 확인·질문·준비 중·제출 완료·처리 어려움 중 응답
+        output: worker_response
+      - id: verify_submission
+        actor: HR
+        action: 제출 파일의 문서 종류와 가독성 확인
+        output: document_verification
+      - id: close_or_ticket
+        actor: RESPONSE_TICKET_AGENT
+        action: 완료 처리 또는 질문·미제출 후속 티켓 생성
+        output: task_or_ticket
+    completion_evidence: [approved_notice_id, verified_document_id]
+
+  - id: WF-PAY-001
+    name: 급여명세서 차이 설명
+    intent: PAYROLL_EXPLANATION
+    domains: [PAYROLL, ATTENDANCE]
+    sensitivity: high
+    supported_input_modes: [AGENT_TASK, INTERNAL_REQUEST]
+    triggers:
+      - type: natural_language
+      - type: payslip_upload
+    required_slots_ref: WF-PAY-001
+    source_ids: [SRC-MOEL-WAGE-CALCULATOR]
+    checklist_id: CHK-PAYROLL-EXPLAIN-001
+    steps:
+      - id: parse_payslip
+        actor: AI
+        action: 명세서에서 귀속월·지급항목·공제항목 후보 추출
+        output: payroll_fields
+      - id: calculate_difference
+        actor: RULE_ENGINE
+        action: 항목별 전월 대비 차이를 코드로 계산
+        output: calculation_trace
+      - id: generate_explanation
+        actor: LANGUAGE_AGENT
+        action: 계산 결과를 쉬운 한국어와 근로자 언어로 설명
+        output: explanation_draft
+      - id: review_explanation
+        actor: HR
+        action: 명세서·근태자료와 설명을 대조하고 승인
+        output: approved_explanation
+        gate: required
+      - id: collect_question
+        actor: WORKER
+        action: 확인 또는 질문 응답
+        output: worker_response
+      - id: escalate_if_needed
+        actor: RESPONSE_TICKET_AGENT
+        action: 불일치·체불 주장·법률 질문은 HR 또는 전문가 검토 티켓으로 전환
+        output: task_or_ticket
+    completion_evidence: [calculation_trace_id, hr_approval_id]
+
+  - id: WF-INS-001
+    name: 업무·근무일정 안내
+    intent: WORK_INSTRUCTION
+    domains: [WORK_SCHEDULE, ATTENDANCE, GENERAL_ADMIN]
+    sensitivity: medium
+    supported_input_modes: [WORKER_MESSAGE, AGENT_TASK]
+    triggers:
+      - type: natural_language
+    required_slots_ref: WF-INS-001
+    source_ids: [SRC-EPS-LANGUAGE]
+    steps:
+      - id: validate_instruction
+        actor: AMBIGUITY_AGENT
+        action: 대상·시작일·행동·위치의 누락과 모호표현 확인
+        output: normalized_instruction
+      - id: generate_notice
+        actor: LANGUAGE_AGENT
+        action: 한 문장 한 행동 원칙의 쉬운 한국어·모국어 안내 생성
+        output: notice_draft
+      - id: approve_notice
+        actor: HR
+        action: 현장관리자 또는 HR이 내용 승인
+        output: approved_notice
+        gate: required
+      - id: collect_response
+        actor: WORKER
+        action: 확인·질문·이해하지 못함·처리 어려움 응답
+        output: worker_response
+      - id: follow_up
+        actor: RESPONSE_TICKET_AGENT
+        action: 질문 또는 미확인 상태를 담당자 티켓으로 연결
+        output: task_or_ticket
+    completion_evidence: [approved_notice_id, acknowledged_or_resolved_response]
+
+  - id: WF-CHG-001
+    name: 고용변동 사건 확인 및 신고 준비
+    intent: EMPLOYMENT_CHANGE
+    domains: [EMPLOYMENT_STATUS, ATTENDANCE, CONTRACT]
+    sensitivity: critical
+    supported_input_modes: [AGENT_TASK, INTERNAL_REQUEST]
+    triggers:
+      - type: natural_language
+      - type: attendance_exception
+    required_slots_ref: WF-CHG-001
+    source_ids: [SRC-EPS, SRC-EPS-FORMS]
+    checklist_id: CHK-EMPLOYMENT-CHANGE-001
+    steps:
+      - id: capture_incident
+        actor: INTENT_SLOT_AGENT
+        action: 대상·사건시각·변동 후보유형·연락상태 구조화
+        output: incident_draft
+      - id: confirm_facts
+        actor: HR
+        action: 근태·연락기록·당사자 의사로 사실관계 확인
+        output: confirmed_incident
+        gate: required
+      - id: load_official_guidance
+        actor: WORKFLOW_AGENT
+        action: 최신 EPS 서식과 담당 기관 링크 제공
+        output: guidance_pack
+      - id: create_actions
+        actor: RULE_ENGINE
+        action: 근로자 연락과 기관 확인을 별도 업무카드로 생성
+        output: action_tasks
+      - id: manual_report
+        actor: HR
+        action: 신고 필요 여부를 확인하고 공식 시스템에서 직접 처리
+        output: external_submission_status
+      - id: close_task
+        actor: HR
+        action: 처리 근거와 결과 등록
+        output: completed_task
+    completion_evidence: [confirmed_incident_id, external_receipt_or_manual_note]
+
+  - id: WF-ADM-001
+    name: 재직증명서 등 일반 증명서 요청
+    intent: DOCUMENT_REQUEST
+    domains: [GENERAL_ADMIN, DOCUMENT]
+    sensitivity: medium
+    supported_input_modes: [AGENT_TASK, INTERNAL_REQUEST]
+    triggers:
+      - type: natural_language
+      - type: worker_request
+    required_slots_ref: WF-ADM-001
+    source_ids: []
+    steps:
+      - id: normalize_request
+        actor: INTENT_SLOT_AGENT
+        action: 대상·증명서 종류·필요일·사용목적 후보 추출
+        output: certificate_request
+      - id: prepare_draft
+        actor: WORKFLOW_AGENT
+        action: 회사 승인 템플릿으로 문서 초안 생성
+        output: certificate_draft
+      - id: approve_document
+        actor: HR
+        action: 인적사항·발급일·직인 처리 검토
+        output: approved_certificate
+        gate: required
+      - id: deliver_document
+        actor: HR
+        action: 회사 정책에 따른 채널로 전달
+        output: delivery_record
+    completion_evidence: [approved_certificate_id, delivery_record]

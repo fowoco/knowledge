@@ -1,0 +1,66 @@
+version: 0.1.0
+intents:
+  - id: WORKER_ONBOARDING
+    label_ko: 근로자 등록·정보변경
+    description: 신규 근로자 등록 초안을 만들거나 기존 기본정보를 변경한다.
+    allowed_domains: [WORKER_PROFILE, INSURANCE, DOCUMENT]
+    examples:
+      - 새로 입사한 외국인 직원 등록 초안 만들어줘
+      - 외국인등록번호 변경 내용을 직원 정보에 반영해줘
+    exclusions:
+      - 근로자에게 서류 제출을 요청하는 일은 DOCUMENT_REQUEST
+
+  - id: EXPIRY_RENEWAL
+    label_ko: 체류·계약 만료 및 갱신
+    description: 체류기간이나 근로계약 만료를 확인하고 갱신 준비 Workflow를 시작한다.
+    allowed_domains: [STAY, CONTRACT]
+    examples:
+      - 다음 달 체류기간이 끝나는 근로자 확인해줘
+      - 응웬 씨 계약 연장 준비해줘
+    exclusions:
+      - 기관에 최종 신고하거나 법적 가능 여부를 확정하지 않음
+
+  - id: DOCUMENT_REQUEST
+    label_ko: 서류 요청·확인
+    description: 근로자 또는 내부 담당자에게 필요한 서류를 요청하고 제출 상태를 추적한다.
+    allowed_domains: [DOCUMENT, STAY, CONTRACT, INSURANCE, GENERAL_ADMIN]
+    examples:
+      - 금요일까지 여권 사본을 총무팀에 제출해달라고 안내해줘
+      - 아직 안 낸 서류가 있는지 확인해줘
+    exclusions:
+      - 문서에서 근로자 정보를 추출해 등록하는 일은 WORKER_ONBOARDING
+
+  - id: PAYROLL_EXPLANATION
+    label_ko: 급여·공제 설명
+    description: 명세서와 근태 근거를 비교해 지급액 차이와 항목을 설명한다.
+    allowed_domains: [PAYROLL, ATTENDANCE]
+    examples:
+      - 이번 달 월급이 지난달보다 적은 이유 설명해줘
+      - 기숙사비 공제 내용을 베트남어로 안내해줘
+    exclusions:
+      - 급여를 직접 계산하거나 지급액을 확정하지 않음
+
+  - id: WORK_INSTRUCTION
+    label_ko: 업무·근무일정 안내
+    description: 작업, 근무시간, 제출·연락 절차를 명확한 안내문으로 전달한다.
+    allowed_domains: [WORK_SCHEDULE, ATTENDANCE, GENERAL_ADMIN]
+    examples:
+      - 다음 주부터 주간조 출근시간이 바뀐다고 알려줘
+      - 출근이 늦으면 반장에게 연락하라고 안내해줘
+    exclusions:
+      - 생산설비 제어와 작업자 자동배치는 수행하지 않음
+
+  - id: EMPLOYMENT_CHANGE
+    label_ko: 고용변동·이탈 후속조치
+    description: 퇴사, 무단결근, 이탈 등 사건을 구조화하고 확인·신고 준비 업무를 만든다.
+    allowed_domains: [EMPLOYMENT_STATUS, ATTENDANCE, CONTRACT]
+    examples:
+      - 외국인 근로자가 어제부터 연락 없이 출근하지 않았어
+      - 이번 달 퇴사 예정자 후속 업무 만들어줘
+    exclusions:
+      - 이탈 여부나 신고 의무를 AI가 최종 확정하지 않음
+
+out_of_scope_label: OUT_OF_SCOPE
+multi_intent_policy:
+  strategy: split_and_confirm
+  description: 복합 요청은 Intent별 후보 업무카드로 분리하고 HR이 승인·삭제한다.

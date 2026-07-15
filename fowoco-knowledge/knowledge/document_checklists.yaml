@@ -1,0 +1,105 @@
+version: 0.1.0
+status: draft_requires_domain_review
+policy:
+  source_of_truth: SRC-KEIS-REQUIRED-DOCS
+  latest_official_confirmation_required: true
+  checklist_is_legal_advice: false
+  original_documents_stored_encrypted: true
+document_types:
+  PASSPORT_COPY:
+    label_ko: 여권 사본
+    contains_sensitive_data: true
+    default_validity_check: expiry_date
+  ALIEN_REGISTRATION_CARD_COPY:
+    label_ko: 외국인등록증 앞·뒷면 사본
+    contains_sensitive_data: true
+    default_validity_check: stay_expiry_date
+  EMPLOYMENT_CONTRACT:
+    label_ko: 근로계약서
+    contains_sensitive_data: true
+    default_validity_check: contract_period
+  EMPLOYMENT_PERMIT:
+    label_ko: 외국인근로자 고용허가서
+    contains_sensitive_data: true
+    default_validity_check: permit_period
+  EMPLOYMENT_CERTIFICATE:
+    label_ko: 재직증명서
+    contains_sensitive_data: true
+    default_validity_check: issued_at
+  APPLICATION_FORM:
+    label_ko: 해당 민원 신청서
+    contains_sensitive_data: true
+    default_validity_check: form_version
+  PAYSLIP:
+    label_ko: 임금명세서
+    contains_sensitive_data: true
+    default_validity_check: pay_period
+  ATTENDANCE_SUMMARY:
+    label_ko: 근태 집계표
+    contains_sensitive_data: true
+    default_validity_check: attendance_period
+
+checklists:
+  - id: CHK-WRK-REGISTER-001
+    workflow_id: WF-WRK-001
+    purpose: 근로자 등록 초안 생성
+    items:
+      - document_type: PASSPORT_COPY
+        requirement: required_for_draft
+      - document_type: ALIEN_REGISTRATION_CARD_COPY
+        requirement: conditional_if_issued
+      - document_type: EMPLOYMENT_CONTRACT
+        requirement: required_for_draft
+      - document_type: EMPLOYMENT_PERMIT
+        requirement: recommended_for_cross_check
+    hr_confirmation: OCR 값과 원본을 대조한 후 등록한다.
+
+  - id: CHK-STAY-RENEW-001
+    workflow_id: WF-STY-001
+    purpose: 체류기간 갱신 준비 상태 점검
+    items:
+      - document_type: PASSPORT_COPY
+        requirement: verify_current_copy
+      - document_type: ALIEN_REGISTRATION_CARD_COPY
+        requirement: verify_current_copy
+      - document_type: EMPLOYMENT_CONTRACT
+        requirement: verify_contract_period
+      - document_type: APPLICATION_FORM
+        requirement: select_current_official_form
+    official_sources: [SRC-HIKOREA, SRC-KEIS-REQUIRED-DOCS]
+    hr_confirmation: 체류자격과 개별 사정에 따른 추가서류를 하이코리아에서 최종 확인한다.
+
+  - id: CHK-CONTRACT-RENEW-001
+    workflow_id: WF-CON-001
+    purpose: 재계약 의사와 계약서 준비
+    items:
+      - document_type: EMPLOYMENT_CONTRACT
+        requirement: use_current_standard_form
+      - document_type: EMPLOYMENT_PERMIT
+        requirement: verify_permit_period
+    official_sources: [SRC-MOEL-CONTRACT-2026, SRC-EPS-FORMS]
+    hr_confirmation: 근로조건과 당사자 서명은 HR이 확인한다.
+
+  - id: CHK-PAYROLL-EXPLAIN-001
+    workflow_id: WF-PAY-001
+    purpose: 지급액 차이 설명 근거 확인
+    items:
+      - document_type: PAYSLIP
+        requirement: required_current_period
+      - document_type: PAYSLIP
+        requirement: optional_comparison_period
+      - document_type: ATTENDANCE_SUMMARY
+        requirement: conditional_if_hours_explain_difference
+    official_sources: [SRC-MOEL-WAGE-CALCULATOR]
+    hr_confirmation: 설명 초안의 항목·기간·금액을 명세서와 대조한다.
+
+  - id: CHK-EMPLOYMENT-CHANGE-001
+    workflow_id: WF-CHG-001
+    purpose: 고용변동 사건 사실관계와 신고 준비
+    items:
+      - document_type: APPLICATION_FORM
+        requirement: select_after_hr_confirms_change_type
+      - document_type: EMPLOYMENT_CONTRACT
+        requirement: reference_only
+    official_sources: [SRC-EPS, SRC-EPS-FORMS]
+    hr_confirmation: 사건 유형·발생일·신고 필요 여부를 담당 기관 또는 전문가와 확인한다.

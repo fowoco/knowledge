@@ -1,0 +1,44 @@
+version: 0.1.0
+patterns:
+  - id: AMB-TIME-001
+    category: TIME
+    terms: [오늘, 내일, 모레, 이번 주, 다음 주, 이번 달, 다음 달, 오후, 퇴근 전, 출근 전]
+    severity: medium
+    resolution: 기준일과 정확한 날짜·시각을 확인하고 ISO 8601로 저장한다.
+    question_template: 정확한 날짜와 시간을 입력해 주세요.
+  - id: AMB-PLACE-001
+    category: LOCATION
+    terms: [저쪽, 거기, 이쪽, 현장, 사무실, 작업대]
+    severity: high
+    resolution: 건물·라인·설비·선반 등 식별 가능한 위치를 확인한다.
+    question_template: 어느 건물, 라인 또는 번호의 위치인지 입력해 주세요.
+  - id: AMB-OBJECT-001
+    category: OBJECT
+    terms: [그 서류, 그거, 이거, 저거, 서류, 상자, 기계]
+    severity: high
+    resolution: 문서 코드, 설비 번호 또는 대상물 식별정보를 확인한다.
+    question_template: 정확한 서류명 또는 대상 번호를 입력해 주세요.
+  - id: AMB-TARGET-001
+    category: TARGET
+    terms: [그 사람, 외국인 직원, 퇴사하는 사람, 재계약 대상자, 우리 직원]
+    severity: high
+    resolution: 내부 worker_id 또는 명시적인 대상 그룹을 선택한다.
+    question_template: 안내 또는 처리 대상 근로자를 선택해 주세요.
+  - id: AMB-AMOUNT-001
+    category: AMOUNT
+    terms: [조금, 비슷한 금액, 대충, 일부, 더 들어감, 빠짐]
+    severity: high
+    resolution: 금액과 급여 항목을 원본 명세서에서 확인한다.
+    question_template: 정확한 금액과 급여 항목을 확인해 주세요.
+  - id: AMB-ACTION-001
+    category: ACTION
+    terms: [처리해줘, 준비해줘, 알아서, 평소처럼, 해줘, 정리해줘]
+    severity: medium
+    resolution: 원하는 산출물과 완료 기준을 Workflow 단계로 확인한다.
+    question_template: 확인, 안내, 서류 작성 중 어떤 결과가 필요한지 선택해 주세요.
+
+detection_policy:
+  exact_match_only: false
+  relative_time_always_requires_normalization: true
+  model_may_add_patterns: false
+  unknown_pattern_action: FLAG_FOR_REVIEW

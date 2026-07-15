@@ -1,0 +1,55 @@
+version: 0.1.0
+policy:
+  source_of_truth: easy_korean
+  supported_locales: [vi-VN, id-ID, km-KH, ne-NP, uz-UZ, th-TH]
+  preserve_placeholders: true
+  save_source_and_translation_together: true
+  human_approval_required: true
+  fallback: easy_korean_only
+templates:
+  - id: TPL-DOC-REQUEST-001
+    workflow_id: WF-DOC-001
+    easy_korean: |-
+      {worker_display_name}님, {document_display_name}이 필요합니다.
+      {due_at_display}까지 {submission_channel_display}에 제출해 주세요.
+      아래 링크에서 제출하거나 질문을 남길 수 있습니다.
+    required_placeholders:
+      - worker_display_name
+      - document_display_name
+      - due_at_display
+      - submission_channel_display
+  - id: TPL-SCHEDULE-001
+    workflow_id: WF-INS-001
+    easy_korean: |-
+      {effective_at_display}부터 일정이 바뀝니다.
+      해야 할 일: {work_action}
+      장소: {work_location_display}
+      내용을 확인한 뒤 응답해 주세요.
+    required_placeholders:
+      - effective_at_display
+      - work_action
+      - work_location_display
+  - id: TPL-PAYROLL-001
+    workflow_id: WF-PAY-001
+    easy_korean: |-
+      {pay_period_display} 급여명세서의 차이를 설명합니다.
+      변경 항목: {pay_item_display}
+      변경 이유: {calculated_reason}
+      금액은 첨부된 급여명세서에서 확인해 주세요.
+    required_placeholders:
+      - pay_period_display
+      - pay_item_display
+      - calculated_reason
+worker_response_options:
+  - code: ACKNOWLEDGED
+    label_ko: 확인했습니다
+  - code: QUESTION
+    label_ko: 질문이 있습니다
+  - code: NOT_UNDERSTOOD
+    label_ko: 이해하지 못했습니다
+  - code: IN_PROGRESS
+    label_ko: 준비 중입니다
+  - code: SUBMITTED
+    label_ko: 제출했습니다
+  - code: CANNOT_COMPLETE
+    label_ko: 처리하기 어렵습니다
