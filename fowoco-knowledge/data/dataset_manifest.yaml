@@ -1,0 +1,42 @@
+version: 0.1.0
+representative_model:
+  id: INTENT_DOMAIN_MULTI_LABEL
+  name_ko: HR 요청 Intent·Domain 다중라벨 분류
+  task_type: multi_label_text_classification
+  input_fields: [input_mode, hr_utterance, system_context]
+  target_fields: [intents, domains]
+  auxiliary_fields: [workflow_ids, slots_json, missing_slots, ambiguities, next_action]
+  decision: >-
+    FOWOCO의 대표 모델은 HR 요청을 하나 이상의 Intent와 Domain으로 분류한다.
+    Workflow·Slot·안전검사는 모델 출력 이후의 Agent와 규칙 엔진에서 처리한다.
+
+datasets:
+  seed:
+    path: data/seed/gold_seed.csv
+    role: development_seed
+    locked: false
+    may_train: false
+    note: 두 명의 독립 검수와 필요한 전문가 검수를 통과하기 전에는 학습에 사용하지 않는다.
+  evaluation:
+    path: data/evaluation/golden_cases.jsonl
+    role: smoke_evaluation
+    locked: true
+    may_train: false
+    sha256: b4bad76bf5613d60353582dd55f5623cc20f153e618f00954ad9bcf7bd652352
+    note: 프롬프트·모델 후보의 빠른 작동 검증 전용이며 최종 성능 주장에 사용하지 않는다.
+
+targets:
+  gold_v1_min_rows: 60
+  smoke_evaluation_min_rows: 15
+  baseline_total_rows: 600
+  baseline_min_rows_per_in_scope_intent: 80
+
+policies:
+  independent_reviewer_count: 2
+  split_before_augmentation: true
+  augmentation_train_only: true
+  evaluation_examples_in_prompt: false
+  classification_gold_allows_team_review: true
+  high_and_critical_auxiliary_workflow_require_expert: true
+  personally_identifiable_text_allowed: false
+  compound_request_strategy: split_and_confirm
