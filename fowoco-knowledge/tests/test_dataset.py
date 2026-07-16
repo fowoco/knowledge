@@ -20,6 +20,18 @@ def test_dataset_report_distinguishes_smoke_and_training_readiness() -> None:
     assert report["evaluation"]["rows"] == 18
     assert report["quality"]["seed_evaluation_overlap"] == []
     assert report["quality"]["pii_pattern_hits"] == []
+    assert report["notice_quality"]["rows"] == 12
+    assert report["notice_quality"]["locked"] is True
+    assert report["notice_quality"]["contract_mismatches"] == []
+    assert report["notice_quality"]["contract_accuracy"] == 1.0
+    assert report["notice_quality"]["injected_error_cases"] == 9
+    assert report["notice_quality"]["interpretation"] == (
+        "detector_regression_fixture_not_model_performance"
+    )
+    assert report["notice_quality"]["gate_distribution"] == {
+        "BLOCK_AND_REVIEW": 9,
+        "PASS_TO_HR_REVIEW": 3,
+    }
     assert report["readiness"]["smoke_evaluation_ready"] is True
     assert report["readiness"]["gold_v1_ready"] is False
     assert report["readiness"]["classification_baseline_ready"] is False

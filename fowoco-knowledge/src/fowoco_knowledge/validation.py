@@ -8,6 +8,7 @@ from jsonschema import Draft202012Validator
 
 from .dataset import DatasetManager
 from .ingestion import file_sha256
+from .quality import NoticeQualityEvaluator
 from .repository import KnowledgeRepository
 
 SEED_COLUMNS = {
@@ -80,6 +81,7 @@ class KnowledgeValidator:
         self._validate_cross_references()
         self._validate_seed_data()
         self._validate_evaluation_data()
+        self._validate_notice_quality_data()
         return self.errors
 
     def _validate_dataset_manifest(self) -> None:
@@ -358,6 +360,59 @@ class KnowledgeValidator:
                 case.get("expected_workflow_ids", []),
                 known_workflows,
             )
+
+    def _validate_notice_quality_data(self) -> None:
+        schema = self.repository.load_json("schemas/notice-quality-case.schema.json")
+        validator = Draft202012Validator(schema)
+        evaluator = NoticeQualityEvaluator(self.repository)
+        policy = self.repository.load_yaml("knowledge/output_quality_policy.yaml")
+        known_workflows = {item["id"] for item in self.repository.list_workflows()}
+        known_claims = set(policy["observed_claims"])
+        known_issues = set(policy["error_catalog"])
+        path = self.repository.root / "data/evaluation/notice_quality_cases.jsonl"
+        seen: set[str] = set()
+
+        for line_number, raw_line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), start=1
+        ):
+            if not raw_line.strip():
+                continue
+            try:
+                case = json.loads(raw_line)
+            except json.JSONDecodeError as exc:
+                self.errors.append(f"notice quality line {line_number}: invalid JSON ({exc})")
+                continue
+            for error in validator.iter_errors(case):
+                self.errors.append(f"notice quality line {line_number}: {error.message}")
+            case_id = case.get("case_id")
+            if case_id in seen:
+                self.errors.append(f"notice quality line {line_number}: duplicate {case_id}")
+            seen.add(case_id)
+            if case.get("workflow_id") not in known_workflows:
+                self.errors.append(
+                    f"notice quality line {line_number}: unknown workflow {case.get('workflow_id')}"
+                )
+            self._check_codes(line_number, "claim", case.get("observed_claims", []), known_claims)
+            self._check_codes(
+                line_number, "quality issue", case.get("expected_issue_codes", []), known_issues
+            )
+            if not isinstance(case.get("source_slots"), dict) or not isinstance(
+                case.get("candidate_slots"), dict
+            ):
+                continue
+            result = evaluator.evaluate_case(case)
+            expected_codes = case.get("expected_issue_codes", [])
+            actual_codes = [issue.code for issue in result.issues]
+            if actual_codes != expected_codes:
+                self.errors.append(
+                    f"notice quality line {line_number}: expected issues {expected_codes}, "
+                    f"got {actual_codes}"
+                )
+            if result.gate != case.get("expected_gate"):
+                self.errors.append(
+                    f"notice quality line {line_number}: expected gate "
+                    f"{case.get('expected_gate')}, got {result.gate}"
+                )
 
     def _index_unique(self, items: list[dict[str, Any]], kind: str) -> dict[str, dict[str, Any]]:
         indexed: dict[str, dict[str, Any]] = {}

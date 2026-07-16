@@ -7,6 +7,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+from .quality import NoticeQualityEvaluator
 from .repository import KnowledgeRepository
 
 GOLD_STATUSES = {"GOLD_TEAM", "GOLD_EXPERT"}
@@ -96,9 +97,18 @@ class DatasetManager:
             if line.strip()
         ]
 
+    def load_notice_quality_evaluation(self) -> list[dict[str, Any]]:
+        path = self.repository.root / self.manifest["datasets"]["notice_quality_evaluation"]["path"]
+        return [
+            json.loads(line)
+            for line in path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+
     def build_report(self) -> dict[str, Any]:
         seed = self.load_seed()
         evaluation = self.load_evaluation()
+        notice_quality = self.load_notice_quality_evaluation()
         targets = self.manifest["targets"]
 
         seed_intents = Counter(code for row in seed for code in split_codes(row.get("intents")))
@@ -124,7 +134,8 @@ class DatasetManager:
             }
             for text in sorted(seed_by_text.keys() & evaluation_by_text.keys())
         ]
-        pii_hits = self._scan_pii(seed, evaluation)
+        pii_hits = self._scan_pii(seed, evaluation, notice_quality)
+        notice_quality_report = self._notice_quality_report(notice_quality)
         gold_count = sum(row["review_status"] in GOLD_STATUSES for row in seed)
         workflow_expert_review_required = sum(
             row["sensitivity"] in EXPERT_REVIEW_SENSITIVITIES for row in seed
@@ -161,6 +172,7 @@ class DatasetManager:
                 "seed_evaluation_overlap": overlap,
                 "pii_pattern_hits": pii_hits,
             },
+            "notice_quality": notice_quality_report,
             "readiness": {
                 "smoke_evaluation_ready": (
                     len(evaluation) >= targets["smoke_evaluation_min_rows"]
@@ -225,7 +237,9 @@ class DatasetManager:
 
     @staticmethod
     def _scan_pii(
-        seed: list[dict[str, str]], evaluation: list[dict[str, Any]]
+        seed: list[dict[str, str]],
+        evaluation: list[dict[str, Any]],
+        notice_quality: list[dict[str, Any]],
     ) -> list[dict[str, str]]:
         documents: list[tuple[str, str, str]] = []
         for row in seed:
@@ -240,6 +254,8 @@ class DatasetManager:
                     json.dumps(case.get("system_context", {}), ensure_ascii=False),
                 )
             )
+        for case in notice_quality:
+            documents.append(("notice_quality", case["case_id"], case["candidate_text"]))
 
         hits: list[dict[str, str]] = []
         for dataset, item_id, text in documents:
@@ -247,6 +263,55 @@ class DatasetManager:
                 if pattern.search(text):
                     hits.append({"dataset": dataset, "id": item_id, "pattern": pattern_name})
         return hits
+
+    def _notice_quality_report(self, cases: list[dict[str, Any]]) -> dict[str, Any]:
+        evaluator = NoticeQualityEvaluator(self.repository)
+        issue_counts: Counter[str] = Counter()
+        gate_counts: Counter[str] = Counter()
+        total_core = preserved_core = 0
+        total_critical = omitted_critical = unsupported = 0
+        contract_mismatches: list[dict[str, Any]] = []
+
+        for case in cases:
+            result = evaluator.evaluate_case(case)
+            actual_codes = [issue.code for issue in result.issues]
+            issue_counts.update(actual_codes)
+            gate_counts[result.gate] += 1
+            total_core += result.core_value_total
+            preserved_core += result.core_value_preserved
+            total_critical += result.critical_value_total
+            omitted_critical += result.critical_value_omitted
+            unsupported += result.unsupported_value_count
+            if actual_codes != case["expected_issue_codes"] or result.gate != case["expected_gate"]:
+                contract_mismatches.append(
+                    {
+                        "case_id": case["case_id"],
+                        "expected_issue_codes": case["expected_issue_codes"],
+                        "actual_issue_codes": actual_codes,
+                        "expected_gate": case["expected_gate"],
+                        "actual_gate": result.gate,
+                    }
+                )
+
+        return {
+            "rows": len(cases),
+            "locked": self.manifest["datasets"]["notice_quality_evaluation"]["locked"],
+            "issue_distribution": dict(sorted(issue_counts.items())),
+            "gate_distribution": dict(sorted(gate_counts.items())),
+            "core_value_preservation_rate": round(preserved_core / total_core, 4)
+            if total_core
+            else 1.0,
+            "critical_omission_rate": round(omitted_critical / total_critical, 4)
+            if total_critical
+            else 0.0,
+            "unsupported_value_rate": round(unsupported / len(cases), 4) if cases else 0.0,
+            "contract_mismatches": contract_mismatches,
+            "contract_accuracy": round((len(cases) - len(contract_mismatches)) / len(cases), 4)
+            if cases
+            else 0.0,
+            "injected_error_cases": sum(bool(case["expected_issue_codes"]) for case in cases),
+            "interpretation": "detector_regression_fixture_not_model_performance",
+        }
 
 
 class ReviewComparator:
@@ -451,6 +516,7 @@ def format_report(report: dict[str, Any]) -> str:
     seed = report["seed"]
     evaluation = report["evaluation"]
     quality = report["quality"]
+    notice_quality = report["notice_quality"]
     lines = [
         f"MODEL\t{report['representative_model']}",
         f"SEED\trows={seed['rows']}\tgold={seed['gold_rows']}\t"
@@ -462,6 +528,10 @@ def format_report(report: dict[str, Any]) -> str:
         f"evaluation_duplicates={len(evaluation['duplicate_utterances'])}\t"
         f"split_overlap={len(quality['seed_evaluation_overlap'])}\t"
         f"pii_hits={len(quality['pii_pattern_hits'])}",
+        f"NOTICE_QUALITY\trows={notice_quality['rows']}\t"
+        f"contract_accuracy={notice_quality['contract_accuracy']}\t"
+        f"injected_errors={notice_quality['injected_error_cases']}\t"
+        f"contract_mismatches={len(notice_quality['contract_mismatches'])}",
         f"READY\tsmoke={readiness['smoke_evaluation_ready']}\t"
         f"gold_v1={readiness['gold_v1_ready']}\t"
         f"baseline={readiness['classification_baseline_ready']}",

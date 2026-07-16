@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.local/schemas/notice-quality-case.schema.json",
+  "title": "FOWOCO notice quality evaluation case",
+  "type": "object",
+  "required": [
+    "case_id",
+    "workflow_id",
+    "candidate_text",
+    "source_slots",
+    "candidate_slots",
+    "observed_claims",
+    "expected_issue_codes",
+    "expected_gate",
+    "provenance",
+    "notes"
+  ],
+  "properties": {
+    "case_id": { "type": "string", "pattern": "^NQ-EVAL-[0-9]{3}$" },
+    "workflow_id": { "type": "string", "pattern": "^WF-[A-Z]{3}-[0-9]{3}$" },
+    "candidate_text": { "type": "string", "minLength": 1 },
+    "source_slots": { "type": "object" },
+    "candidate_slots": { "type": "object" },
+    "observed_claims": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string" }
+    },
+    "expected_issue_codes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "expected_gate": {
+      "enum": ["PASS_TO_HR_REVIEW", "HIGHLIGHT_FOR_HR", "BLOCK_AND_REVIEW", "BLOCK"]
+    },
+    "provenance": { "enum": ["TEAM_SYNTHETIC", "INTERVIEW_DERIVED_ANON"] },
+    "notes": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

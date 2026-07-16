@@ -24,6 +24,13 @@ datasets:
     may_train: false
     sha256: b4bad76bf5613d60353582dd55f5623cc20f153e618f00954ad9bcf7bd652352
     note: 프롬프트·모델 후보의 빠른 작동 검증 전용이며 최종 성능 주장에 사용하지 않는다.
+  notice_quality_evaluation:
+    path: data/evaluation/notice_quality_cases.jsonl
+    role: output_quality_evaluation
+    locked: true
+    may_train: false
+    sha256: fd5330d9749c38ac18ee27538caa1aa646591b1043b542ce7126aa76dc5126a8
+    note: 안내문 핵심값 보존과 치명 오류 차단 로직의 회귀평가 전용 데이터다.
 
 targets:
   gold_v1_min_rows: 60

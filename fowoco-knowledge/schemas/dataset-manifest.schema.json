@@ -36,10 +36,11 @@
     },
     "datasets": {
       "type": "object",
-      "required": ["seed", "evaluation"],
+      "required": ["seed", "evaluation", "notice_quality_evaluation"],
       "properties": {
         "seed": { "$ref": "#/$defs/dataset" },
-        "evaluation": { "$ref": "#/$defs/dataset" }
+        "evaluation": { "$ref": "#/$defs/dataset" },
+        "notice_quality_evaluation": { "$ref": "#/$defs/dataset" }
       },
       "additionalProperties": false
     },
@@ -84,7 +85,9 @@
       "required": ["path", "role", "locked", "may_train", "note"],
       "properties": {
         "path": { "type": "string", "minLength": 1 },
-        "role": { "enum": ["development_seed", "smoke_evaluation"] },
+        "role": {
+          "enum": ["development_seed", "smoke_evaluation", "output_quality_evaluation"]
+        },
         "locked": { "type": "boolean" },
         "may_train": { "type": "boolean" },
         "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },

@@ -8,6 +8,7 @@ from pathlib import Path
 from .dataset import DatasetManager, ReviewComparator, format_report, format_review_comparison
 from .engine import RequestEvaluator
 from .ingestion import OfficialDataPipeline
+from .quality import NoticeQualityEvaluator
 from .repository import KnowledgeRepository
 from .validation import KnowledgeValidator
 
@@ -29,6 +30,12 @@ def build_parser() -> argparse.ArgumentParser:
         "check-request", help="Validate classified request slots and ambiguity"
     )
     check_parser.add_argument("request_file", type=Path)
+
+    quality_parser = subparsers.add_parser(
+        "check-notice-quality",
+        help="Check preservation and unsupported claims in a generated notice",
+    )
+    quality_parser.add_argument("quality_file", type=Path)
 
     sync_parser = subparsers.add_parser(
         "sync-official-data",
@@ -119,6 +126,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "check-request":
         request = json.loads(args.request_file.read_text(encoding="utf-8"))
         result = RequestEvaluator(repository).evaluate(request)
+        print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "check-notice-quality":
+        payload = json.loads(args.quality_file.read_text(encoding="utf-8"))
+        result = NoticeQualityEvaluator(repository).evaluate(
+            payload["source_slots"],
+            payload["candidate_slots"],
+            payload.get("observed_claims", []),
+        )
         print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
         return 0
 

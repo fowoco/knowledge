@@ -59,6 +59,10 @@ python3.11 -m venv .venv
 .venv/bin/python -m fowoco_knowledge check-request \
   fowoco-knowledge/examples/ambiguous_document_request.json
 
+# 생성 안내문의 날짜·서류명·대상자 등 핵심값 보존 확인
+.venv/bin/python -m fowoco_knowledge check-notice-quality \
+  fowoco-knowledge/examples/notice_quality_check.json
+
 # 공식 원본 검증 후 제조업 Knowledge 스냅샷 재생성
 .venv/bin/python -m fowoco_knowledge sync-official-data
 
@@ -78,6 +82,9 @@ python3.11 -m venv .venv
 
 `check-request`는 자연어 모델을 대신하지 않습니다. 모델이 출력한 Workflow와 Slot이
 업무를 시작하기에 충분한지 규칙으로 검증합니다.
+
+안내문 품질 기준과 평가 데이터 해석은
+[`docs/OUTPUT_QUALITY.md`](docs/OUTPUT_QUALITY.md)를 확인합니다.
 
 ## Agent 연동 위치
 
