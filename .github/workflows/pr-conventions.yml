@@ -16,12 +16,18 @@ jobs:
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          pattern='^(feat|fix|data|docs|test|refactor|chore|experiment|ci|perf|revert)(\([a-z0-9-]+\))?: .+'
-          if [[ ! "$PR_TITLE" =~ $pattern ]]; then
-            echo "PR 제목은 <type>(<scope>): <한국어 요약> 형식이어야 합니다."
-            exit 1
-          fi
-          if ! printf '%s' "$PR_TITLE" | grep -q '[가-힣]'; then
-            echo "콜론 뒤 요약에 한국어를 포함해야 합니다."
-            exit 1
-          fi
+          python - <<'PY'
+          import os
+          import re
+          import sys
+
+          title = os.environ["PR_TITLE"]
+          pattern = r"^(feat|fix|data|docs|test|refactor|chore|experiment|ci|perf|revert)(\([a-z0-9-]+\))?: .+"
+
+          if not re.fullmatch(pattern, title):
+              print("PR 제목은 <type>(<scope>): <한국어 요약> 형식이어야 합니다.")
+              sys.exit(1)
+          if not re.search(r"[가-힣]", title):
+              print("콜론 뒤 요약에 한국어를 포함해야 합니다.")
+              sys.exit(1)
+          PY
