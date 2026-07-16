@@ -1,0 +1,96 @@
+version: 0.1.0
+purpose: >-
+  MVP 더미 데이터 환경에서도 실제 서비스 전환을 고려해 최소수집, 역할 기반 접근,
+  전송 암호화, LLM 전달 전 마스킹과 감사로그 원칙을 고정한다.
+
+classifications:
+  direct_identifier:
+    fields:
+      - legal_name
+      - worker_name
+      - foreigner_registration_number
+      - passport_number
+      - phone
+      - email
+      - address
+      - bank_account
+    storage: encrypted_restricted_db
+    llm_policy: mask_or_drop
+  sensitive_hr:
+    fields:
+      - pay_amount
+      - deduction_amount
+      - attendance_detail
+      - contract_document
+      - stay_document
+      - worker_question_text
+    storage: encrypted_restricted_db
+    llm_policy: minimum_fields_only
+  internal_reference:
+    fields:
+      - worker_id
+      - source_document_id
+      - task_id
+      - workflow_id
+    storage: operational_db
+    llm_policy: allowed
+  operational:
+    fields:
+      - document_type
+      - due_at
+      - submission_channel
+      - work_action
+      - work_location
+      - quantity
+      - quantity_unit
+    storage: operational_db
+    llm_policy: allowed
+
+llm_boundary:
+  allowed_top_level_fields: [request_id, input_mode, utterance, workflow_id, slots]
+  blocked_fields:
+    - raw_document
+    - contract_document
+    - stay_document
+    - legal_name
+    - worker_name
+    - foreigner_registration_number
+    - passport_number
+    - phone
+    - email
+    - address
+    - bank_account
+    - worker_question_text
+  allowed_slot_source: workflow_required_and_optional_slots_only
+  text_masking_patterns:
+    resident_or_foreigner_number: "(?<!\\d)\\d{6}-?[1-8]\\d{6}(?!\\d)"
+    phone_number: "(?<!\\d)01[016789]-?\\d{3,4}-?\\d{4}(?!\\d)"
+    email: "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b"
+  replacements:
+    resident_or_foreigner_number: "[REGISTRATION_NUMBER]"
+    phone_number: "[PHONE]"
+    email: "[EMAIL]"
+
+access_control:
+  roles:
+    ADMIN: [company_policy_manage, audit_log_read]
+    HR_MANAGER: [worker_sensitive_read, task_approve, notice_approve]
+    HR_OPERATOR: [worker_operational_read, task_edit, notice_draft]
+    WORKER_LINK: [assigned_notice_read, own_response_create]
+  default_deny: true
+  unmask_policy:
+    allowed_roles: [ADMIN, HR_MANAGER]
+    reason_required: true
+    audit_log_required: true
+
+transport_and_storage:
+  transport: HTTPS_TLS_1_2_OR_HIGHER
+  sensitive_at_rest: application_or_database_encryption
+  password_storage: adaptive_one_way_hash
+  secrets_storage: environment_or_secret_manager
+
+learning_log:
+  raw_pii_allowed: false
+  store_before_after_text: masked_only
+  required_metadata: [run_id, model_version, workflow_id, error_codes, hr_action]
+  note: 보관기간과 운영 접근권한은 배포 정책에서 별도 확정한다.

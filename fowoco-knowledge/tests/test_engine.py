@@ -52,3 +52,23 @@ def test_low_intent_confidence_requests_confirmation() -> None:
     evaluator = RequestEvaluator(KnowledgeRepository(ROOT))
     result = evaluator.evaluate(request)
     assert result.action == "REQUEST_CLASSIFICATION_CONFIRMATION"
+
+
+def test_quantity_ambiguity_requires_number_and_unit() -> None:
+    request = load_example("complete_document_request.json")
+    request.update(
+        {
+            "workflow_id": "WF-INS-001",
+            "utterance": "내일 부품 상자를 여러 개 옮겨 주세요",
+            "slots": {
+                "worker_id": "WRK-DEMO-001",
+                "effective_at": "2026-07-17T08:00:00+09:00",
+                "work_action": "부품 상자 옮기기",
+            },
+        }
+    )
+
+    result = RequestEvaluator(KnowledgeRepository(ROOT)).evaluate(request)
+
+    assert result.action == "REQUEST_CLARIFICATION"
+    assert {match.category for match in result.ambiguities} == {"QUANTITY"}

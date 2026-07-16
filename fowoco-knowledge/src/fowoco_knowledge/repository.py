@@ -171,6 +171,8 @@ class KnowledgeRepository:
             "easy_korean": context["easy_korean"],
             "templates": templates,
             "guardrails": guardrails,
+            "quality_policy": context["quality_policy"],
+            "data_protection": context["data_protection"],
             "checklist": checklist,
             "official_sources": sources,
             "administrative_procedure": administrative_procedure,

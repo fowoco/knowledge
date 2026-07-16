@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.local/schemas/output-quality-policy.schema.json",
+  "title": "FOWOCO outbound message quality policy",
+  "type": "object",
+  "required": [
+    "version",
+    "immutable_slots",
+    "critical_slots",
+    "observed_claims",
+    "error_catalog",
+    "gate_policy",
+    "metrics",
+    "confidence_interpretation"
+  ],
+  "properties": {
+    "version": { "type": "string" },
+    "purpose": { "type": "string" },
+    "immutable_slots": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string" }
+    },
+    "critical_slots": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string" }
+    },
+    "observed_claims": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["issue_code"],
+        "properties": { "issue_code": { "type": "string" } },
+        "additionalProperties": false
+      }
+    },
+    "error_catalog": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["severity", "description", "failure_action"],
+        "properties": {
+          "severity": { "enum": ["low", "medium", "high", "critical"] },
+          "description": { "type": "string" },
+          "failure_action": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "gate_policy": { "type": "object" },
+    "metrics": { "type": "object", "minProperties": 1 },
+    "confidence_interpretation": { "type": "object" }
+  },
+  "additionalProperties": false
+}

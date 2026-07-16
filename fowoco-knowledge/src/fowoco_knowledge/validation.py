@@ -76,6 +76,7 @@ class KnowledgeValidator:
         self._validate_processed_datasets()
         self._validate_dataset_manifest()
         self._validate_workflow_schema()
+        self._validate_quality_policy_schema()
         self._validate_cross_references()
         self._validate_seed_data()
         self._validate_evaluation_data()
@@ -178,6 +179,14 @@ class KnowledgeValidator:
             path = ".".join(str(item) for item in error.path)
             self.errors.append(f"workflow schema [{path}]: {error.message}")
 
+    def _validate_quality_policy_schema(self) -> None:
+        schema = self.repository.load_json("schemas/output-quality-policy.schema.json")
+        policy = self.repository.load_yaml("knowledge/output_quality_policy.yaml")
+        validator = Draft202012Validator(schema)
+        for error in validator.iter_errors(policy):
+            path = ".".join(str(item) for item in error.path)
+            self.errors.append(f"quality policy [{path}]: {error.message}")
+
     def _validate_cross_references(self) -> None:
         context = self.repository.load_context_files()
         intents = self._index_unique(context["intents"]["intents"], "intent")
@@ -187,6 +196,7 @@ class KnowledgeValidator:
         checklists = self._index_unique(context["checklists"]["checklists"], "checklist")
         procedures = self._index_unique(context["procedures"]["procedures"], "procedure")
         slot_refs = context["slots"]["workflow_requirements"]
+        slot_definitions = set(context["slots"]["slot_definitions"])
 
         for workflow_id, workflow in workflows.items():
             if workflow["intent"] not in intents:
@@ -247,6 +257,18 @@ class KnowledgeValidator:
             for target in rule["applies_to"]:
                 if target not in valid_guardrail_targets:
                     self.errors.append(f"{rule['id']}: unknown applies_to {target}")
+
+        quality_policy = context["quality_policy"]
+        for slot_name in quality_policy["immutable_slots"] + quality_policy["critical_slots"]:
+            if slot_name not in slot_definitions:
+                self.errors.append(f"quality policy: unknown slot {slot_name}")
+        error_codes = set(quality_policy["error_catalog"])
+        for claim_name, claim in quality_policy["observed_claims"].items():
+            if claim["issue_code"] not in error_codes:
+                self.errors.append(
+                    f"quality policy: claim {claim_name} references unknown issue "
+                    f"{claim['issue_code']}"
+                )
 
     def _validate_seed_data(self) -> None:
         context = self.repository.load_context_files()

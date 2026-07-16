@@ -40,6 +40,8 @@ slots_json,submission_channel,제출 장소·경로,총무팀·보안링크 등
 slots_json,effective_at,변경·업무 시작시각,ISO 8601 날짜·시각
 slots_json,work_location,작업 위치,공장·라인·설비·작업대
 slots_json,work_action,구체적인 작업 행동,한 가지 행동으로 작성
+slots_json,quantity,수량,완료 기준에 수량이 필요할 때 숫자로 작성
+slots_json,quantity_unit,수량 단위,개·상자·장·명 등 단위를 작성
 slots_json,pay_period,급여 귀속월,YYYY-MM
 slots_json,pay_item,급여 항목,기본급·수당·공제 등
 slots_json,comparison_period,비교 급여 귀속월,YYYY-MM
@@ -62,6 +64,7 @@ ambiguities,OBJECT,대상물·서류 모호,그 서류·그거·기계
 ambiguities,TARGET,대상자 모호,외국인 직원·그 사람
 ambiguities,AMOUNT,금액 모호,조금·비슷한 금액
 ambiguities,ACTION,행동·산출물 모호,처리해줘·알아서·준비해줘
+ambiguities,QUANTITY,수량 모호,몇 개·여러 개·필요한 만큼
 sensitivity,low,낮음,일반 조회·낮은 위험
 sensitivity,medium,보통,외부 안내 전 확인 필요
 sensitivity,high,높음,개인정보·체류·계약·급여 등 HR 승인 필요

@@ -1,5 +1,5 @@
 pack_id: FOWOCO-KNOWLEDGE
-version: 0.3.0
+version: 0.4.0
 status: draft
 released_at: 2026-07-16
 default_locale: ko-KR
@@ -26,6 +26,8 @@ files:
   easy_korean: knowledge/easy_korean_rules.yaml
   multilingual_templates: knowledge/multilingual_templates.yaml
   guardrails: knowledge/guardrail_rules.yaml
+  quality_policy: knowledge/output_quality_policy.yaml
+  data_protection: knowledge/data_protection.yaml
 datasets:
   dataset_manifest: data/dataset_manifest.yaml
   source_manifest: data/external/source_manifest.yaml

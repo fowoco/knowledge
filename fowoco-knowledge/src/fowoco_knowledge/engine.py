@@ -50,6 +50,7 @@ class RequestEvaluator:
         "TARGET": {"worker_id"},
         "AMOUNT": {"source_document_id", "pay_item"},
         "ACTION": {"work_action", "change_type", "document_type", "source_document_id"},
+        "QUANTITY": {"quantity", "quantity_unit"},
     }
 
     def __init__(self, repository: KnowledgeRepository) -> None:

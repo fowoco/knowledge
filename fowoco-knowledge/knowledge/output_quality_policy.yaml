@@ -1,0 +1,106 @@
+version: 0.1.0
+purpose: >-
+  안내문의 문장 자연스러움보다 원문과 구조화 입력의 핵심값 보존, 근거 없는 사실 추가,
+  위험한 법률 단정과 외부 실행 주장을 우선 검증한다.
+
+immutable_slots:
+  - worker_id
+  - document_type
+  - due_at
+  - contract_end_date
+  - stay_expiry_date
+  - submission_channel
+  - effective_at
+  - work_location
+  - work_action
+  - quantity
+  - quantity_unit
+  - pay_period
+  - pay_item
+  - comparison_period
+  - change_type
+  - incident_at
+  - awareness_at
+  - source_document_id
+
+critical_slots:
+  - worker_id
+  - document_type
+  - due_at
+  - contract_end_date
+  - stay_expiry_date
+  - effective_at
+  - pay_period
+  - pay_item
+  - change_type
+  - incident_at
+
+observed_claims:
+  LEGAL_CONCLUSION_WITHOUT_SOURCE:
+    issue_code: LEGAL_CLAIM_UNSUPPORTED
+  EXTERNAL_ACTION_COMPLETED:
+    issue_code: EXTERNAL_ACTION_CLAIMED
+  CALCULATION_WITHOUT_TRACE:
+    issue_code: CALCULATION_WITHOUT_TRACE
+
+error_catalog:
+  CORE_VALUE_OMITTED:
+    severity: critical
+    description: 원문 또는 승인된 구조화 입력에 있던 핵심값이 안내문 구조에서 빠짐
+    failure_action: BLOCK_AND_REVIEW
+  CORE_VALUE_CHANGED:
+    severity: critical
+    description: 날짜·금액·서류명·대상자·행동 등 핵심값이 다른 값으로 변경됨
+    failure_action: BLOCK_AND_REVIEW
+  UNSUPPORTED_VALUE_ADDED:
+    severity: high
+    description: 입력 근거가 없는 핵심값이 안내문 구조에 새로 추가됨
+    failure_action: BLOCK_AND_REVIEW
+  LEGAL_CLAIM_UNSUPPORTED:
+    severity: critical
+    description: 공식 근거 없이 가능 여부·의무·기한을 확정적으로 표현함
+    failure_action: BLOCK_AND_REVIEW
+  EXTERNAL_ACTION_CLAIMED:
+    severity: critical
+    description: 기관 제출·외부 발송·계약 확정 등이 완료됐다고 잘못 표현함
+    failure_action: BLOCK
+  CALCULATION_WITHOUT_TRACE:
+    severity: critical
+    description: 급여 차액이나 공제액을 계산 근거 없이 생성함
+    failure_action: BLOCK_AND_REVIEW
+  LINGUISTIC_AWKWARDNESS:
+    severity: low
+    description: 의미와 핵심값은 보존됐으나 문장이 다소 어색함
+    failure_action: ALLOW_HR_REVIEW
+
+gate_policy:
+  severity_order: [low, medium, high, critical]
+  no_issue: PASS_TO_HR_REVIEW
+  low: PASS_TO_HR_REVIEW
+  medium: HIGHLIGHT_FOR_HR
+  high: BLOCK_AND_REVIEW
+  critical: BLOCK_AND_REVIEW
+  note: 모든 근로자 대상 외부 안내는 최종적으로 HR 승인을 거친다.
+
+metrics:
+  core_value_preservation_rate:
+    definition: 보존된 원본 immutable Slot 수 / 원본 immutable Slot 수
+    demo_target: 0.98
+  critical_omission_rate:
+    definition: critical Slot 누락 건수 / critical Slot 전체 건수
+    demo_target: 0.0
+  unsupported_value_rate:
+    definition: 근거 없이 추가된 immutable Slot 수 / 생성 안내문 수
+    demo_target: 0.0
+  critical_error_pass_through_rate:
+    definition: 차단되지 않고 HR 승인 화면까지 통과한 critical 오류 수 / critical 오류 수
+    demo_target: 0.0
+  hr_edit_rate:
+    definition: HR이 핵심값 또는 행동을 수정한 안내문 수 / 승인 검토 안내문 수
+    demo_target: monitor_only
+
+confidence_interpretation:
+  purpose: 모델 후보 선택과 Human-in-the-loop 검토 강도를 정하는 라우팅 신호
+  prohibited_claim: 확신도 수치를 법률·번역·업무 결과의 신뢰도라고 표현하지 않음
+  low_confidence_action: REQUEST_CLASSIFICATION_CONFIRMATION
+  outbound_policy: 확신도와 무관하게 외부 발송 전 HR 승인

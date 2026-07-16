@@ -31,6 +31,10 @@ def test_compiled_context_is_cross_linked() -> None:
     assert context["checklist"]["id"] == "CHK-STAY-RENEW-001"
     assert context["administrative_procedure"]["id"] == "PROC-STAY-PERIOD-EXTENSION-001"
     assert any(rule["id"] == "GRD-003" for rule in context["guardrails"])
+    assert "due_at" in context["quality_policy"]["immutable_slots"]
+    assert context["data_protection"]["llm_boundary"]["allowed_slot_source"] == (
+        "workflow_required_and_optional_slots_only"
+    )
 
 
 def test_employment_change_context_uses_one_stop_reporting_procedure() -> None:

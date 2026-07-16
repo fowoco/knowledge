@@ -1,4 +1,4 @@
-version: 0.1.0
+version: 0.2.0
 patterns:
   - id: AMB-TIME-001
     category: TIME
@@ -36,6 +36,12 @@ patterns:
     severity: medium
     resolution: 원하는 산출물과 완료 기준을 Workflow 단계로 확인한다.
     question_template: 확인, 안내, 서류 작성 중 어떤 결과가 필요한지 선택해 주세요.
+  - id: AMB-QUANTITY-001
+    category: QUANTITY
+    terms: [몇 개, 여러 개, 적당히, 필요한 만큼, 전부, 한꺼번에]
+    severity: medium
+    resolution: 수량이 완료 기준에 영향을 주는 업무라면 숫자와 단위를 확인한다.
+    question_template: 정확한 수량과 단위를 입력해 주세요.
 
 detection_policy:
   exact_match_only: false
