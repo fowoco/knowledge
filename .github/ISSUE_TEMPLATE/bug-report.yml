@@ -1,0 +1,31 @@
+name: Bug report
+description: Knowledge 검증·CLI·Agent 연동 오류를 신고합니다.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 문제
+      description: 실제 결과와 기대 결과를 함께 적습니다.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 재현 절차
+      placeholder: 명령어, 입력 파일, Workflow ID
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Context Pack 버전
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 오류 로그
+      render: shell

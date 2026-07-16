@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.local/schemas/agent-analysis.schema.json",
+  "title": "FOWOCO Intent and Slot model output",
+  "type": "object",
+  "required": ["request_id", "input_mode", "intent_candidates", "domains", "slots", "model_version"],
+  "properties": {
+    "request_id": { "type": "string" },
+    "input_mode": { "enum": ["WORKER_MESSAGE", "AGENT_TASK", "INTERNAL_REQUEST"] },
+    "intent_candidates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["intent", "confidence"],
+        "properties": {
+          "intent": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "suggested_workflow_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "domains": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "slots": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["value", "confidence", "source_span"],
+        "properties": {
+          "value": {},
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "source_span": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "model_version": { "type": "string" }
+  },
+  "additionalProperties": false
+}

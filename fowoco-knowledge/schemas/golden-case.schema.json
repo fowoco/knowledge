@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.local/schemas/golden-case.schema.json",
+  "title": "FOWOCO independent evaluation case",
+  "type": "object",
+  "required": [
+    "case_id",
+    "input_mode",
+    "utterance",
+    "expected_intents",
+    "expected_domains",
+    "expected_slots",
+    "expected_missing_slots",
+    "expected_action"
+  ],
+  "properties": {
+    "case_id": { "type": "string", "pattern": "^EVAL-[0-9]{3}$" },
+    "input_mode": { "enum": ["WORKER_MESSAGE", "AGENT_TASK", "INTERNAL_REQUEST"] },
+    "utterance": { "type": "string", "minLength": 1 },
+    "system_context": { "type": "object" },
+    "expected_intents": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "expected_domains": { "type": "array", "items": { "type": "string" } },
+    "expected_workflow_ids": { "type": "array", "items": { "type": "string" } },
+    "expected_slots": { "type": "object" },
+    "expected_missing_slots": { "type": "array", "items": { "type": "string" } },
+    "expected_ambiguity_categories": { "type": "array", "items": { "type": "string" } },
+    "expected_action": {
+      "enum": [
+        "REQUEST_CLARIFICATION",
+        "REQUEST_CLASSIFICATION_CONFIRMATION",
+        "CREATE_DRAFT_TASK",
+        "REQUIRE_HR_REVIEW",
+        "SPLIT_AND_CONFIRM",
+        "OUT_OF_SCOPE"
+      ]
+    },
+    "provenance": { "enum": ["TEAM_SYNTHETIC", "INTERVIEW_DERIVED_ANON"] }
+  },
+  "additionalProperties": false
+}

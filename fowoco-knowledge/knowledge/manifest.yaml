@@ -1,0 +1,35 @@
+pack_id: FOWOCO-KNOWLEDGE
+version: 0.1.0
+status: draft
+released_at: 2026-07-16
+default_locale: ko-KR
+supported_worker_locales:
+  - vi-VN
+  - id-ID
+  - km-KH
+  - ne-NP
+  - uz-UZ
+  - th-TH
+input_modes:
+  - WORKER_MESSAGE
+  - AGENT_TASK
+  - INTERNAL_REQUEST
+files:
+  intents: knowledge/intents.yaml
+  domains: knowledge/domains.yaml
+  slots: knowledge/required_slots.yaml
+  ambiguities: knowledge/ambiguity_patterns.yaml
+  workflows: knowledge/workflow_catalog.yaml
+  sources: knowledge/official_links.yaml
+  checklists: knowledge/document_checklists.yaml
+  easy_korean: knowledge/easy_korean_rules.yaml
+  multilingual_templates: knowledge/multilingual_templates.yaml
+  guardrails: knowledge/guardrail_rules.yaml
+review_policy:
+  minimum_reviewers_for_official_knowledge: 2
+  all_outbound_messages_require_hr_approval: true
+  automatic_external_submission: false
+  personally_identifiable_training_data: false
+disclaimer: >-
+  이 Context Pack은 HR 업무 준비와 설명을 보조한다. 법률 자문이나 기관의 최종
+  판단을 대체하지 않으며 실제 제출 전 최신 공식자료와 담당자의 확인이 필요하다.

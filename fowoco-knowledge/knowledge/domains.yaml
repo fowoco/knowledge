@@ -1,0 +1,32 @@
+version: 0.1.0
+domains:
+  - id: WORKER_PROFILE
+    label_ko: 근로자 기본정보
+    pii_level: high
+  - id: STAY
+    label_ko: 체류기간·체류자격
+    pii_level: high
+  - id: CONTRACT
+    label_ko: 근로계약
+    pii_level: high
+  - id: DOCUMENT
+    label_ko: 증빙·제출서류
+    pii_level: high
+  - id: INSURANCE
+    label_ko: 보험·자격취득
+    pii_level: high
+  - id: PAYROLL
+    label_ko: 급여·수당·공제
+    pii_level: high
+  - id: ATTENDANCE
+    label_ko: 근태·결근·지각
+    pii_level: medium
+  - id: WORK_SCHEDULE
+    label_ko: 근무일정·업무안내
+    pii_level: medium
+  - id: EMPLOYMENT_STATUS
+    label_ko: 입사·퇴사·고용변동
+    pii_level: high
+  - id: GENERAL_ADMIN
+    label_ko: 일반 사무·증명서
+    pii_level: medium

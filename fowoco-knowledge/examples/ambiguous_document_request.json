@@ -1,0 +1,15 @@
+{
+  "request_id": "REQ-DEMO-002",
+  "reference_at": "2026-07-16T09:00:00+09:00",
+  "input_mode": "WORKER_MESSAGE",
+  "utterance": "다음 주까지 그 서류를 저쪽에 내라고 알려줘",
+  "workflow_id": "WF-DOC-001",
+  "intent_candidates": [
+    {
+      "intent": "DOCUMENT_REQUEST",
+      "confidence": 0.78
+    }
+  ],
+  "domains": ["DOCUMENT"],
+  "slots": {}
+}

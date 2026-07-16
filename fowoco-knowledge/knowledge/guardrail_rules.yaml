@@ -1,0 +1,55 @@
+version: 0.1.0
+confidence_policy:
+  high: 0.85
+  review: 0.65
+  behavior:
+    - condition: confidence < 0.65
+      action: REQUEST_CLASSIFICATION_CONFIRMATION
+    - condition: 0.65 <= confidence < 0.85
+      action: HIGHLIGHT_LOW_CONFIDENCE_FIELDS
+    - condition: confidence >= 0.85
+      action: STANDARD_HR_REVIEW
+  note: MVP에서는 확신도와 관계없이 외부 발송 전에 HR 승인이 필요하다.
+rules:
+  - id: GRD-001
+    applies_to: [ALL]
+    severity: critical
+    rule: 날짜·금액·서류명·식별자는 원문 또는 구조화 입력에 없는 값을 생성하지 않는다.
+    validation: compare_immutable_slots
+    failure_action: BLOCK_AND_REVIEW
+  - id: GRD-002
+    applies_to: [PAYROLL_EXPLANATION]
+    severity: critical
+    rule: 급여 계산과 차액은 코드로 산출하고 LLM은 산출 결과만 설명한다.
+    validation: require_calculation_trace
+    failure_action: BLOCK_AND_REVIEW
+  - id: GRD-003
+    applies_to: [EXPIRY_RENEWAL, EMPLOYMENT_CHANGE]
+    severity: critical
+    rule: 법적 가능 여부와 신고 의무를 확정하지 않고 최신 공식 출처와 수동 확인 단계를 표시한다.
+    validation: require_official_source_and_manual_step
+    failure_action: BLOCK_AND_REVIEW
+  - id: GRD-004
+    applies_to: [ALL]
+    severity: critical
+    rule: 기관 사이트 제출, 계약 확정, 급여 지급, 메시지 외부 발송을 자동 실행하지 않는다.
+    validation: require_human_approval
+    failure_action: BLOCK
+  - id: GRD-005
+    applies_to: [ALL]
+    severity: high
+    rule: 품질개선 로그에서 실명·외국인등록번호·여권번호·전화번호·계좌번호를 제거한다.
+    validation: pii_scan
+    failure_action: DROP_FROM_LEARNING_LOG
+  - id: GRD-006
+    applies_to: [ALL]
+    severity: high
+    rule: 복합 요청은 후보 업무를 분리하고 HR이 각 업무카드를 승인하거나 삭제한다.
+    validation: require_multi_intent_split
+    failure_action: RETURN_CANDIDATES
+  - id: GRD-007
+    applies_to: [ALL]
+    severity: high
+    rule: 암호화 문서 원본을 LLM 프롬프트에 직접 넣지 않고 필요한 필드만 마스킹해 전달한다.
+    validation: document_access_policy
+    failure_action: BLOCK

@@ -1,0 +1,78 @@
+version: 0.1.0
+slot_definitions:
+  worker_id:
+    type: string
+    description: 내부 근로자 식별자. 모델 로그에는 실명 대신 사용한다.
+  worker_name:
+    type: string
+    description: HR 검토 화면 표시용 이름. 품질개선 로그에서는 마스킹한다.
+  document_type:
+    type: string
+    description: 요청·확인할 표준 문서 유형 코드
+  due_at:
+    type: datetime
+    description: 제출 또는 조치 마감시각. 상대 날짜는 기준일로 정규화한다.
+  submission_channel:
+    type: string
+    description: 총무팀 방문, 보안 링크 업로드 등 제출 경로
+  effective_at:
+    type: datetime
+    description: 일정·계약·변경이 시작되는 시각
+  work_location:
+    type: string
+    description: 공장·라인·작업대 등 실제 위치
+  work_action:
+    type: string
+    description: 수행할 구체적인 한 가지 행동
+  pay_period:
+    type: month
+    description: 설명 대상 급여 귀속월
+  pay_item:
+    type: string
+    description: 기본급·연장근로수당·공제 등 설명 항목
+  comparison_period:
+    type: month
+    description: 차이를 비교할 이전 급여 귀속월
+  change_type:
+    type: enum
+    values: [RESIGNATION, ABSENCE, UNREACHABLE, WORKPLACE_CHANGE, OTHER]
+    description: 고용변동 후보 유형. HR이 최종 확인한다.
+  incident_at:
+    type: datetime
+    description: 결근·연락두절·퇴사 의사 등 사건 발생시각
+  reason:
+    type: string
+    description: 조치 또는 설명 사유
+  source_document_id:
+    type: string
+    description: OCR·급여 비교에 사용한 암호화 문서의 내부 식별자
+
+workflow_requirements:
+  WF-WRK-001:
+    required: [source_document_id]
+    resolvable_from_context: []
+  WF-STY-001:
+    required: [worker_id, due_at]
+    resolvable_from_context: [worker_id, due_at]
+  WF-CON-001:
+    required: [worker_id, due_at]
+    resolvable_from_context: [worker_id, due_at]
+  WF-DOC-001:
+    required: [worker_id, document_type, due_at, submission_channel]
+    resolvable_from_context: [worker_id]
+  WF-PAY-001:
+    required: [worker_id, pay_period, source_document_id]
+    optional: [comparison_period, pay_item]
+    resolvable_from_context: [worker_id, source_document_id]
+  WF-INS-001:
+    required: [worker_id, effective_at, work_action]
+    optional: [work_location]
+    resolvable_from_context: [worker_id]
+  WF-CHG-001:
+    required: [worker_id, change_type, incident_at]
+    optional: [reason]
+    resolvable_from_context: [worker_id]
+  WF-ADM-001:
+    required: [worker_id, document_type, due_at]
+    optional: [submission_channel]
+    resolvable_from_context: [worker_id]

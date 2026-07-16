@@ -1,0 +1,36 @@
+name: Architecture decision
+description: 패키지·Framework·DB·보안·Agent 구조 결정을 제안합니다.
+title: "[Architecture] "
+labels: ["area:platform", "type:feature"]
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: 해결할 문제와 제약조건
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 제안하는 결정
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 검토한 대안과 제외 이유
+    validations:
+      required: true
+  - type: textarea
+    id: consequences
+    attributes:
+      label: 예상되는 장점과 비용
+    validations:
+      required: true
+  - type: checkboxes
+    id: adr
+    attributes:
+      label: 완료 기준
+      options:
+        - label: 결정 확정 시 `docs/adr`에 ADR을 추가합니다.
+          required: true

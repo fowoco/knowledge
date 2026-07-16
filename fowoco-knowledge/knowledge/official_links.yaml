@@ -1,0 +1,142 @@
+version: 0.1.0
+last_verified: 2026-07-16
+sources:
+  - id: SRC-KEIS-REQUIRED-DOCS
+    title: 한국고용정보원 외국인고용 관련 민원서식 필요서류 목록
+    publisher: 한국고용정보원
+    url: https://www.data.go.kr/data/15153513/fileData.do
+    access: public_download
+    data_shape: CSV 187행, 신청서명·필요서류명·해당업종·샘플서식 제공 여부
+    use_for: [document_checklist_seed, workflow_reference]
+    use_as_model_label: false
+    license_note: 공공데이터포털 이용조건과 최신 파일의 메타데이터를 재확인한다.
+
+  - id: SRC-KEIS-ALLOWED-INDUSTRIES
+    title: 고용허가제 허용업종 및 사업내용 다국어 목록
+    publisher: 한국고용정보원
+    url: https://www.data.go.kr/data/15153406/fileData.do
+    access: public_download
+    data_shape: CSV 847행, 한국어·영어 및 송출국 언어 사업내용
+    use_for: [industry_taxonomy, multilingual_terminology]
+    use_as_model_label: false
+    license_note: 번역모델 학습셋이 아니라 용어 검증과 업종 표준화에 사용한다.
+
+  - id: SRC-EPS-FORMS
+    title: EPS 외국인고용 관련 서식자료
+    publisher: 고용노동부·한국산업인력공단
+    url: https://www.eps.go.kr/eo/FormDataLst.eo
+    access: public_web
+    data_shape: 표준근로계약서·고용허가·변동신고 등 서식 목록
+    use_for: [form_reference, workflow_reference]
+    use_as_model_label: false
+    license_note: 서식 버전과 게시일을 Workflow 배포 전에 확인한다.
+
+  - id: SRC-MOEL-CONTRACT-2026
+    title: 2026년 외국인 표준근로계약서 다국어 양식
+    publisher: 고용노동부
+    url: https://www.moel.go.kr/local/tongyeong/info/dataroom/view.do?bbs_seq=20260100271
+    access: public_web
+    data_shape: 국가별 표준근로계약서 첨부파일
+    use_for: [contract_field_reference, multilingual_terminology]
+    use_as_model_label: false
+    license_note: 원문 양식을 대체 생성하지 않고 설명문 작성과 필드 검증에 사용한다.
+
+  - id: SRC-EPS-LANGUAGE
+    title: EPS 외국인근로자용 외국어 문장 DB
+    publisher: 한국산업인력공단
+    url: https://eps.hrdkorea.or.kr/e9/user/language/language.do?method=languageSearch&searchLanguage=01
+    access: public_web
+    data_shape: 업무지시·임금·고용변동 등 15개 언어 문장
+    use_for: [easy_korean_reference, multilingual_terminology, retrieval]
+    use_as_model_label: false
+    license_note: 크롤링·재배포 전 이용조건을 별도 확인한다.
+
+  - id: SRC-EPS-GLOSSARY
+    title: EPS 고용허가제 용어사전
+    publisher: 고용노동부·한국산업인력공단
+    url: https://mainevent.eps.go.kr/eo/VocaDicLstR.eo
+    access: public_web
+    data_shape: 고용허가제 핵심용어 76개
+    use_for: [terminology, easy_korean_reference]
+    use_as_model_label: false
+    license_note: 원문 출처를 표시하고 최신 페이지를 기준으로 사용한다.
+
+  - id: SRC-LAW-OPENAPI
+    title: 국가법령정보 공동활용 Open API
+    publisher: 법제처
+    url: https://open.law.go.kr/LSO/openApi/guideList.do
+    access: account_and_api_key
+    data_shape: 현행법령·조문·시행일·연혁
+    use_for: [legal_reference, versioned_retrieval]
+    use_as_model_label: false
+    license_note: 법률 자문이 아니라 근거 표시와 변경 감지에 한정한다.
+
+  - id: SRC-HOLIDAY-API
+    title: 한국천문연구원 특일 정보 Open API
+    publisher: 한국천문연구원
+    url: https://www.data.go.kr/data/15012690/openapi.do
+    access: api_key
+    data_shape: 공휴일·기념일·24절기 날짜
+    use_for: [business_day_calculation]
+    use_as_model_label: false
+    license_note: 법정 제출기한 규칙과 별개로 내부 업무일 계산에만 사용한다.
+
+  - id: SRC-MOEL-WAGE-CALCULATOR
+    title: 고용노동부 임금명세서 작성 프로그램
+    publisher: 고용노동부
+    url: https://www.moel.go.kr/wageCal.do
+    access: public_web
+    data_shape: 임금항목·공제내역·계산 구조
+    use_for: [payroll_schema, synthetic_payslip_generation]
+    use_as_model_label: false
+    license_note: FOWOCO는 급여 확정이 아니라 보유 명세서의 항목 차이 설명만 수행한다.
+
+  - id: SRC-HIKOREA
+    title: 하이코리아 전자민원 안내
+    publisher: 법무부
+    url: https://www.hikorea.go.kr
+    access: public_web_and_login
+    data_shape: 체류민원 안내와 전자민원
+    use_for: [stay_workflow_reference, manual_submission_link]
+    use_as_model_label: false
+    license_note: 세부 민원 URL과 구비서류는 로그인 후 담당자가 최종 확인한다.
+
+  - id: SRC-EPS
+    title: 고용허가제 EPS
+    publisher: 고용노동부·한국산업인력공단
+    url: https://www.eps.go.kr
+    access: public_web_and_login
+    data_shape: 고용허가·고용변동·사업장 업무 안내
+    use_for: [employment_workflow_reference, manual_submission_link]
+    use_as_model_label: false
+    license_note: FOWOCO는 EPS 로그인을 대행하거나 자동 제출하지 않는다.
+
+  - id: SRC-AIHUB-CIVIL-PETITION
+    title: AIHub 민원 업무 자동화 데이터
+    publisher: 한국지능정보사회진흥원
+    url: https://aihub.or.kr/aihubdata/data/view.do?dataSetSn=619
+    access: account_required
+    data_shape: 민원 원문·생성문·Intent·Entity·담당부서·키워드 약 100만 건
+    use_for: [intent_entity_pretraining_reference, label_schema_reference]
+    use_as_model_label: false
+    license_note: FOWOCO 도메인과 불일치하므로 직접 라벨 전이 금지. AIHub 개별 이용조건 확인.
+
+  - id: SRC-AIHUB-TIMEX
+    title: AIHub 시간 표현 탐지 데이터
+    publisher: 한국지능정보사회진흥원
+    url: https://aihub.or.kr/aihubdata/data/view.do?dataSetSn=71613
+    access: account_required
+    data_shape: 문서 41,111건, TIMEX3·EVENT·TLINK
+    use_for: [date_time_extraction_reference, auxiliary_training]
+    use_as_model_label: false
+    license_note: 기준일을 사용한 날짜 정규화는 FOWOCO가 별도로 구현한다.
+
+  - id: SRC-KLUE-NER
+    title: KLUE NER
+    publisher: KLUE
+    url: https://huggingface.co/datasets/klue/klue/tree/main/ner
+    access: public_download
+    data_shape: 학습 21,008건·검증 5,000건의 한국어 개체명 라벨
+    use_for: [korean_ner_baseline, token_classification_reference]
+    use_as_model_label: false
+    license_note: CC BY-SA 4.0. FOWOCO 전용 서류명·급여항목 Slot은 자체 라벨이 필요하다.

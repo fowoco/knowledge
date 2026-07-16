@@ -1,0 +1,41 @@
+version: 0.1.0
+sources:
+  TEAM_SYNTHETIC:
+    description: 팀이 FOWOCO Workflow와 라벨 기준 검증을 위해 작성한 합성 문장
+    may_train: true
+    requirements:
+      - 실제 기업 사례로 표현하지 않음
+      - 두 명 교차 검수 후 Gold 승격
+      - 개인정보와 실제 식별자 금지
+  INTERVIEW_DERIVED_ANON:
+    description: 익명 인터뷰에서 확인된 업무 패턴을 식별 불가능한 문장으로 재작성
+    may_train: conditional
+    requirements:
+      - 원문 대화와 회사명을 저장하지 않음
+      - 인터뷰 동의 범위를 확인
+      - 구체적 개인·기업 정보 제거
+review_statuses:
+  - DRAFT
+  - REVIEWED_ONCE
+  - TEAM_AGREED
+  - EXPERT_REVIEW_REQUIRED
+  - GOLD_TEAM
+  - GOLD_EXPERT
+  - REJECTED
+gold_policy:
+  GOLD_TEAM:
+    allowed_risk: [low, medium]
+    requirements:
+      - 두 팀원이 서로의 결과를 보지 않고 독립 라벨링
+      - 불일치 합의와 검수 메모 기록
+      - 해당 Intent의 전문가 층화표본 검수 통과
+  GOLD_EXPERT:
+    allowed_risk: [low, medium, high, critical]
+    requirements:
+      - GOLD_TEAM 요구사항 충족
+      - 도메인 전문가가 해당 문장 또는 Workflow를 직접 검수
+  mandatory_expert_review:
+    - high 또는 critical 민감도
+    - 두 팀원의 Intent·Domain·Workflow 불일치
+    - 법령·필수서류·기관 절차를 정답으로 포함한 사례
+    - 전문가 표본 검수에서 수정된 유형

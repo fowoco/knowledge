@@ -1,0 +1,18 @@
+{
+  "request_id": "REQ-DEMO-003",
+  "reference_at": "2026-07-16T09:00:00+09:00",
+  "input_mode": "AGENT_TASK",
+  "utterance": "WRK-DEMO-003의 2026년 9월 30일 체류기간 만료 준비 업무를 만들어줘",
+  "workflow_id": "WF-STY-001",
+  "intent_candidates": [
+    {
+      "intent": "EXPIRY_RENEWAL",
+      "confidence": 0.91
+    }
+  ],
+  "domains": ["STAY"],
+  "slots": {
+    "worker_id": "WRK-DEMO-003",
+    "due_at": "2026-09-30T23:59:00+09:00"
+  }
+}
