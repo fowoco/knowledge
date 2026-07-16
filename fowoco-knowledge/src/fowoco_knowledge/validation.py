@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 from typing import Any
 
 from jsonschema import Draft202012Validator
@@ -222,8 +223,8 @@ class KnowledgeValidator:
         replacements = boundary.get("replacements", {})
         for name, pattern in patterns.items():
             try:
-                __import__("re").compile(pattern)
-            except __import__("re").error as exc:
+                re.compile(pattern)
+            except re.error as exc:
                 self.errors.append(f"data protection pattern {name}: invalid regex ({exc})")
             if name not in replacements:
                 self.errors.append(f"data protection pattern {name}: replacement missing")

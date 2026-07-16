@@ -116,6 +116,8 @@ python3.11 -m venv .venv
 [`docs/DATA_OPERATIONS.md`](docs/DATA_OPERATIONS.md)를 확인합니다.
 인터뷰 근거의 해석은 [`docs/BUSINESS_EVIDENCE.md`](docs/BUSINESS_EVIDENCE.md), 외부자료 적재
 판단은 [`docs/DATA_SOURCE_INTAKE.md`](docs/DATA_SOURCE_INTAKE.md)를 확인합니다.
+코치 피드백 반영은 [`docs/COACH_FEEDBACK_ACTIONS.md`](docs/COACH_FEEDBACK_ACTIONS.md), 데이터팀
+후속 과업은 [`docs/DATA_WORK_BREAKDOWN.md`](docs/DATA_WORK_BREAKDOWN.md)를 확인합니다.
 Intent·Domain의 경계 사례는 [`docs/LABELING_GUIDE_V1.md`](docs/LABELING_GUIDE_V1.md)를
 확인합니다.
 검수자가 CSV를 작성할 때는
