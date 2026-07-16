@@ -66,4 +66,5 @@ Conventional Commits를 따릅니다.
 - 공식자료 변경 시 출처와 확인일 기재
 - 개인정보·원본 인터뷰·원본 신분서류 업로드 금지
 - 제목은 Commit 형식과 동일하게 작성하고 콜론 뒤에 한국어 포함
+- Dependabot 등 자동화 Bot PR은 Conventional Commit 형식만 검사하고 한글 요약 규칙에서 제외
 - 되돌리기 어려운 기술 결정은 `docs/adr`에 ADR 추가
