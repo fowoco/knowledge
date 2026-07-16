@@ -1,0 +1,78 @@
+field,tag,label_ko,selection_guide
+source,TEAM_SYNTHETIC,팀 합성 문장,팀이 기획 기준에 따라 만든 문장
+source,INTERVIEW_DERIVED_ANON,익명 인터뷰 파생 문장,인터뷰 내용을 식별 불가능하게 바꾼 문장
+input_mode,WORKER_MESSAGE,근로자 전달 안내,근로자에게 보낼 안내문 작성 요청
+input_mode,AGENT_TASK,Agent 업무 요청,Agent에게 업무 처리를 요청
+input_mode,INTERNAL_REQUEST,내부 조회·작성 요청,내부 자료 조회나 문서 작성을 요청
+intents,WORKER_ONBOARDING,근로자 등록·정보변경,문서로 등록 초안을 만들거나 기본정보를 변경
+intents,EXPIRY_RENEWAL,체류·계약 만료 및 갱신,체류·계약 만료 확인 또는 갱신 준비
+intents,DOCUMENT_REQUEST,서류 요청·확인,서류 요청·제출 확인·일반 증명서 준비
+intents,PAYROLL_EXPLANATION,급여·공제 설명,기존 명세서·근태 근거로 차이 설명
+intents,WORK_INSTRUCTION,업무·근무일정 안내,출근시간·작업행동·연락절차 안내
+intents,EMPLOYMENT_CHANGE,고용변동·이탈 후속조치,퇴사·무단결근·연락두절 후속업무
+intents,OUT_OF_SCOPE,서비스 범위 밖,법률 최종판단·기관 자동제출·영상감시·생산예측
+domains,WORKER_PROFILE,근로자 기본정보,이름·국적·언어·식별정보
+domains,STAY,체류기간·체류자격,체류기간·체류자격·체류연장
+domains,CONTRACT,근로계약,계약기간·갱신·계약내용
+domains,DOCUMENT,증빙·제출서류,여권 사본·외국인등록증 사본 등
+domains,INSURANCE,보험·자격취득,4대보험·자격취득·보험정보 변경
+domains,PAYROLL,급여·수당·공제,급여명세서·수당·공제
+domains,ATTENDANCE,근태·결근·지각,출퇴근·결근·지각 기록
+domains,WORK_SCHEDULE,근무일정·업무안내,근무시간·교대조·작업 안내
+domains,EMPLOYMENT_STATUS,입사·퇴사·고용변동,입사·퇴사·연락두절·고용변동
+domains,GENERAL_ADMIN,일반 사무·증명서,재직증명서 등 일반 사무
+workflow_ids,WF-WRK-001,문서 기반 근로자 등록 초안,WORKER_ONBOARDING 실행 경로
+workflow_ids,WF-STY-001,체류기간 연장 준비·제출 추적,STAY 갱신 실행 경로
+workflow_ids,WF-CON-001,근로계약·고용허가기간 연장 준비,CONTRACT 갱신 실행 경로
+workflow_ids,WF-DOC-001,근로자 서류 요청·제출 추적,DOCUMENT_REQUEST 실행 경로
+workflow_ids,WF-PAY-001,급여명세서 차이 설명,PAYROLL_EXPLANATION 실행 경로
+workflow_ids,WF-INS-001,업무·근무일정 안내,WORK_INSTRUCTION 실행 경로
+workflow_ids,WF-CHG-001,고용변동 사건 확인·신고 추적,EMPLOYMENT_CHANGE 실행 경로
+workflow_ids,WF-ADM-001,재직증명서 등 일반 증명서 요청,GENERAL_ADMIN 실행 경로
+slots_json,worker_id,내부 근로자 식별자,실명 대신 WRK-DEMO 형식 사용
+slots_json,worker_name,HR 검토용 표시 이름,검수 파일에는 실제 이름을 새로 입력하지 않음
+slots_json,source_document_id,원본 문서 ID,선택된 OCR·급여 문서 식별자
+slots_json,document_type,서류 유형,요청하거나 확인할 표준 서류
+slots_json,due_at,제출·조치 마감시각,ISO 8601 날짜·시각
+slots_json,stay_expiry_date,체류기간 만료일,YYYY-MM-DD
+slots_json,contract_end_date,근로계약 종료일,YYYY-MM-DD
+slots_json,submission_channel,제출 장소·경로,총무팀·보안링크 등
+slots_json,effective_at,변경·업무 시작시각,ISO 8601 날짜·시각
+slots_json,work_location,작업 위치,공장·라인·설비·작업대
+slots_json,work_action,구체적인 작업 행동,한 가지 행동으로 작성
+slots_json,pay_period,급여 귀속월,YYYY-MM
+slots_json,pay_item,급여 항목,기본급·수당·공제 등
+slots_json,comparison_period,비교 급여 귀속월,YYYY-MM
+slots_json,change_type,고용변동 후보 유형,RESIGNATION·ABSENCE·UNREACHABLE·WORKPLACE_CHANGE·OTHER
+slots_json,incident_at,사건 발생시각,ISO 8601 날짜·시각
+slots_json,awareness_at,HR 사건 인지시각,ISO 8601 날짜·시각
+slots_json,reason,사유,요청·변경·설명의 이유
+change_type,RESIGNATION,퇴사,퇴사 의사·퇴사 예정
+change_type,ABSENCE,결근,무단결근·미출근
+change_type,UNREACHABLE,연락두절,연락 불가·소재 확인 필요
+change_type,WORKPLACE_CHANGE,사업장 변경,사업장 변경 관련 사건
+change_type,OTHER,기타 고용변동,다른 코드로 구분되지 않는 사건
+document_type,PASSPORT_COPY,여권 사본,현재 Seed에서 사용하는 표준 코드
+document_type,ALIEN_REGISTRATION_CARD_COPY,외국인등록증 사본,앞·뒷면 사본 요청
+document_type,EMPLOYMENT_CERTIFICATE,재직증명서,일반 증명서 발급 요청
+submission_channel,HR_OFFICE,인사·총무팀 직접 제출,사내 담당 부서에 방문 제출
+ambiguities,TIME,시간 모호,오늘·다음 주·퇴근 전
+ambiguities,LOCATION,장소 모호,저쪽·거기·현장
+ambiguities,OBJECT,대상물·서류 모호,그 서류·그거·기계
+ambiguities,TARGET,대상자 모호,외국인 직원·그 사람
+ambiguities,AMOUNT,금액 모호,조금·비슷한 금액
+ambiguities,ACTION,행동·산출물 모호,처리해줘·알아서·준비해줘
+sensitivity,low,낮음,일반 조회·낮은 위험
+sensitivity,medium,보통,외부 안내 전 확인 필요
+sensitivity,high,높음,개인정보·체류·계약·급여 등 HR 승인 필요
+sensitivity,critical,매우 높음,고용변동·법률판단·영상감시·기관 자동제출
+next_action,REQUEST_CLARIFICATION,누락·모호정보 추가질문,필수정보가 부족함
+next_action,REQUEST_CLASSIFICATION_CONFIRMATION,업무유형 재확인,Intent 후보를 정하기 어려움
+next_action,CREATE_DRAFT_TASK,업무카드 초안 생성,정보가 충분하고 일반 업무임
+next_action,REQUIRE_HR_REVIEW,HR 검토 요청,정보는 충분하지만 민감 업무임
+next_action,SPLIT_AND_CONFIRM,복합 업무 분리·확인,독립 업무가 두 개 이상임
+next_action,OUT_OF_SCOPE,지원 범위 안내,서비스가 수행하면 안 되는 요청
+decision,APPROVE,승인,문장과 입력 라벨을 그대로 사용 가능
+decision,CORRECT,수정 필요,문장·상황 또는 라벨 기준에 수정 필요
+decision,REJECT,제외,중복·비현실·판단 불가능으로 제외 필요
+decision,EXPERT_REVIEW,전문가 검토 필요,법정기한·신고절차·필요서류·조치안 확인 필요

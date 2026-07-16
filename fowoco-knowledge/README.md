@@ -103,6 +103,9 @@ python3.11 -m venv .venv
 [`docs/DATA_OPERATIONS.md`](docs/DATA_OPERATIONS.md)를 확인합니다.
 Intent·Domain의 경계 사례는 [`docs/LABELING_GUIDE_V1.md`](docs/LABELING_GUIDE_V1.md)를
 확인합니다.
+검수자가 CSV를 작성할 때는
+[`docs/REVIEWER_GUIDE_KO.md`](docs/REVIEWER_GUIDE_KO.md)와
+[`data/review/label_reference.csv`](data/review/label_reference.csv)를 함께 사용합니다.
 
 공식 데이터 변환은 [`docs/OFFICIAL_DATA_PIPELINE.md`](docs/OFFICIAL_DATA_PIPELINE.md),
 신고·연장 기능의 범위는 [`docs/E9_REPORTING_WORKFLOWS.md`](docs/E9_REPORTING_WORKFLOWS.md)를
