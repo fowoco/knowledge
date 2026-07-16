@@ -13,6 +13,14 @@
 
 Conventional Commits를 따릅니다.
 
+```text
+<type>(<scope>): <한국어 요약>
+```
+
+- `type`과 `scope`는 자동화 도구와 변경 이력 분류를 위해 영문 유지
+- 콜론 뒤 제목은 변경 결과가 바로 드러나는 간결한 한국어 사용
+- 필요한 경우 본문에 변경 배경, 영향 범위, 연결 Issue를 한국어로 작성
+
 | Type | 사용 시점 |
 | --- | --- |
 | `feat` | 사용자 또는 Agent 기능 추가 |
@@ -23,7 +31,12 @@ Conventional Commits를 따릅니다.
 | `refactor` | 동작 변경 없는 구조 개선 |
 | `chore` | 도구·설정·의존성 변경 |
 
-예시: `feat(knowledge): bootstrap validated workflow context pack`
+예시:
+
+- `feat(knowledge): 체류연장 Workflow 추가`
+- `data(knowledge): 평가 데이터 18건 추가`
+- `fix(agent): 복합 요청 분리 오류 수정`
+- `docs(repo): 커밋 메시지 한글 규칙 추가`
 
 ## Knowledge 변경 규칙
 
