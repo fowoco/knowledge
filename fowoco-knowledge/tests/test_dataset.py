@@ -32,6 +32,13 @@ def test_dataset_report_distinguishes_smoke_and_training_readiness() -> None:
         "BLOCK_AND_REVIEW": 9,
         "PASS_TO_HR_REVIEW": 3,
     }
+    assert report["business_evidence"]["rows"] == 13
+    assert report["business_evidence"]["interviews"] == 2
+    assert report["business_evidence"]["target_fit_distribution"] == {
+        "ADJACENT_MULTILINGUAL_ADMIN": 6,
+        "DIRECT_E9_MANUFACTURING": 7,
+    }
+    assert report["business_evidence"]["quantitative_baseline_rows"] == 4
     assert report["readiness"]["smoke_evaluation_ready"] is True
     assert report["readiness"]["gold_v1_ready"] is False
     assert report["readiness"]["classification_baseline_ready"] is False

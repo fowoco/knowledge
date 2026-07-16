@@ -61,6 +61,25 @@ PROCESSED_DATASET_COLUMNS = {
     },
 }
 
+INTERVIEW_EVIDENCE_COLUMNS = {
+    "finding_id",
+    "interview_id",
+    "interview_date",
+    "segment",
+    "target_fit",
+    "finding_type",
+    "metric_value",
+    "metric_unit",
+    "metric_period",
+    "finding_summary",
+    "current_workaround",
+    "purchase_intent",
+    "pilot_intent",
+    "decision_maker",
+    "evidence_level",
+    "limitation",
+}
+
 
 def split_codes(raw: str | None) -> list[str]:
     return [item.strip() for item in (raw or "").split("|") if item.strip()]
@@ -83,6 +102,7 @@ class KnowledgeValidator:
         self._validate_seed_data()
         self._validate_evaluation_data()
         self._validate_notice_quality_data()
+        self._validate_interview_evidence()
         return self.errors
 
     def _validate_dataset_manifest(self) -> None:
@@ -432,6 +452,49 @@ class KnowledgeValidator:
                     f"notice quality line {line_number}: expected gate "
                     f"{case.get('expected_gate')}, got {result.gate}"
                 )
+
+    def _validate_interview_evidence(self) -> None:
+        path = self.repository.root / "data/evidence/interview_findings.csv"
+        with path.open("r", encoding="utf-8", newline="") as handle:
+            reader = csv.DictReader(handle)
+            rows = list(reader)
+        if set(reader.fieldnames or []) != INTERVIEW_EVIDENCE_COLUMNS:
+            self.errors.append("interview evidence CSV columns do not match the schema")
+            return
+
+        allowed = {
+            "target_fit": {"DIRECT_E9_MANUFACTURING", "ADJACENT_MULTILINGUAL_ADMIN"},
+            "finding_type": {
+                "SCALE",
+                "NEED",
+                "BASELINE",
+                "WORKAROUND",
+                "COUNTER_EVIDENCE",
+                "OPINION",
+                "PURCHASE",
+                "PILOT",
+                "LIMITATION",
+            },
+            "purchase_intent": {"NOT_ASKED", "POSITIVE_CONDITIONAL", "NEGATIVE"},
+            "pilot_intent": {"NOT_ASKED", "YES", "NO"},
+            "evidence_level": {"DIRECT_SELF_REPORT", "RESPONDENT_OPINION"},
+        }
+        seen: set[str] = set()
+        for line_number, row in enumerate(rows, start=2):
+            finding_id = row["finding_id"]
+            if finding_id in seen:
+                self.errors.append(f"interview evidence line {line_number}: duplicate {finding_id}")
+            seen.add(finding_id)
+            for field, values in allowed.items():
+                if row[field] not in values:
+                    self.errors.append(
+                        f"interview evidence line {line_number}: invalid {field} {row[field]}"
+                    )
+            for field in ("finding_id", "interview_id", "finding_summary", "limitation"):
+                if not row[field].strip():
+                    self.errors.append(
+                        f"interview evidence line {line_number}: blank required field {field}"
+                    )
 
     def _index_unique(self, items: list[dict[str, Any]], kind: str) -> dict[str, dict[str, Any]]:
         indexed: dict[str, dict[str, Any]] = {}

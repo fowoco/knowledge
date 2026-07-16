@@ -105,10 +105,14 @@ class DatasetManager:
             if line.strip()
         ]
 
+    def load_interview_evidence(self) -> list[dict[str, str]]:
+        return self.repository.load_csv(self.manifest["datasets"]["interview_evidence"]["path"])
+
     def build_report(self) -> dict[str, Any]:
         seed = self.load_seed()
         evaluation = self.load_evaluation()
         notice_quality = self.load_notice_quality_evaluation()
+        interview_evidence = self.load_interview_evidence()
         targets = self.manifest["targets"]
 
         seed_intents = Counter(code for row in seed for code in split_codes(row.get("intents")))
@@ -134,7 +138,7 @@ class DatasetManager:
             }
             for text in sorted(seed_by_text.keys() & evaluation_by_text.keys())
         ]
-        pii_hits = self._scan_pii(seed, evaluation, notice_quality)
+        pii_hits = self._scan_pii(seed, evaluation, notice_quality, interview_evidence)
         notice_quality_report = self._notice_quality_report(notice_quality)
         gold_count = sum(row["review_status"] in GOLD_STATUSES for row in seed)
         workflow_expert_review_required = sum(
@@ -173,6 +177,22 @@ class DatasetManager:
                 "pii_pattern_hits": pii_hits,
             },
             "notice_quality": notice_quality_report,
+            "business_evidence": {
+                "rows": len(interview_evidence),
+                "interviews": len({row["interview_id"] for row in interview_evidence}),
+                "target_fit_distribution": dict(
+                    sorted(Counter(row["target_fit"] for row in interview_evidence).items())
+                ),
+                "finding_type_distribution": dict(
+                    sorted(Counter(row["finding_type"] for row in interview_evidence).items())
+                ),
+                "purchase_intent_distribution": dict(
+                    sorted(Counter(row["purchase_intent"] for row in interview_evidence).items())
+                ),
+                "quantitative_baseline_rows": sum(
+                    bool(re.match(r"^\d", row["metric_value"])) for row in interview_evidence
+                ),
+            },
             "readiness": {
                 "smoke_evaluation_ready": (
                     len(evaluation) >= targets["smoke_evaluation_min_rows"]
@@ -240,6 +260,7 @@ class DatasetManager:
         seed: list[dict[str, str]],
         evaluation: list[dict[str, Any]],
         notice_quality: list[dict[str, Any]],
+        interview_evidence: list[dict[str, str]],
     ) -> list[dict[str, str]]:
         documents: list[tuple[str, str, str]] = []
         for row in seed:
@@ -256,6 +277,9 @@ class DatasetManager:
             )
         for case in notice_quality:
             documents.append(("notice_quality", case["case_id"], case["candidate_text"]))
+        for row in interview_evidence:
+            documents.append(("interview_evidence", row["finding_id"], row["finding_summary"]))
+            documents.append(("interview_limitation", row["finding_id"], row["limitation"]))
 
         hits: list[dict[str, str]] = []
         for dataset, item_id, text in documents:
@@ -517,6 +541,7 @@ def format_report(report: dict[str, Any]) -> str:
     evaluation = report["evaluation"]
     quality = report["quality"]
     notice_quality = report["notice_quality"]
+    evidence = report["business_evidence"]
     lines = [
         f"MODEL\t{report['representative_model']}",
         f"SEED\trows={seed['rows']}\tgold={seed['gold_rows']}\t"
@@ -532,6 +557,8 @@ def format_report(report: dict[str, Any]) -> str:
         f"contract_accuracy={notice_quality['contract_accuracy']}\t"
         f"injected_errors={notice_quality['injected_error_cases']}\t"
         f"contract_mismatches={len(notice_quality['contract_mismatches'])}",
+        f"BUSINESS_EVIDENCE\trows={evidence['rows']}\tinterviews={evidence['interviews']}\t"
+        f"quantitative_baselines={evidence['quantitative_baseline_rows']}",
         f"READY\tsmoke={readiness['smoke_evaluation_ready']}\t"
         f"gold_v1={readiness['gold_v1_ready']}\t"
         f"baseline={readiness['classification_baseline_ready']}",

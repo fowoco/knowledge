@@ -110,9 +110,12 @@ python3.11 -m venv .venv
 - `dataset_manifest.yaml`: 대표 모델, 데이터 역할, 평가 잠금, 증강 정책의 단일 기준
 - 공개데이터: 절차·용어·분포 보조자료이며 FOWOCO Intent의 정답 라벨로 간주하지 않음
 - 실제 운영 로그: 개인정보를 제거하고 별도 승인된 경우에만 Active Learning 후보로 사용
+- `interview_findings.csv`: 필요·반증·구매·파일럿 근거를 타깃 적합성과 함께 저장하며 학습에는 사용하지 않음
 
 세부 기준은 [`docs/DATA_GUIDE.md`](docs/DATA_GUIDE.md), 실제 검수 순서는
 [`docs/DATA_OPERATIONS.md`](docs/DATA_OPERATIONS.md)를 확인합니다.
+인터뷰 근거의 해석은 [`docs/BUSINESS_EVIDENCE.md`](docs/BUSINESS_EVIDENCE.md), 외부자료 적재
+판단은 [`docs/DATA_SOURCE_INTAKE.md`](docs/DATA_SOURCE_INTAKE.md)를 확인합니다.
 Intent·Domain의 경계 사례는 [`docs/LABELING_GUIDE_V1.md`](docs/LABELING_GUIDE_V1.md)를
 확인합니다.
 검수자가 CSV를 작성할 때는

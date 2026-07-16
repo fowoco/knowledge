@@ -36,11 +36,17 @@
     },
     "datasets": {
       "type": "object",
-      "required": ["seed", "evaluation", "notice_quality_evaluation"],
+      "required": [
+        "seed",
+        "evaluation",
+        "notice_quality_evaluation",
+        "interview_evidence"
+      ],
       "properties": {
         "seed": { "$ref": "#/$defs/dataset" },
         "evaluation": { "$ref": "#/$defs/dataset" },
-        "notice_quality_evaluation": { "$ref": "#/$defs/dataset" }
+        "notice_quality_evaluation": { "$ref": "#/$defs/dataset" },
+        "interview_evidence": { "$ref": "#/$defs/dataset" }
       },
       "additionalProperties": false
     },
@@ -86,7 +92,12 @@
       "properties": {
         "path": { "type": "string", "minLength": 1 },
         "role": {
-          "enum": ["development_seed", "smoke_evaluation", "output_quality_evaluation"]
+          "enum": [
+            "development_seed",
+            "smoke_evaluation",
+            "output_quality_evaluation",
+            "business_evidence"
+          ]
         },
         "locked": { "type": "boolean" },
         "may_train": { "type": "boolean" },

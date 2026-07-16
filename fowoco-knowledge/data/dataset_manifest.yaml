@@ -31,6 +31,12 @@ datasets:
     may_train: false
     sha256: fd5330d9749c38ac18ee27538caa1aa646591b1043b542ce7126aa76dc5126a8
     note: 안내문 핵심값 보존과 치명 오류 차단 로직의 회귀평가 전용 데이터다.
+  interview_evidence:
+    path: data/evidence/interview_findings.csv
+    role: business_evidence
+    locked: false
+    may_train: false
+    note: 익명 인터뷰에서 확인한 필요·반증·구매·파일럿 근거이며 모델 학습에 사용하지 않는다.
 
 targets:
   gold_v1_min_rows: 60
