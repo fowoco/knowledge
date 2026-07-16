@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.local/schemas/dataset-manifest.schema.json",
+  "title": "FOWOCO dataset contract",
+  "type": "object",
+  "required": ["version", "representative_model", "datasets", "targets", "policies"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "representative_model": {
+      "type": "object",
+      "required": ["id", "task_type", "input_fields", "target_fields", "auxiliary_fields"],
+      "properties": {
+        "id": { "const": "INTENT_DOMAIN_MULTI_LABEL" },
+        "name_ko": { "type": "string", "minLength": 1 },
+        "task_type": { "const": "multi_label_text_classification" },
+        "input_fields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "target_fields": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "enum": ["intents", "domains"] }
+        },
+        "auxiliary_fields": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "decision": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "datasets": {
+      "type": "object",
+      "required": ["seed", "evaluation"],
+      "properties": {
+        "seed": { "$ref": "#/$defs/dataset" },
+        "evaluation": { "$ref": "#/$defs/dataset" }
+      },
+      "additionalProperties": false
+    },
+    "targets": {
+      "type": "object",
+      "required": [
+        "gold_v1_min_rows",
+        "smoke_evaluation_min_rows",
+        "baseline_total_rows",
+        "baseline_min_rows_per_in_scope_intent"
+      ],
+      "additionalProperties": { "type": "integer", "minimum": 1 }
+    },
+    "policies": {
+      "type": "object",
+      "required": [
+        "independent_reviewer_count",
+        "split_before_augmentation",
+        "augmentation_train_only",
+        "evaluation_examples_in_prompt",
+        "classification_gold_allows_team_review",
+        "high_and_critical_auxiliary_workflow_require_expert",
+        "personally_identifiable_text_allowed",
+        "compound_request_strategy"
+      ],
+      "properties": {
+        "independent_reviewer_count": { "type": "integer", "minimum": 2 },
+        "split_before_augmentation": { "const": true },
+        "augmentation_train_only": { "const": true },
+        "evaluation_examples_in_prompt": { "const": false },
+        "classification_gold_allows_team_review": { "const": true },
+        "high_and_critical_auxiliary_workflow_require_expert": { "const": true },
+        "personally_identifiable_text_allowed": { "const": false },
+        "compound_request_strategy": { "const": "split_and_confirm" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "dataset": {
+      "type": "object",
+      "required": ["path", "role", "locked", "may_train", "note"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "role": { "enum": ["development_seed", "smoke_evaluation"] },
+        "locked": { "type": "boolean" },
+        "may_train": { "type": "boolean" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "note": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

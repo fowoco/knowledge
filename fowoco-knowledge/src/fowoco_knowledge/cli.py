@@ -5,6 +5,7 @@ import json
 from collections.abc import Sequence
 from pathlib import Path
 
+from .dataset import DatasetManager, ReviewComparator, format_report, format_review_comparison
 from .engine import RequestEvaluator
 from .ingestion import OfficialDataPipeline
 from .repository import KnowledgeRepository
@@ -62,6 +63,28 @@ def build_parser() -> argparse.ArgumentParser:
     )
     industry_parser.add_argument("query")
     industry_parser.add_argument("--limit", type=int, default=20)
+
+    report_parser = subparsers.add_parser(
+        "data-report",
+        help="Report label distribution, leakage, privacy, and readiness gates",
+    )
+    report_parser.add_argument("--json", action="store_true")
+
+    review_parser = subparsers.add_parser(
+        "build-review-queue",
+        help="Create a blind Seed review queue without proposed labels",
+    )
+    review_parser.add_argument("reviewer_code")
+    review_parser.add_argument("output", type=Path)
+
+    compare_parser = subparsers.add_parser(
+        "compare-reviews",
+        help="Compare two independent reviews and create an adjudication queue",
+    )
+    compare_parser.add_argument("reviewer_a", type=Path)
+    compare_parser.add_argument("reviewer_b", type=Path)
+    compare_parser.add_argument("--output", type=Path)
+    compare_parser.add_argument("--json", action="store_true")
     return parser
 
 
@@ -128,6 +151,36 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "search-industries":
         for row in repository.search_manufacturing_industries(args.query, args.limit):
             print(f"{row['industry_id']}\t{row['middle_category']}\t{row['business_content_ko']}")
+        return 0
+
+    if args.command == "data-report":
+        report = DatasetManager(repository).build_report()
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+        else:
+            print(format_report(report))
+        return 0
+
+    if args.command == "build-review-queue":
+        output = args.output.expanduser().resolve()
+        count = DatasetManager(repository).write_blind_review_queue(
+            args.reviewer_code,
+            output,
+        )
+        print(f"CREATED\t{output}\trows={count}\treviewer={args.reviewer_code}")
+        return 0
+
+    if args.command == "compare-reviews":
+        output = args.output.expanduser().resolve() if args.output else None
+        report = ReviewComparator(repository).compare(
+            args.reviewer_a.expanduser().resolve(),
+            args.reviewer_b.expanduser().resolve(),
+            output,
+        )
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+        else:
+            print(format_review_comparison(report))
         return 0
 
     return 2

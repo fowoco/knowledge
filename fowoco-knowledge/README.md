@@ -49,6 +49,9 @@ python3.11 -m venv .venv
 # 지원 Workflow 목록
 .venv/bin/python -m fowoco_knowledge list-workflows
 
+# 데이터 분포·누수·개인정보·준비 상태 확인
+.venv/bin/python -m fowoco_knowledge data-report
+
 # Agent에 전달할 Context 묶음 확인
 .venv/bin/python -m fowoco_knowledge compile-context WF-STY-001
 
@@ -63,6 +66,14 @@ python3.11 -m venv .venv
 .venv/bin/python -m fowoco_knowledge \
   list-required-documents "외국인 고용변동 등 신고"
 .venv/bin/python -m fowoco_knowledge search-industries "금속가공제품"
+
+# 기존 제안 라벨을 숨긴 독립 검수 파일 생성
+.venv/bin/python -m fowoco_knowledge \
+  build-review-queue REV-A reviewer-a.csv
+
+# 독립 검수 결과 비교와 불일치 큐 생성
+.venv/bin/python -m fowoco_knowledge compare-reviews \
+  reviewer-a.csv reviewer-b.csv --output disagreements.csv
 ```
 
 `check-request`는 자연어 모델을 대신하지 않습니다. 모델이 출력한 Workflow와 Slot이
@@ -84,10 +95,17 @@ python3.11 -m venv .venv
 
 - `gold_seed.csv`: 프롬프트·분기 개발용 초기 Seed이며 모델 학습 완료 데이터가 아님
 - `golden_cases.jsonl`: 코드와 모델 평가에만 사용하는 독립 사례
+- `dataset_manifest.yaml`: 대표 모델, 데이터 역할, 평가 잠금, 증강 정책의 단일 기준
 - 공개데이터: 절차·용어·분포 보조자료이며 FOWOCO Intent의 정답 라벨로 간주하지 않음
 - 실제 운영 로그: 개인정보를 제거하고 별도 승인된 경우에만 Active Learning 후보로 사용
 
-세부 기준은 [`docs/DATA_GUIDE.md`](docs/DATA_GUIDE.md)를 확인합니다.
+세부 기준은 [`docs/DATA_GUIDE.md`](docs/DATA_GUIDE.md), 실제 검수 순서는
+[`docs/DATA_OPERATIONS.md`](docs/DATA_OPERATIONS.md)를 확인합니다.
+Intent·Domain의 경계 사례는 [`docs/LABELING_GUIDE_V1.md`](docs/LABELING_GUIDE_V1.md)를
+확인합니다.
+검수자가 CSV를 작성할 때는
+[`docs/REVIEWER_GUIDE_KO.md`](docs/REVIEWER_GUIDE_KO.md)와
+[`data/review/label_reference.csv`](data/review/label_reference.csv)를 함께 사용합니다.
 
 공식 데이터 변환은 [`docs/OFFICIAL_DATA_PIPELINE.md`](docs/OFFICIAL_DATA_PIPELINE.md),
 신고·연장 기능의 범위는 [`docs/E9_REPORTING_WORKFLOWS.md`](docs/E9_REPORTING_WORKFLOWS.md)를

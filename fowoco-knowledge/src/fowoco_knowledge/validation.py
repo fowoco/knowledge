@@ -6,6 +6,7 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
+from .dataset import DatasetManager
 from .ingestion import file_sha256
 from .repository import KnowledgeRepository
 
@@ -73,11 +74,41 @@ class KnowledgeValidator:
         self.errors = []
         self._validate_manifest_files()
         self._validate_processed_datasets()
+        self._validate_dataset_manifest()
         self._validate_workflow_schema()
         self._validate_cross_references()
         self._validate_seed_data()
         self._validate_evaluation_data()
         return self.errors
+
+    def _validate_dataset_manifest(self) -> None:
+        schema = self.repository.load_json("schemas/dataset-manifest.schema.json")
+        manifest = self.repository.load_yaml("data/dataset_manifest.yaml")
+        validator = Draft202012Validator(schema)
+        for error in validator.iter_errors(manifest):
+            path = ".".join(str(item) for item in error.path)
+            self.errors.append(f"dataset manifest [{path}]: {error.message}")
+
+        for dataset_id, dataset in manifest.get("datasets", {}).items():
+            path = self.repository.root / dataset["path"]
+            if not path.is_file():
+                self.errors.append(f"dataset {dataset_id}: missing {dataset['path']}")
+                continue
+            expected_sha256 = dataset.get("sha256")
+            if dataset.get("locked") and not expected_sha256:
+                self.errors.append(f"dataset {dataset_id}: locked dataset requires sha256")
+            if expected_sha256 and file_sha256(path) != expected_sha256:
+                self.errors.append(f"dataset {dataset_id}: checksum mismatch")
+
+        report = DatasetManager(self.repository).build_report()
+        if report["seed"]["duplicate_utterances"]:
+            self.errors.append("seed dataset contains duplicate utterances")
+        if report["evaluation"]["duplicate_utterances"]:
+            self.errors.append("evaluation dataset contains duplicate utterances")
+        if report["quality"]["seed_evaluation_overlap"]:
+            self.errors.append("seed and evaluation datasets overlap")
+        if report["quality"]["pii_pattern_hits"]:
+            self.errors.append("seed or evaluation dataset contains a PII pattern")
 
     def _validate_manifest_files(self) -> None:
         manifest = self.repository.manifest

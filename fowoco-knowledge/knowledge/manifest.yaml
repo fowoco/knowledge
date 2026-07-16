@@ -1,5 +1,5 @@
 pack_id: FOWOCO-KNOWLEDGE
-version: 0.2.0
+version: 0.3.0
 status: draft
 released_at: 2026-07-16
 default_locale: ko-KR
@@ -27,6 +27,7 @@ files:
   multilingual_templates: knowledge/multilingual_templates.yaml
   guardrails: knowledge/guardrail_rules.yaml
 datasets:
+  dataset_manifest: data/dataset_manifest.yaml
   source_manifest: data/external/source_manifest.yaml
   processed_manifest: data/processed/manifest.yaml
   required_documents: data/processed/required_documents_manufacturing.csv
