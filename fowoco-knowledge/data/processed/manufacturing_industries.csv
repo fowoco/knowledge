@@ -1,0 +1,570 @@
+industry_id,major_category,middle_category,business_content_ko,business_content_en,source_id,source_version
+IND-31363D554EDB,제조업,1차 금속 제조업,1차 금속 및 관련 제품 제조,Manufacture of Basic Metal and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E41AFFFD2D4B,제조업,1차 금속 제조업,금속 구조재 제조,Manufacture of Metal Structural Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7660554E918F,제조업,1차 금속 제조업,금속 도금 및 도장,Coating and Painting of Metals,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0725996D9852,제조업,1차 금속 제조업,금속 및 철판 제조,Manufacture of Metal and Iron Boards,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-372F3892F2BE,제조업,1차 금속 제조업,금속 분말 생산,Production of Metal Powder,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3BF1DE3D1D5B,제조업,1차 금속 제조업,금속 열처리,Heat Treatment of Metals,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-105C5E79DDB5,제조업,1차 금속 제조업,금속 제련,Smelting of Metals,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6DA68E6AC6E9,제조업,1차 금속 제조업,금속재 제조,Manufacture of Metallic Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3BE0A54BFAA9,제조업,1차 금속 제조업,금은박 제조,Manufacture of Gold/Silver Plates,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5600E952339D,제조업,1차 금속 제조업,기타 1차 비철금속 제조,Manufacture of Other Basic Precious and Nonferrous Metals,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E3528C96FA10,제조업,1차 금속 제조업,기타 구조용 금속제품 제조,Manufacture of Structural Metal Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0542B96E815A,제조업,1차 금속 제조업,기타 금속제품 제조,Manufacture of Other Metallic Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2367527F3C1D,제조업,1차 금속 제조업,납 정련 및 제련,Refining and Smelting of Lead,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BDAD858AAFBD,제조업,1차 금속 제조업,내마모 특수강 주물 제조,Manufacture of Wear-resistant Special Steel Foundries,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8548D24424AD,제조업,1차 금속 제조업,"냉연강판, 철강 등 금속제품 생산",Production of Steel and Cold Reduced Carbon Steel,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-34727DA97EA2,제조업,1차 금속 제조업,비철금속 정련 및 제련,Refining and Smelting of Nonferrous Metals,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-EBA593E88B13,제조업,1차 금속 제조업,스테인레스 가공 및 생산,Processing and Production of Stainless Steel,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2C767F95E77F,제조업,1차 금속 제조업,아연 정련 및 제련,Refining and Smelting of Zinc,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-32D365A11A6C,제조업,1차 금속 제조업,"알루미늄 제련, 정련 및 합금 제조",Refining and Smelting of Aluminum and Manufacture of Alloy,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A82E70A5D4A5,제조업,1차 금속 제조업,제철 및 관련제품 제조,Manufacture of Basic Iron and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-14392EA3D3FD,제조업,1차 금속 제조업,주강생산,Production of Cast Steel,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1E76324C5D97,제조업,1차 금속 제조업,특수강 및 관련 제품 제조,Manufacture of Special Steel and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BCC7CDF8A726,제조업,1차 금속 제조업,합금 및 관련 제품 제조,Manufacture of Alloy and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CEF151C7F616,제조업,가구 제조업,가구 부품 및 관련 제품 제조,Manufacture of Furniture Parts and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-48F7B7106815,제조업,가구 제조업,가구용 거울 제조,Manufacture of Mirror for Furniture,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BE960C76FCE4,제조업,가구 제조업,가정용 가구 및 관련 제품 제조,Manufacture of Home Furniture and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D40E763A1203,제조업,가구 제조업,가죽 타악기 제조,Manufacture of Leather Percussion,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B79C4AE5D287,제조업,가구 제조업,기타 가구 및 관련 제품 제조,Manufacture of Other Furniture and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-974B0DA2F73C,제조업,가구 제조업,사무용 가구 및 관련 제품 제조,Manufacture of Office Furniture and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FE05C65D6B63,제조업,가구 제조업,산업용 가구 및 관련 제품 제조,Manufacture of Industrial Furniture and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5009AE9BFDDC,제조업,"가죽, 가방 및 신발 제조업",가방 및 부자재 제조,Manufacture of Luggage and Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B079B3EFBC84,제조업,"가죽, 가방 및 신발 제조업",가죽 및 가죽대용제품 제작,Manufacture of Leather Products and Leather Alternatives,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4C7B5169C4CA,제조업,"가죽, 가방 및 신발 제조업",가죽 및 관련 제품 제조,Manufacture of Leather and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6B1249549B58,제조업,"가죽, 가방 및 신발 제조업",원피가공 및 가죽제조,Processing of Raw Hides and Tanning and Dressing of Leather,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4C729B49DB43,제조업,"가죽, 가방 및 신발 제조업",인조가죽 및 관련 제품 제조,Manufacture of Artificial Leather and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8BE19BB3A560,제조업,고무 및 플라스틱제품 제조업,PVC 및 관련 제품 제조,Manufacture of PVC and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D5A9CDD2AE32,제조업,고무 및 플라스틱제품 제조업,가전제품 케이스 및 부품 등 제조,Manufacture of Cases and Parts for Electronic Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0C89E3D0F95E,제조업,고무 및 플라스틱제품 제조업,가정용 고무 및 플라스틱 제품 제조,Manufacture of Household Rubber and Plastic Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-99C2FADDC53E,제조업,고무 및 플라스틱제품 제조업,강화 플라스틱 및 관련 제품 제조,Manufacture of Reinforced Plastic and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7772AF6865CF,제조업,고무 및 플라스틱제품 제조업,건설용 고무 및 플라스틱 제품 제조,Manufacture of Rubber and Plastic Products for Construction,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B20E8757F9B0,제조업,고무 및 플라스틱제품 제조업,기타 고무제품 제조,Manufacture of Other Rubber Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0243927C1375,제조업,고무 및 플라스틱제품 제조업,기타 플라스틱 제품 제조,Manufacture of Other Plastic Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-23A365BA1502,제조업,고무 및 플라스틱제품 제조업,농업용 고무 및 플라스틱 제품 제조,Manufacture of Agricultural Rubber and Plastic Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-205DDB817A66,제조업,고무 및 플라스틱제품 제조업,산업 및 가정용 플라스틱 시트 제조,Manufacture of Industrial and Household Plastic Sheets,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9C4AEECE1A86,제조업,고무 및 플라스틱제품 제조업,산업용 강화플라스틱 및 관련 제품제조,Manufacture of Industrial Reinforced Plastic and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-AF8B5C0227A6,제조업,고무 및 플라스틱제품 제조업,산업용 고무 및 플라스틱 제품 제조,Manufacture of Industrial Rubber and Plastic Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-70D3DDFDAE10,제조업,고무 및 플라스틱제품 제조업,산업용 비경화 고무제품 제조,Manufacture of Industrial Un-vulcanized Rubber Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-35A0F69FC67B,제조업,고무 및 플라스틱제품 제조업,일반 고무제품 제조,Manufacture of Rubber Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-06ACDC2B56CB,제조업,고무 및 플라스틱제품 제조업,일반 플라스틱 및 관련 제품 제조,Manufacture of Plastic and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-38A710F6D05B,제조업,고무 및 플라스틱제품 제조업,자동차 부품 등 제조,Manufacture of Motor Vehicle Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-96A3725BF189,제조업,고무 및 플라스틱제품 제조업,전기전자 제품 및 관련 부품 제조,Manufacture of Electrical/Electronic Products and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-64F724E2F656,제조업,고무 및 플라스틱제품 제조업,조선 기자재 및 관련 부품 제조,Manufacture of Shipbuilding Materials and Related Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2727A17EE5E0,제조업,고무 및 플라스틱제품 제조업,통신기기 및 관련 부품 제조,Manufacture of Communication Systems and Related Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FAC917FBE207,제조업,고무 및 플라스틱제품 제조업,특수고무 및 관련 제품 제조,Manufacture of Special Rubber and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-201BDFD0857D,제조업,고무 및 플라스틱제품 제조업,합성고무 및 관련 제품 제조,Manufacture of Synthetic Rubber and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A393DE24B25D,제조업,고무 및 플라스틱제품 제조업,합성플라스틱 및 관련 제품 제조,Manufacture of Synthetic Plastic and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FE95AA5B1958,제조업,금속가공제품 제조업; 기계 및 가구 제외,가구제작 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Furniture,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E08BD8C2583A,제조업,금속가공제품 제조업; 기계 및 가구 제외,가방 및 의류 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Luggage and Apparel,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0311D69A4989,제조업,금속가공제품 제조업; 기계 및 가구 제외,가스기기 및 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Gas Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3B6D54BA8B50,제조업,금속가공제품 제조업; 기계 및 가구 제외,가전제품 및 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Household Electric Appliances,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1FF120C21684,제조업,금속가공제품 제조업; 기계 및 가구 제외,건설 기자재 관련 금속가공제품 및 부품 제조,Manufacture of Metal Products and Parts for Construction Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-654534575195,제조업,금속가공제품 제조업; 기계 및 가구 제외,광고물 제작 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Advertisement Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-39D0CFED4BFA,제조업,금속가공제품 제조업; 기계 및 가구 제외,금속조립 및 관련 제품 제조,Manufacture of Metal Assembly and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B0399F7CB28B,제조업,금속가공제품 제조업; 기계 및 가구 제외,금속케이스 및 관련 제품 제작,Manufacture of Metal Cases and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5E8F5EAB7616,제조업,금속가공제품 제조업; 기계 및 가구 제외,기계공구 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Machinery and Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B66797CEFC24,제조업,금속가공제품 제조업; 기계 및 가구 제외,기타 금속가공 제품 및 부품 제조,Manufacture of Other Metal Products and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-64021AABC513,제조업,금속가공제품 제조업; 기계 및 가구 제외,냉난방기 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Air Conditioner,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F82628C634A4,제조업,금속가공제품 제조업; 기계 및 가구 제외,농업 관련 금속가공 제품 및 부품 제조,Manufacture of Agricultural Metal Products and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C9F418548E93,제조업,금속가공제품 제조업; 기계 및 가구 제외,반도체 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Semiconductor,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-96C8B60242D4,제조업,금속가공제품 제조업; 기계 및 가구 제외,발전설비 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Power Facilities,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E8693B810037,제조업,금속가공제품 제조업; 기계 및 가구 제외,산업설비 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Industrial Facilities,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CF122B426ADD,제조업,금속가공제품 제조업; 기계 및 가구 제외,상하수도 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Water and Sewage,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-EDEADED58336,제조업,금속가공제품 제조업; 기계 및 가구 제외,선박 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Ship,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7C88E4DE6EFB,제조업,금속가공제품 제조업; 기계 및 가구 제외,소방설비 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Fire Fighting Facilities,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-25189D41616E,제조업,금속가공제품 제조업; 기계 및 가구 제외,악세사리 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Accessories,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5499ED2494BD,제조업,금속가공제품 제조업; 기계 및 가구 제외,어업 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Fishing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-21E8C45E7D53,제조업,금속가공제품 제조업; 기계 및 가구 제외,엘리베이터 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Elevators,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6083907E7AE3,제조업,금속가공제품 제조업; 기계 및 가구 제외,열교환기 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Heat Exchanger,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-60F1C44EC668,제조업,금속가공제품 제조업; 기계 및 가구 제외,영상음향기기 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for A/V Systems,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-13AD64D85525,제조업,금속가공제품 제조업; 기계 및 가구 제외,유공압기기 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Oleo-pneumatic Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8C27FF00CD4C,제조업,금속가공제품 제조업; 기계 및 가구 제외,의료기기 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Medical Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-77A8CC9F1C78,제조업,금속가공제품 제조업; 기계 및 가구 제외,일반설비 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Facilities,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-EB6855579EDB,제조업,금속가공제품 제조업; 기계 및 가구 제외,자동차 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Motor Vehicle,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-079391FA0D3E,제조업,금속가공제품 제조업; 기계 및 가구 제외,자동화설비 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Automation Facilities,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FFDF0B781DB2,제조업,금속가공제품 제조업; 기계 및 가구 제외,저장용기 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Storage Container,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-207CA4106DBE,제조업,금속가공제품 제조업; 기계 및 가구 제외,전기전자기기 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Electric/Electronic Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5398DBF6AF77,제조업,금속가공제품 제조업; 기계 및 가구 제외,전기통신 설비 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Electric Communication Facilities,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DD6C18A2B830,제조업,금속가공제품 제조업; 기계 및 가구 제외,전동기기 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Electric Motor Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DF6C0324500A,제조업,금속가공제품 제조업; 기계 및 가구 제외,정밀기계 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Precision Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0A7314E91CE1,제조업,금속가공제품 제조업; 기계 및 가구 제외,조명기구 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Lighting Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9E94187F434F,제조업,금속가공제품 제조업; 기계 및 가구 제외,주방용품 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Kitchen Appliance,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-22DD3D8C1C5C,제조업,금속가공제품 제조업; 기계 및 가구 제외,중장비 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Heavy Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DD98358431FF,제조업,금속가공제품 제조업; 기계 및 가구 제외,창호제작 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Windows/Doors,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-84F3A8656371,제조업,금속가공제품 제조업; 기계 및 가구 제외,철도차량 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Railway Rolling Stock,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-04FEDFBD5A0D,제조업,금속가공제품 제조업; 기계 및 가구 제외,축산기계 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Animal Farming Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0CFD024DCBB1,제조업,금속가공제품 제조업; 기계 및 가구 제외,컨테이너 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Container,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4A8CD77A1AC8,제조업,금속가공제품 제조업; 기계 및 가구 제외,컴퓨터 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Computer,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B046B22E580B,제조업,금속가공제품 제조업; 기계 및 가구 제외,케이블 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Cable,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D761AD65A3AE,제조업,금속가공제품 제조업; 기계 및 가구 제외,통신기기 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Communication Systems,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9882F0B21ACC,제조업,금속가공제품 제조업; 기계 및 가구 제외,특장차 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Special Purpose Vehicles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-10140C4FBE92,제조업,금속가공제품 제조업; 기계 및 가구 제외,파레트 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Pallet,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D4ED7B975F5F,제조업,금속가공제품 제조업; 기계 및 가구 제외,파이프 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Pipe,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-ED7AA4CAD9F7,제조업,금속가공제품 제조업; 기계 및 가구 제외,펌프 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Pump,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FC99CD2E7FBF,제조업,금속가공제품 제조업; 기계 및 가구 제외,포장기계 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Packaging Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F9503F4E7BAA,제조업,금속가공제품 제조업; 기계 및 가구 제외,표지판 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Sign Board,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CB8FE5C7B22D,제조업,금속가공제품 제조업; 기계 및 가구 제외,플랜트 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Plant,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7FE2809F4E33,제조업,금속가공제품 제조업; 기계 및 가구 제외,핸드폰 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Mobile Phone,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-712BA9BF177F,제조업,금속가공제품 제조업; 기계 및 가구 제외,화장품 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Cosmetics,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-359918ACE13D,제조업,금속가공제품 제조업; 기계 및 가구 제외,환경설비 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Environmental Facilities,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7C2193616C76,제조업,금속가공제품 제조업; 기계 및 가구 제외,휀스 관련 금속가공 제품 및 부품 제조,Manufacture of Metal Products and Parts for Fence,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-AC62218913A3,제조업,기타 기계 및 장비 제조업,가스 관련 기계 및 부품 제조,Manufacture of Machinery and Parts for Gas,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0DB98E20D322,제조업,기타 기계 및 장비 제조업,가정용 전자전기기기 및 부품 제조,Manufacture of Equipment and Parts for Household,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A3C33BC40F88,제조업,기타 기계 및 장비 제조업,건설기계장비 및 관련 부품 제조,Manufacture of Equipment and Parts for Construction,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7C119004BE0D,제조업,기타 기계 및 장비 제조업,공작기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Machine-tools,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0F79420EBB4E,제조업,기타 기계 및 장비 제조업,공장 자동화기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Automation Machinery,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2983E9123EA7,제조업,기타 기계 및 장비 제조업,공조기기 및 관련 부품 제조,Manufacture of Equipment and Parts for Duct System,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-EF8019BE68F8,제조업,기타 기계 및 장비 제조업,과학기기 및 관련 부품 제조,Manufacture of Equipment and Parts for Science,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B539D035683F,제조업,기타 기계 및 장비 제조업,광산용 기계장비 및 관련 부품 제조,Manufacture of Equipment and Parts for Mining,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7CD3B2E49537,제조업,기타 기계 및 장비 제조업,광학기기 및 관련 부품 제조,Manufacture of Equipment and Parts for Optical Instrument,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-822ED4A7B521,제조업,기타 기계 및 장비 제조업,기타 기계장비 및 관련 부품 제조,Manufacture of Other Mechanical Equipment and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-78092FB74A67,제조업,기타 기계 및 장비 제조업,기타 산업기계 및 관련 부품 제조,Manufacture of Other Industrial Equipment and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5A97CB2B9626,제조업,기타 기계 및 장비 제조업,기타 특수목적기계 및 관련 부품 제조,Manufacture of Other Special Purpose Equipment and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1E6205AEAE8B,제조업,기타 기계 및 장비 제조업,냉각기기 및 관련 부품 제조,Manufacture of Equipment and Parts for Cooling,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-620D354C95EC,제조업,기타 기계 및 장비 제조업,냉난방기기 및 관련 부품 제조,Manufacture of Equipment and Parts for Air Conditioning,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5A512FA0A4D0,제조업,기타 기계 및 장비 제조업,레이저 기계장비 및 관련 부품 제조,Manufacture of Equipment and Parts for Laser,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1594C615045B,제조업,기타 기계 및 장비 제조업,물류 기기장비 및 관련 부품 제조,Manufacture of Equipment and Parts for Logistics,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-47C6D27AC033,제조업,기타 기계 및 장비 제조업,반도체 기계장비 및 관련 부품 제조,Manufacture of Equipment and Parts for Semiconductor,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8791DF420F5C,제조업,기타 기계 및 장비 제조업,발전기 및 관련 부품 제조,Manufacture of Equipment and Parts for Power Generator,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FF8316947C7E,제조업,기타 기계 및 장비 제조업,방송/유무선통신기기 및 관련 부품 제조,Manufacture of Equipment and Parts for Broadcasting/Wired/Wireless Communication,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C0F6D7E887E2,제조업,기타 기계 및 장비 제조업,변압기 및 관련 부품 제조,Manufacture of Equipment and Parts for Electric Transformer,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6ED66B7C656B,제조업,기타 기계 및 장비 제조업,산업용 정밀기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Industrial Precision,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F771A78861FF,제조업,기타 기계 및 장비 제조업,석재 가공기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Stone Processing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DBE9AEC2E7F7,제조업,기타 기계 및 장비 제조업,섬유 기계장비 및 관련 제품 제조,Manufacture of Equipment and Parts for Textile,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3328971CA0B3,제조업,기타 기계 및 장비 제조업,소방기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Fire Fighting,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D6A0314DD467,제조업,기타 기계 및 장비 제조업,승강기 및 관련 부품 제조,Manufacture of Equipment and Parts for Elevator,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D18CBAA8DD6B,제조업,기타 기계 및 장비 제조업,식품 가공기계장비 및 관련 부품 제조,Manufacture of Equipment and Parts for Food Processing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F3CF1665F587,제조업,기타 기계 및 장비 제조업,열난방 기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Heater,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B2BF281FDF28,제조업,기타 기계 및 장비 제조업,열처리기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Heat Processing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-AB5C2F1343BF,제조업,기타 기계 및 장비 제조업,염색기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Dyeing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4441C1ECD358,제조업,기타 기계 및 장비 제조업,용접기기 및 관련 부품 제조,Manufacture of Equipment and Parts for Welding,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-AE89AB1BCFED,제조업,기타 기계 및 장비 제조업,위생기기 및 관련 부품 제조,Manufacture of Equipment and Parts for Sanitation,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-89085E632698,제조업,기타 기계 및 장비 제조업,유공압 기계장비 및 관련 부품 제조,Manufacture of Equipment and Parts for Oleo-pneumatic,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B704FF05F4E8,제조업,기타 기계 및 장비 제조업,유리 가공기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Glass Processing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3324D3AA581E,제조업,기타 기계 및 장비 제조업,음/식료품 및 담배 가공기계 및 관련 부품 제조,"Manufacture of Equipment and Parts for Food, Beverage and Tobacco Processing",SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6DDBF9B10DFD,제조업,기타 기계 및 장비 제조업,음식물 처리기기 및 관련 부품 제조,Manufacture of Equipment and Parts for Food Waste Disposal,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-AED4E333A37F,제조업,기타 기계 및 장비 제조업,의료기기 및 관련 부품 제조,Manufacture of Medical Equipment and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-134D923F6627,제조업,기타 기계 및 장비 제조업,인쇄 및 제책용 기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Printing and Bookbinding,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A6E3D33CEB1F,제조업,기타 기계 및 장비 제조업,일반 농기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Agriculture,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-133666854416,제조업,기타 기계 및 장비 제조업,일반기계 및 관련 부품 제조,Manufacture of Equipment and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-162CB104F250,제조업,기타 기계 및 장비 제조업,임업용 기계장비 및 관련 부품 제조,Manufacture of Equipment and Parts for Forestry,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-48C4C0D3F1E0,제조업,기타 기계 및 장비 제조업,자동제어 기계장비 및 관련 부품 제조,Manufacture of Equipment and Parts for Automatic Control,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A4B2741E0D9F,제조업,기타 기계 및 장비 제조업,자동포장기기 및 관련 부품 제조,Manufacture of Equipment and Parts for Automatic Packaging,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-87B937B9E776,제조업,기타 기계 및 장비 제조업,자동화 기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Automation,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F38C38316D36,제조업,기타 기계 및 장비 제조업,전기전자 기계장비 및 관련 부품 제조,Manufacture of Electric/Electronic Equipment and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C1DEF601D568,제조업,기타 기계 및 장비 제조업,정보통신기기 및 관련 부품 제조,Manufacture of Equipment and Parts for Information Communication,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3244C0531CF9,제조업,기타 기계 및 장비 제조업,정비기기 및 관련 부품 제조,Manufacture of Equipment and Parts for Maintenance,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B0BE587EE593,제조업,기타 기계 및 장비 제조업,집진기 및 관련 부품 제조,Manufacture of Equipment and Parts for Dust Extraction,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-733A33CB5A5C,제조업,기타 기계 및 장비 제조업,축산기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Animal Farming,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B98EB5E6B6B6,제조업,기타 기계 및 장비 제조업,포장기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Packaging,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-604425CE85B2,제조업,기타 기계 및 장비 제조업,하수처리장 기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Sewage Disposal Plant,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-15C789EDB7CD,제조업,기타 기계 및 장비 제조업,호이스트 및 관련 부품 제조,Manufacture of Equipment and Parts for Hoist,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F1155D4B908F,제조업,기타 기계 및 장비 제조업,화학기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Chemical,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4F89C5767BE9,제조업,기타 기계 및 장비 제조업,환경기계 및 관련 부품 제조,Manufacture of Equipment and Parts for Environment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-378BB06F9EB0,제조업,기타 운송장비 제조업,건설 중장비 및 관련 부품 제조,Manufacture of Heavy Equipment and Parts for Construction,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E08C0DC2E0D7,제조업,기타 운송장비 제조업,건설용 리프트기 및 관련 부품 제조,Manufacture of Lift and Parts for Construction,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-417CD00D2D20,제조업,기타 운송장비 제조업,기타 운송장비 및 관련 부품 제조,Manufacture of Other Transport Equipment and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F8DD62BDFB24,제조업,기타 운송장비 제조업,모터사이클 및 관련 부품 제조,Manufacture of Motorcycles and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-93B983D84F28,제조업,기타 운송장비 제조업,선박 건조 및 관련 부품 제조,Manufacture of Equipment and Parts for Shipbuilding,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FAFF563EBA56,제조업,기타 운송장비 제조업,자동차 및 관련 부품 제조,Manufacture of Motor Vehicle and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0E56040331F6,제조업,기타 운송장비 제조업,중장비 및 관련 부품 제조,Manufacture of Heavy Equipment and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0B52BF4AF7E9,제조업,기타 운송장비 제조업,철도차량 및 관련 부품 제조,Manufacture of Railway Rolling Stock and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-63BCD24E09FE,제조업,기타 운송장비 제조업,특장차 및 관련 부품 제조,Manufacture of Special Purpose Vehicles and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BC78FFFD0775,제조업,기타 운송장비 제조업,항공기 및 관련 부품 제조,Manufacture of Aircrafts and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4D5E47819680,제조업,기타 제품 제조업,가스 관련 제품 및 부품 제조,Manufacture of Products and Parts for Gas,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F8D0167065FE,제조업,기타 제품 제조업,가정용 제품 및 부품 제조,Manufacture of Products and Parts for Household,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B93AE2E8AF9E,제조업,기타 제품 제조업,가죽 관련 제품 및 부품 제조,Manufacture of Products and Parts for Leather,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D1A216B80C19,제조업,기타 제품 제조업,건설용 제품 및 부품 제조,Manufacture of Products and Parts for Construction,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6A051E5BA0EA,제조업,기타 제품 제조업,검사 관련 제품 및 부품 제조,Manufacture of Products and Parts for Inspection,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7B7E731A920F,제조업,기타 제품 제조업,광고 관련 제품 및 부품 제조,Manufacture of Products and Parts for Advertisement,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-59A9E823C3DF,제조업,기타 제품 제조업,광학기기 관련 제품 및 부품 제조,Manufacture of Products and Parts for Optical Instrument,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-983A54A7E362,제조업,기타 제품 제조업,교통안전 관련 제품 및 부품 제조,Manufacture of Products and Parts for Traffic Safety,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BD0054739E5A,제조업,기타 제품 제조업,귀금속 관련 제품 및 부품 제조,Manufacture of Products and Parts for Previous Metals,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3B2F2BE35386,제조업,기타 제품 제조업,금속가공 관련 제품 및 부품 제조,Manufacture of Products and Parts for Metal Processing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5CF6CF13316D,제조업,기타 제품 제조업,농산물 관련 제품 및 부품 제조,Manufacture of Agricultural Products and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0E641F051877,제조업,기타 제품 제조업,문구 관련 제품 및 부품 제조,Manufacture of Stationary Products and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-91CDA0DF2D1C,제조업,기타 제품 제조업,반도체 관련 제품 및 부품 제조,Manufacture of Products and Parts for Semiconductor,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F1FA5EEAF2FD,제조업,기타 제품 제조업,비금속 광물 관련 제품 및 부품 제조,Manufacture of Non-metal Products and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-93A34A479515,제조업,기타 제품 제조업,산업용 설비 관련 제품 및 부품 제조,Manufacture of Products and Parts for Industrial Facilities,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-20ACD06C87A1,제조업,기타 제품 제조업,선박 관련 제품 및 부품 제조,Manufacture of Products and Parts for Ship,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C2AAA172D28A,제조업,기타 제품 제조업,섬유 관련 제품 및 부품 제조,Manufacture of Products and Parts for Textile,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-729EC64AF2A0,제조업,기타 제품 제조업,식음료 관련 제품 및 부품 제조,Manufacture of Products and Parts for Food and Beverage,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9E37EB50911A,제조업,기타 제품 제조업,악기 관련 제품 및 부품 제조,Manufacture of Products and Parts for Musical Instrument,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-22B0D5379A54,제조업,기타 제품 제조업,알루미늄 관련 제품 및 부품 제조,Manufacture of Products and Parts for Aluminum,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5E169B010A5B,제조업,기타 제품 제조업,어업 관련 제품 및 부품 제조,Manufacture of Products and Parts for Fishing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8BA23D936791,제조업,기타 제품 제조업,운송장비 관련 제품 및 부품 제조,Manufacture of Products and Parts for Transport Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F50545B8F030,제조업,기타 제품 제조업,의료 관련 제품 및 부품 제조,Manufacture of Products and Parts for Medical Care,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-189E70903C33,제조업,기타 제품 제조업,인쇄 관련 제품 및 부품 제조,Manufacture of Products and Parts for Printing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4CD2621B5D04,제조업,기타 제품 제조업,인테리어 관련 제품 및 부품 제조,Manufacture of Products and Parts for Interior,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9714D56F3C29,제조업,기타 제품 제조업,일반 공예 제품 및 부품 제조,Manufacture of Products and Parts for Craft,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B57466478571,제조업,기타 제품 제조업,자동차 관련 제품 및 부품 제조,Manufacture of Products and Parts for Motor Vehicle,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F7E599911424,제조업,기타 제품 제조업,재생재활용 관련 제품 및 부품 제조,Manufacture of Products and Parts for Recycling,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-225CCAB00E8A,제조업,기타 제품 제조업,전기장비 관련 제품 및 부품 제조,Manufacture of Products and Parts for Electric Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E9C78D54917A,제조업,기타 제품 제조업,전자 관련 제품 및 부품 제조,Manufacture of Products and Parts for Electronics,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9183F8EC20B9,제조업,기타 제품 제조업,정밀과학 관련 제품 및 부품 제조,Manufacture of Products and Parts for Precision Science,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-EAFDD5752F80,제조업,기타 제품 제조업,정보통신 관련 제품 및 부품 제조,Manufacture of Products and Parts for Information Communication,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-224ED88057AD,제조업,기타 제품 제조업,조경 관련 제품 및 부품 제조,Manufacture of Products and Parts for Landscaping,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FE8EBF2DA36B,제조업,기타 제품 제조업,조명 관련 제품 및 부품 제조,Manufacture of Products and Parts for Lighting,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-AA46311D25BD,제조업,기타 제품 제조업,종이 관련 제품 및 부품 제조,Manufacture of Products and Parts for Paper,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-58EDD5CC2715,제조업,기타 제품 제조업,중장비 관련 제품 및 부품 제조,Manufacture of Products and Parts for Heavy Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-AA3D68E826CE,제조업,기타 제품 제조업,창호도어 관련 제품 및 부품 제조,Manufacture of Products and Parts for Windows/Doors,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-09762CD9F298,제조업,기타 제품 제조업,체육 관련 제품 및 부품 제조,Manufacture of Products and Parts for Sports,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-253884276794,제조업,기타 제품 제조업,축산 관련 제품 및 부품 제조,Manufacture of Products and Parts for Animal Farming,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8FD49B8A1CF6,제조업,기타 제품 제조업,컨테이너 관련 제품 및 부품 제조,Manufacture of Products and Parts for Container,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FE2CDBD470C6,제조업,기타 제품 제조업,컴퓨터 관련 제품 및 부품 제조,Manufacture of Products and Parts for Computer,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6ED68ECC1C7C,제조업,기타 제품 제조업,케이블 관련 제품 및 부품 제조,Manufacture of Products and Parts for Cable,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BF2F3CA3130B,제조업,기타 제품 제조업,콘크리트 관련 제품 및 부품 제조,Manufacture of Products and Parts for Concrete,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-773205FA9ECC,제조업,기타 제품 제조업,포장 관련 제품 및 부품 제조,Manufacture of Products and Parts for Packaging,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-AA9DD9132517,제조업,기타 제품 제조업,플라스틱 관련 제품 및 부품 제조,Manufacture of Products and Parts for Plastic,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5D8FDC0DF1FD,제조업,기타 제품 제조업,항공기 관련 제품 및 부품 제조,Manufacture of Products and Parts for Aircraft,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FF1FFB9E6894,제조업,기타 제품 제조업,핸드폰 관련 제품 및 부품 제조,Manufacture of Products and Parts for Mobile Phone,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-04220F97A9CC,제조업,기타 제품 제조업,화장품 관련 제품 및 부품 제조,Manufacture of Products and Parts for Cosmetic,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B5482887E58B,제조업,기타 제품 제조업,화학 관련 제품 및 부품 제조,Manufacture of Products and Parts for Chemical,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4BDE95909247,제조업,기타 제품 제조업,환경 관련 제품 및 부품 제조,Manufacture of Products and Parts for Environment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0978FB4393B6,제조업,담배 제조업,담배 원료 제조,Manufacture of Tobacco Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-EA3F7B4A04A8,제조업,담배 제조업,담배 제품 제조,Manufacture of Tobacco Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6ABB810227FF,제조업,목재 및 나무제품 제조업; 가구 제외,강화목재 및 강화합판 제조,Manufacture of Densified Woods and Plywoods,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8577369DB0B4,제조업,목재 및 나무제품 제조업; 가구 제외,건설용 가설재 제조,Manufacture of Temporary Materials for Construction,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-69254D2BCE72,제조업,목재 및 나무제품 제조업; 가구 제외,건설자재 제조,Manufacture of Building Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-758410CDCAB7,제조업,목재 및 나무제품 제조업; 가구 제외,건축 내외장재 제조,Manufacture of Interior/Exterior Materials for Construction,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5658B6E66189,제조업,목재 및 나무제품 제조업; 가구 제외,건축 및 산업용 목재 제조,Manufacture of Construction and Industrial Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-39D44939C8C4,제조업,목재 및 나무제품 제조업; 가구 제외,기타 건축용 나무제품 제조,Manufacture of Builders' Carpentry and Joinery,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8376B9C5CFDA,제조업,목재 및 나무제품 제조업; 가구 제외,기타 나무제품 제조,Manufacture of Other Builders' Carpentry and Joinery,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A729AF73541C,제조업,목재 및 나무제품 제조업; 가구 제외,기타 목재용기 제조,Manufacture of Other Wooden Containers,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-80B91471C429,제조업,목재 및 나무제품 제조업; 가구 제외,마루 및 바닥재 제조,Manufacture of Floor and Floor Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8869E1DFB958,제조업,목재 및 나무제품 제조업; 가구 제외,목공예품 제조,Manufacture of Woodcraft,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D2709BEC10CC,제조업,목재 및 나무제품 제조업; 가구 제외,목재 가공 및 합판 제조,Wood Processing and Manufacture of Plywoods,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BE08A680CDD5,제조업,목재 및 나무제품 제조업; 가구 제외,목재 도구 및 기구 제조,Manufacture of Wooden Tools and Appliances,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B09F887F381D,제조업,목재 및 나무제품 제조업; 가구 제외,목재 및 나무제품 제조,Manufacture of Wooden Materials and Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A3EEF83420CE,제조업,목재 및 나무제품 제조업; 가구 제외,목재 창호 및 관련 제품 제조,Manufacture of Wooden Windows/Doors and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-77506F29A766,제조업,목재 및 나무제품 제조업; 가구 제외,목재 칩 및 톱밥 제조,Manufacture of Wood Chips and Sawdust,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1635B95C72E9,제조업,목재 및 나무제품 제조업; 가구 제외,목재 파렛트 제조,Manufacture of Wood Pallets,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-17836A8845C6,제조업,목재 및 나무제품 제조업; 가구 제외,목재 판넬 제조,Manufacture of Wood Panels,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5B6E2F81D3B8,제조업,목재 및 나무제품 제조업; 가구 제외,무늬목 및 합판 제조,Manufacture of Sliced Veneer,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5C4E52BBDE9F,제조업,목재 및 나무제품 제조업; 가구 제외,원목 제재 가공,Processing of Wood and Sawmilling,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-90825485ED7C,제조업,목재 및 나무제품 제조업; 가구 제외,합성목재 제조,Manufacture of Synthetic Wood,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A051194F1879,제조업,비금속 광물제품 제조업,가정용 비금속 광물 제품 제조,Manufacture of Non-metallic Mineral Products for Household,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BC560BEDDF73,제조업,비금속 광물제품 제조업,거울 및 관련 제품 제조,Manufacture of Mirror and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0889B10FF147,제조업,비금속 광물제품 제조업,건설용 자재 및 관련 제품 제조,Manufacture of Construction Materials and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-54E73911B7B6,제조업,비금속 광물제품 제조업,기타 광물제품 제조,Manufacture of Other Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E92B882872BA,제조업,비금속 광물제품 제조업,기타 내화요업제품 제조,Manufacture of Other Fireproof Ceramic Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-42CAC9F1336B,제조업,비금속 광물제품 제조업,기타 산업용 유리제품 제조,Manufacture of Other Industrial Glass Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CC2D39066ADC,제조업,비금속 광물제품 제조업,기타 유리제품 제조,Manufacture of Other Glass Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C6E27748A422,제조업,비금속 광물제품 제조업,도자기 원료 및 관련 제품 제조,Manufacture of Ceramic Materials and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-23A81F87480B,제조업,비금속 광물제품 제조업,벽돌/블록 및 관련 제품 제조,Manufacture of Brick/Block and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-EAF7B65325CD,제조업,비금속 광물제품 제조업,복층유리 및 관련 제품 제조,Manufacture of Double Glazing and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9317316D08A5,제조업,비금속 광물제품 제조업,산업용 유리 및 관련 제품 제조,Manufacture of Industrial Glass and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-076173F20B8E,제조업,비금속 광물제품 제조업,석재 가공 및 관련 제품 제조,Masonry and Manufacture of Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DDC6487F85C0,제조업,비금속 광물제품 제조업,세라믹 및 관련 제품 제조,Manufacture of Ceramics and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-87493BC0FFC0,제조업,비금속 광물제품 제조업,시멘트 및 관련 제품 제조,Manufacture of Cement and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7FE052D0A6FE,제조업,비금속 광물제품 제조업,아스콘 및 관련 제품 제조,Manufacture of Asphalt Concrete and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D2C5A26DCF59,제조업,비금속 광물제품 제조업,인조 대리석 및 관련 제품 제조,Manufacture of Artificial Marble and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C27A33896925,제조업,비금속 광물제품 제조업,일반 유리 및 관련 제품 제조,Manufacture of Glass and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-612E15138EA8,제조업,비금속 광물제품 제조업,콘크리트 및 관련 제품 제조,Manufacture of Concrete and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6E6320F61B3C,제조업,비금속 광물제품 제조업,타일 및 관련 제품 제조,Manufacture of Tiles and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9AE132DE4885,제조업,비금속 광물제품 제조업,특수유리 및 관련 제품 제조,Manufacture of Special Glass and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-169C914D5E05,제조업,비금속 광물제품 제조업,황토 및 관련 제품 제조,Manufacture of Loess and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5B30053F4B46,제조업,비금속 광물제품 제조업,흑연 및 관련 제품 제조,Manufacture of Graphite and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-81482E6BC50D,제조업,선박 및 보트 건조업,선박 및 보트 건조업,Building of ships and boats,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4B14E8EE1F45,제조업,섬유제품 제조업; 의복제외,가구 관련 섬유제품 제조,Manufacture of Textiles for Furniture,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DA91C913C372,제조업,섬유제품 제조업; 의복제외,가죽소재 섬유제품 제조,Manufacture of Leather Textiles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5AB685FA7020,제조업,섬유제품 제조업; 의복제외,건설 관련 섬유제품 제조,Manufacture of Textiles for Construction,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9B40BEA5E5FA,제조업,섬유제품 제조업; 의복제외,견직물 및 관련 제품 제조,Manufacture of Silk Fabrics and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9A35437F1569,제조업,섬유제품 제조업; 의복제외,농축산업 관련 섬유 제품 제조,Manufacture of Textiles for Agriculture and Animal Farming,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FE5996436A13,제조업,섬유제품 제조업; 의복제외,레이스 및 관련 제품 제조,Manufacture of Lace and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0B5B10074A50,제조업,섬유제품 제조업; 의복제외,면직물 및 관련 제품 제조,Manufacture of Cotton Cloth and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-325241A8F2B9,제조업,섬유제품 제조업; 의복제외,모직물 및 관련 제품 제조,Manufacture of Woolen Cloth and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B0A876888893,제조업,섬유제품 제조업; 의복제외,모피 관련 섬유제품 제조,Manufacture of Fur Textiles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1811C0F064D8,제조업,섬유제품 제조업; 의복제외,방탄제품 및 내열원단 등 제조,Manufacture of Bulletproof Products and Heat-Resistant Fabrics,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F4EFB0EC02F6,제조업,섬유제품 제조업; 의복제외,부직포 및 관련 제품 제조,Manufacture of Non-woven Fabrics and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B9E6A8E54489,제조업,섬유제품 제조업; 의복제외,산업용 섬유제품 제조,Manufacture of Industrial Textiles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B6EC3B60EDDE,제조업,섬유제품 제조업; 의복제외,선박 관련 섬유제품 제조,Manufacture of Textiles for Ship,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9298D0C16CA0,제조업,섬유제품 제조업; 의복제외,스포츠 관련 섬유제품 제조,Manufacture of Textiles for Sports,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3C017D926F2D,제조업,섬유제품 제조업; 의복제외,어업 관련 섬유제품 제조,Manufacture of Textiles for Fishing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-453F78A2DFF2,제조업,섬유제품 제조업; 의복제외,위생용 섬유제품 제조,Manufacture of Textiles for Sanitation,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3D9AEA1E334F,제조업,섬유제품 제조업; 의복제외,의류 부자재 섬유제품 제조,Manufacture of Textiles for Apparel Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1FF453047CB6,제조업,섬유제품 제조업; 의복제외,인견직물 관련 섬유제품 제조,Manufacture of Rayon Textiles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3D8B9E58A171,제조업,섬유제품 제조업; 의복제외,인조가죽 및 관련 제품 제조,Manufacture of Artificial Leather and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-040E6B0560EB,제조업,섬유제품 제조업; 의복제외,일반 섬유제품 제조,Manufacture of Textiles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6FE799EA5ECF,제조업,섬유제품 제조업; 의복제외,자동차 관련 섬유제품 제조,Manufacture of Textiles for Motor Vehicles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-83C09D750C6E,제조업,섬유제품 제조업; 의복제외,자수 관련 섬유제품 제조,Manufacture of Textiles for Embroidery,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-81C24E18E4C2,제조업,섬유제품 제조업; 의복제외,정보통신 관련 섬유제품 제조,Manufacture of Textiles for Information and Communication,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2F742E36AFE6,제조업,섬유제품 제조업; 의복제외,특수직물 및 관련 섬유제품 제조,Manufacture of Special Fabrics and Textiles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-523AC743CECA,제조업,섬유제품 제조업; 의복제외,화학섬유 관련 섬유제품 제조,Manufacture of Chemical Textiles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6D6FEDAF689A,제조업,식료품 제조업,가금류 가공 및 관련 제품 제조,Processing of Poultry Products and Manufacture of Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-38C20094099A,제조업,식료품 제조업,가루제품 제조,Manufacture of Powder Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9854CCFBA401,제조업,식료품 제조업,건강기능식품 제조,Manufacture of Health Supplement Food,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DEE3591A60DB,제조업,식료품 제조업,건과류식품 제조,Manufacture of Dried Cakes,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B30538695F75,제조업,식료품 제조업,계란가공 및 관련 제품 제조,Processing of Eggs and Manufacture of Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9EBBD79E298D,제조업,식료품 제조업,곡물 가공 및 관련 제품 제조,Processing of Cereal and Manufacture of Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6D54A6BDDACF,제조업,식료품 제조업,과실 및 채소 절임식품 제조,Manufacture of Fruit and Pickles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-76F5AAF71A04,제조업,식료품 제조업,국수 및 라면 제조,Manufacture of Noodles and Ramen,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-841BB5B9F014,제조업,식료품 제조업,기타 식료품 제조,Manufacture of Other Food Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-756F47D359CC,제조업,식료품 제조업,낙농제품 제조,Manufacture of Dairy Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DF152023F7BB,제조업,식료품 제조업,냉동가공식품 제조,Manufacture of Frozen Processed Food,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8EA85BC12FDB,제조업,식료품 제조업,냉동수산물 가공 및 식품제조,Processing of Frozen Seafood and Manufacture of Food Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-92A65A3BE3DD,제조업,식료품 제조업,녹차 등 차류 제조,Manufacture of Green Tea and Other Tea,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BFF610E512F2,제조업,식료품 제조업,농축수산물 가공 및 관련 제품 제조,"Processing of Agricultural Products, Animals and Fishes and Manufacture of Related Products",SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BA83867DB2BE,제조업,식료품 제조업,도정 및 곡물 제분,Husking and Milling of Cereals,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6E6C5ACD1928,제조업,식료품 제조업,동/식물성 유지 제조,Manufacture of Animal/Vegetable Oil and Fat,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-94E1EEF8824C,제조업,식료품 제조업,발효식품 제조,Manufacture of Fermented Food,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-084033C72AEB,제조업,식료품 제조업,빙과류 제조,Manufacture of Ice Cream,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5E4444C05F5D,제조업,식료품 제조업,설탕 제조,Manufacture of Sugar,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5F56792BB680,제조업,식료품 제조업,소금 및 관련 제품 제조,Manufacture of Salt and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-58290913E889,제조업,식료품 제조업,수산물 가공 및 관련 제품 제조,Processing of Fishes and Manufacture of Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6945D5CD9E7F,제조업,식료품 제조업,식자재 제조,Manufacture of Food Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1F3A42C95E39,제조업,식료품 제조업,식품첨가물 제조,Manufacture of Food Additives,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C92AAFADB4FA,제조업,식료품 제조업,알가공 제조,Processing and Manufacture of Eggs,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2AA4694E0D84,제조업,식료품 제조업,애견식품 제조,Manufacture of Dog Food,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-15C647DB894D,제조업,식료품 제조업,얼음제조,Manufacture of Ice,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3DF10E7D98F4,제조업,식료품 제조업,일반가공식품 및 조미식품 제조,Manufacture of Processed and Seasoned Food,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CB8DB4036828,제조업,식료품 제조업,제과제빵 제조,Baking and Breadmaking,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8FC8EDDF22FB,제조업,식료품 제조업,조미료 및 조미식품 제조,Manufacture of Seasoning and Seasoned Food,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9CBB7734992B,제조업,식료품 제조업,초콜릿 및 사탕류 제조,Manufacture of Confectionery,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2527A5293B83,제조업,식료품 제조업,축산물 가공 및 관련 식품 제조,Processing of Animal Products and Manufacture of Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1D20ACA5020E,제조업,식료품 제조업,통조림 제조,Manufacture of Canned Food,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4780B5DF8951,제조업,식료품 제조업,한과 제조,Manufacture of Traditional Korean Sweets,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-909464DFE7B8,제조업,음료 제조업,건강음료 제조,Manufacture of Health Supplement Beverages,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-746651391ECC,제조업,음료 제조업,기타 음료수 제조,Manufacture of Other Beverages,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-52BAD16D4394,제조업,음료 제조업,맥주 및 탁주 등 알코올성 음료 제조,"Manufacture of Beer, Rice Wine and Other Alcoholic Beverages",SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-AAE306F65EB1,제조업,음료 제조업,비알코올성 음료 제조,Manufacture of Non-alcoholic Beverages,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1E4279C37329,제조업,음료 제조업,생수 제조,Manufacture of Bottled Water,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1EC99F7316AF,제조업,음료 제조업,얼음생산,Manufacture of Ice,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9CF2D818CA34,제조업,음료 제조업,주스 등 과일음료 제조,Manufacture of Juice and Other Fruit Beverages,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DC837B1656FE,제조업,음료 제조업,청량/탄산 음료 제조,Manufacture of Soft and Carbonated Drinks,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-333C16326A6C,제조업,음료 제조업,혼합음료 제조,Manufacture of Mixed Beverages,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-68800458DF7B,제조업,"의료, 정밀, 광학기기 및 시계 제조업",검사 관련 제품 및 부품 제조,Manufacturing of Products and Parts for Inspection,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-385E73A50D0A,제조업,"의료, 정밀, 광학기기 및 시계 제조업",광전자 관련 부품 제조,Manufacture of Parts for Photoelectron,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E8195B0A98EA,제조업,"의료, 정밀, 광학기기 및 시계 제조업",광학제품 및 관련 부품 제조,Manufacture of Optical Products and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DACD6BCAC8CD,제조업,"의료, 정밀, 광학기기 및 시계 제조업",렌즈 및 관련 제품 제조,Manufacture of Lens and its Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-214F4861693D,제조업,"의료, 정밀, 광학기기 및 시계 제조업",반도체 관련 제품 및 부품 제조,Manufacture of Products and Parts for Semiconductor,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-059FAF026FF9,제조업,"의료, 정밀, 광학기기 및 시계 제조업",방사선 관련 제품 및 부품 제조,Manufacture of Products and Parts for Radiation,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7A30B2B8AA0E,제조업,"의료, 정밀, 광학기기 및 시계 제조업",시계 및 관련 부품 제조,Manufacture of Watches and Clocks and its Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-707E8ECB666B,제조업,"의료, 정밀, 광학기기 및 시계 제조업",실험기기 및 관련 부품 제조,Manufacture of Test Equipment and its Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E6857C304B74,제조업,"의료, 정밀, 광학기기 및 시계 제조업",의료기기 및 관련 부품 제조,Manufacture of Medical Equipment and its Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F58D0DD1671A,제조업,"의료, 정밀, 광학기기 및 시계 제조업",의료용 소모품 제조,Manufacture of Medical Supplies,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-054F17AB9F58,제조업,"의료, 정밀, 광학기기 및 시계 제조업",의료용구 및 관련 부품 제조,Manufacture of Medical Device and its Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-082F4A17B0C5,제조업,"의료, 정밀, 광학기기 및 시계 제조업",정밀기계 및 관련 부품 제조,Manufacture of Precision Equipment and its Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E4D37EF93FF0,제조업,의료용 물질 및 의약품 제조업,동물용 의약품 제조,Manufacture of Drugs for Animals,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-69A5FB2D1F7B,제조업,의료용 물질 및 의약품 제조업,의약용 화합물 제조,Manufacture of Medical Compound,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-68035E305C03,제조업,의료용 물질 및 의약품 제조업,의약품 및 관련 제품 제조,Manufacture of Drugs and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3068B37AAC88,제조업,"의복, 의복 액세서리 및 모피제품 제조업",가죽의류 및 관련 액세서리 제품 제조,Manufacture of Leather Apparel and Accessories,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-084A53EFA3E9,제조업,"의복, 의복 액세서리 및 모피제품 제조업",모피 관련 제품 제조,Manufacture of Fur Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-773FA4262A1B,제조업,"의복, 의복 액세서리 및 모피제품 제조업",산업용 의류 제조,Manufacture of Industrial Apparel,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A1DF8F2EF2AE,제조업,"의복, 의복 액세서리 및 모피제품 제조업",속옥 및 관련 제품 제조,Manufacture of Underwear and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CA00C0E44F57,제조업,"의복, 의복 액세서리 및 모피제품 제조업",수예품제조,Manufacture of Handcraft,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8188D9AFECC7,제조업,"의복, 의복 액세서리 및 모피제품 제조업",스포츠 의류 및 관련 제품 제조,Manufacture of Sportswear and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2424FC861E02,제조업,"의복, 의복 액세서리 및 모피제품 제조업",일반 의복액세서리 제조,Manufacture of Apparel Accessories,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E12F3F8C4066,제조업,"의복, 의복 액세서리 및 모피제품 제조업",일반의복 제조,Manufacture of Apparel,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B6AEF6167ABF,제조업,"의복, 의복 액세서리 및 모피제품 제조업",특수 의류 제조,Manufacture of Special Apparel,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F3E8F07C4692,제조업,인쇄 및 기록매체 복제업,CD 등 기록매체 복제,Reproduction of CDs and Recorded Media,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-25B8AA4AB2A5,제조업,인쇄 및 기록매체 복제업,가구용 모양지 인쇄,Printing of Deco-sheets for Furniture,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5C5792B4493F,제조업,인쇄 및 기록매체 복제업,골판지 등 종이제품 인쇄,Printing of Corrugated Cardboards and Paper Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F27FB7CD0162,제조업,인쇄 및 기록매체 복제업,광고물 관련 인쇄,Printing of Advertisement Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2B01EA3610C3,제조업,인쇄 및 기록매체 복제업,그라비아 인쇄,Gravure Printing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4CF8B0C239FD,제조업,인쇄 및 기록매체 복제업,"금, 은박 전사 인쇄",Printing of Gold/Silver Plates,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-65315BD9DE8E,제조업,인쇄 및 기록매체 복제업,금속인쇄,Metallic Printing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E76EA8ED5CF2,제조업,인쇄 및 기록매체 복제업,기타 상업인쇄,Other Commercial Printing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-345A274D9485,제조업,인쇄 및 기록매체 복제업,동판 및 명판 인쇄,Printing of Copperplates,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0385809B5B1F,제조업,인쇄 및 기록매체 복제업,라미네이팅 및 옵셋 인쇄,Laminating and Offset Printing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-71C3D4ACFBFC,제조업,인쇄 및 기록매체 복제업,라벨 및 스티커 인쇄,Printing of Labels and Stickers,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-865F0ECF6030,제조업,인쇄 및 기록매체 복제업,바인더 샘플북 제작,Manufacture of Binder Sample Books,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B34D5D76CD34,제조업,인쇄 및 기록매체 복제업,비닐 등 인쇄,Printing of Vinyl,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-29B311021220,제조업,인쇄 및 기록매체 복제업,사진 제판 및 인쇄,Photolithography and Printing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F702544AFD17,제조업,인쇄 및 기록매체 복제업,시트지 및 벽지 인쇄,Printing of Sheets and Wallpapers,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E1296439F394,제조업,인쇄 및 기록매체 복제업,식품 등 포장지류 인쇄,Printing of Packaging Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6CA55C35634A,제조업,인쇄 및 기록매체 복제업,신문 인쇄,Printing of Newspaper,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4C7BB5263EA9,제조업,인쇄 및 기록매체 복제업,실사 인쇄,Digital Printing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-08B190830173,제조업,인쇄 및 기록매체 복제업,실크 및 스크린 인쇄,Silk and Screen Printing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-652ACE29E948,제조업,인쇄 및 기록매체 복제업,"앨범표지(PVC SHEET) 인쇄, 제작",Printing and Manufacture of Album Cover (PVC Sheet),SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F82A700DA2A5,제조업,인쇄 및 기록매체 복제업,의류 인쇄,Printing of Apparel,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3A701011B796,제조업,인쇄 및 기록매체 복제업,인쇄 및 기록매체 CD제작,Printing and Manufacture of Recorded Media CDs,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-03E2BAC16C0A,제조업,인쇄 및 기록매체 복제업,인쇄 및 기록매체 복제,Printing and Reproduction of Recorded Media,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D726D3F25815,제조업,인쇄 및 기록매체 복제업,전사 인쇄,Decal Comania,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6E4FED125C56,제조업,인쇄 및 기록매체 복제업,종합 인쇄,General Printing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D478200648F6,제조업,인쇄 및 기록매체 복제업,출판 인쇄 및 기록매체,Printing for Publication and Recorded Media,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D38D9F244139,제조업,인쇄 및 기록매체 복제업,특수인쇄,Special Printing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1BF1B7A0A29D,제조업,인쇄 및 기록매체 복제업,플라스틱 인쇄,Plastic Printing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D1AB27D0922D,제조업,인쇄 및 기록매체 복제업,홀로그램,Hologram,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3D86D678EAD2,제조업,인쇄 및 기록매체 복제업,화장품용기 인쇄,Printing of Cosmetic Containers,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D33E60DC7610,제조업,자동차 및 트레일러 제조업,건설용 중장기 및 관련 부품 제조,Manufacture of Heavy Equipment for Construction and its Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4793384729BB,제조업,자동차 및 트레일러 제조업,농업용 기계 및 차량 제조,Manufacture of Agricultural Equipment and Vehicles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7136AD606480,제조업,자동차 및 트레일러 제조업,버스 등 대형차량 제조,Manufacture of Bus and Large Vehicles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-57EAD8A311CB,제조업,자동차 및 트레일러 제조업,산업기계 특장차 제조,Manufacture of Industrial Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8B7A845CA865,제조업,자동차 및 트레일러 제조업,상용 자동차 제조,Manufacture of Commercial Motor Vehicles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3DAE9A5CC643,제조업,자동차 및 트레일러 제조업,세미트레일러 특장차 제조,Manufacture of Semitrailer,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0D6322F8F6F1,제조업,자동차 및 트레일러 제조업,소방자동차 제조,Manufacture of Fire Engine,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8A8AB86644B3,제조업,자동차 및 트레일러 제조업,승용차 및 기타여객용 자동차 제조업,Manufacture of Passenger Vehicles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FDA55520C744,제조업,자동차 및 트레일러 제조업,이륜차 및 관련 부품 제조,Manufacture of Motorcycles and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4E5FFD3A4BC3,제조업,자동차 및 트레일러 제조업,일반 중장기 및 관련 부품 제조,Manufacture of Heavy Equipment and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-385C3405F960,제조업,자동차 및 트레일러 제조업,일반 특장차 제조,Manufacture of Special Purpose Vehicles,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-04DBD60286F9,제조업,자동차 및 트레일러 제조업,트레일러 제조,Manufacture of Trailers,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-95DDD91E831F,제조업,전기장비 제조업,LED 조명 제조,Manufacture of LED Lights,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F45EA79F609E,제조업,전기장비 제조업,가로등 및 관련 제품 제조,Manufacture of Streetlights and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-44D25405F10A,제조업,전기장비 제조업,가정용 전기기기 및 관련 제품 제조,Manufacture of Household Electric Equipment and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-68667F1D96D6,제조업,전기장비 제조업,램프 및 관련 제품 제조,Manufacture of Lamps and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8211922F181C,제조업,전기장비 제조업,발전기 및 관련 제품 제조,Manufacture of Power Generators and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-06C4FB1E1715,제조업,전기장비 제조업,배선기구 및 관련 제품 제조,Manufacture of Wiring Appliances and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6C8BD34669E8,제조업,전기장비 제조업,배터리 및 관련 제품 제조,Manufacture of Batteries and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-67C88A16C2BA,제조업,전기장비 제조업,변압기 및 관련 부품 제조,Manufacture of Transformers and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3EF08AE588FE,제조업,전기장비 제조업,산업용 전기기계 및 관련 제품 제조,Manufacture of Industrial Electric Equipment and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-052CBE5CC8CA,제조업,전기장비 제조업,선박 관련 전기장비 및 관련 제품 제조,Manufacture of Electric Equipment and Products for Ship,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7F366AE777A2,제조업,전기장비 제조업,신호등 및 관련 제품 제조,Manufacture of Traffic Lights and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DB6B95E9438A,제조업,전기장비 제조업,일반 전기장비 및 관련 제품 제조,Manufacture of Electric Equipment and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4E8F745570F5,제조업,전기장비 제조업,자동차 관련 전기장비 및 관련 제품 제조,Manufacture of Electric Equipment and Related Products for Motor Vehicle,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-22585D99301C,제조업,전기장비 제조업,전구 및 전기조명장치 제조,Manufacture of Light Bulbs and Electric Lighting Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-88C4C4913425,제조업,전기장비 제조업,전기 냉난방기기 및 관련 부품 제조,Manufacture of Electric Air Conditioners and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-218E1B869358,제조업,전기장비 제조업,전기 수배전반 및 관련 제품 제조,Manufacture of Electric Switchgear Panels and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F1D8B5DB5EDC,제조업,전기장비 제조업,전기 자동제어 관련 제품 제조,Manufacture of Products for Electric Automatic Control,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1481ADF3F7A4,제조업,전기장비 제조업,전기 전선 및 관련 제품 제조,Manufacture of Electric Wires and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-422194944E47,제조업,전기장비 제조업,전기발열선 제조,Manufacture of Heating Cables,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-ECE9DB531D69,제조업,전기장비 제조업,전기배관 및 관련 제품 제조,Manufacture of Electric Wiring and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-09B2F804B583,제조업,전기장비 제조업,전기배전반 및 관련 제품 제조,Manufacture of Electric Switchboards and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C183987395D0,제조업,전기장비 제조업,전기변환장치 및 관련 제품 제조,Manufacture of Electric Converters and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-431E01C6FA6A,제조업,전기장비 제조업,전기장비 및 관련 제품 제조,Manufacture of Electric Equipment and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FA88327992C5,제조업,전기장비 제조업,전기절연기기 및 관련 제품 제조,Manufacture of Electric Insulated Equipment and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CEEE50AE9AD9,제조업,전기장비 제조업,전기제어장치 및 관련 제품 제조,Manufacture of Electric Controllers and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3FEA03A0D72B,제조업,전기장비 제조업,전기차단기 및 관련 제품 제조,Manufacture of Circuit Breakers and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A0C53BCD116C,제조업,전기장비 제조업,전기회로 및 관련 제품 제조,Manufacture of Electric Circuits and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CAC331BF5A73,제조업,전기장비 제조업,전동기 및 관련 제품 제조,Manufacture of Electric Motors and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-15CE31477EC0,제조업,전기장비 제조업,전열기 및 관련 제품 제조,Manufacture of Electric Heaters and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-67D2D7617765,제조업,전기장비 제조업,전원공급장치 및 관련 제품 제조,Manufacture of Power Supplies and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E60EB7A737E0,제조업,전기장비 제조업,조명기기 및 관련 제품 제조,Manufacture of Lighting Equipment and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DA0803F71849,제조업,전기장비 제조업,통신케이블 및 관련 제품 제조,Manufacture of Communication Cables and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-890FE3ABCDD9,제조업,전기장비 제조업,특수 조명기기 및 관련 제품 제조,Manufacture of Special Lighting Equipment and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2F10CB60701C,제조업,전기장비 제조업,특수전선 및 케이블 제조,Manufacture of Special Wires and Cables,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6066759BF4AB,제조업,전기장비 제조업,피복절연선 및 케이블제조,Manufacture of Insulated Wires and Cables,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-553212A1DC9E,제조업,전기장비 제조업,항공기 관련 전기제품 및 부품 제조,Manufacture of Electric Products and Parts for Aircraft,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-63F837C2C206,제조업,전기장비 제조업,핸드폰 관련 전기제품 및 부품 제조,Manufacture of Electric Products and Parts for Mobile Phones,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7178E97BEB9C,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",LCD 및 관련 부품 제조,Manufacture of LCD and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B42C395A8193,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",LED 및 관련 부품 제조,Manufacture of LED and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2CAD68F718A8,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",가전제품 및 관련 부품 제조,Manufacture of Household Electronic Products and Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-627CE7C681EE,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",광고물 관련 제품 제조,Manufacture of Products for Advertising Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-64430338F7CD,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",기타 전자부품 제조,Manufacture of Other Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4707161ECFDD,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",냉난방기 관련 전자부품 제조,Manufacture of Electronic Components for Air Conditioning,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BDE9CDEF6060,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",냉동공조용 전자부품 제조,Manufacture of Electronic Components for Refrigeration and Air Conditioning,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-086950DCA4BB,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",네트워크 장비 조립 및 제조,Assembly and Manufacture of Network Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-26D38F55006C,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",디스플레이 및 관련 부품 제조,Manufacture of Display and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B0D4EC687798,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",모니터 및 관련 부품 제조,Manufacture of Monitor and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E5CDE403CE2A,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",무선통신기기 및 관련 부품 제조,Manufacture of Wireless Communication Devices and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F36B9B62A927,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",반도제 관련 전자부품 제조,Manufacture of Electronic Components for Semiconductor,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-82F4D730044D,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",방송장비 및 관련 부품 제조,Manufacture of Broadcasting Equipment and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-453451E038B7,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",브라운관 및 관련 부품 제조,Manufacture of Braun Tube and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D667D3ADFD13,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",비디오 등 영상기기 및 관련 부품 제조,Manufacture of Video Systems and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-222D12DFE597,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",산업용 전자부품 제조,Manufacture of Industrial Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8D6886EC160C,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",소방기구 관련 전자부품 제조,Manufacture of Electronic Components for Fire Fighting Equipment,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FE0F43816FD8,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",액정장치 및 관련 부품 제조,Manufacture of Liquid Crystal Display and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CC3D05D2455D,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",영사용 스크린 및 관련 부품 제조,Manufacture of Projector Screen and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7E3984ECDC1C,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",영상 및 음성 방송기자개 및 관련 부품 제조,Manufacture of A/V Broadcasting Equipment and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5FBC1FD6A2B5,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",영상기기 및 관련 부품 제조,Manufacture of Video Systems and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8237D0796BC6,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",유무선 통신기기 및 관련 부품 제조,Manufacture of Communication Systems and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1093464F0A6F,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",음향기기 및 관련 제품 제조,Manufacture of Audio Systems and Parts,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-88DECC8F6C09,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",의료기기 관련 전자부품 제조,Manufacture of Medical Appliances and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-AEDAFB85E2E1,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",인쇄기기 관련 전자부품 제조,Manufacture of Printers and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0CAE73379FBB,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",자동제어기 관련 전자부품 제조,Manufacture of Automatic Controllers and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7A06DA7B39CA,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",자동차 관련 전자부품 제조,Manufacture of Electronic Components for Motor Vehicle,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5C052991A914,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",자동화설비 관련 전자부품 제조,Manufacture of Automation Facilities and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1DCF6E275697,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",전기전자기계 관련 전자부품 제조,Manufacture of Electric/Electronic Equipment and Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8F74C3A2AAEC,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",전자악기 및 관련 전자부품 제조,Manufacture of Electronic Musical Instrument and its Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-91C67DF1CE4F,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",정밀기기 관련 전자부품 제조,Manufacture of Electronic Components for Precision Instrument,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-69D215969A30,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",정보통신 관련 전자 부품제조,Manufacture of Electronic Components for Information Communication,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A326C4A2315C,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",카메라 및 관련 제품 제조,Manufacture of Cameras and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A13FC5F31B82,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",컴퓨터 및 관련 전자부품 제조,Manufacture of Computers and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2EBA84B6CEF2,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",콘덴서 및 관련 전자부품 제조,Manufacture of Condensers and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-86D7AEC8D707,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",특수기계 및 관련 전자부품 제조,Manufacture of Special Equipment and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B2FF65A18FF9,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",프린터 및 관련 전자부품 제조,Manufacture of Printers and Electronic Components,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A1CF9C8939D1,제조업,"전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업",핸드폰 관련 부품 제조,Manufacture of Parts for Mobile Phone,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2A4C8E981A7F,제조업,"코크스, 연탄 및 석유정제품 제조업",경화유 제조,Manufacture of Hardened Oil,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A212EF51D578,제조업,"코크스, 연탄 및 석유정제품 제조업",고무분말 제조,Manufacture of Rubber Powder,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-773F054227FF,제조업,"코크스, 연탄 및 석유정제품 제조업",비닐 및 관련 제품 제조,Manufacture of Vinyl and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A77C1C902495,제조업,"코크스, 연탄 및 석유정제품 제조업",석유정제품 제조,Manufacture of Refined Petroleum Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-93447C5DFEDD,제조업,"코크스, 연탄 및 석유정제품 제조업",시멘트 부원료 제조,Manufacture of Cement Secondary Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7C9407B811D7,제조업,"코크스, 연탄 및 석유정제품 제조업",아스팔트 제조,Manufacture of Asphalt,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-AD0BC5734C79,제조업,"코크스, 연탄 및 석유정제품 제조업",연료류 및 화공품 제조,Manufacture of Fuels and Priming Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5661307E49A5,제조업,"코크스, 연탄 및 석유정제품 제조업",연탄 및 석탄 가공 제품 제조,Manufacture of Briquette and Coal Processed Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A528925E843B,제조업,"코크스, 연탄 및 석유정제품 제조업",원유 정제처리,Petroleum Refineries,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-26E9303DDA92,제조업,"코크스, 연탄 및 석유정제품 제조업",윤활유 제조,Manufacture of Lubricating Oils,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D6F84163F847,제조업,"코크스, 연탄 및 석유정제품 제조업",일반 석유정제 제품 제조,Manufacture of Refined Petroleum Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-10FB153C78D5,제조업,"코크스, 연탄 및 석유정제품 제조업",정제연료유 및 정제유기용제 제조,Manufacture of Refined Fuel Oil and Organic Solvent,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-90A5A432B179,제조업,"코크스, 연탄 및 석유정제품 제조업",코크스 성형탄 생산,Production of Coke Briquette,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4B44E854B0D8,제조업,"코크스, 연탄 및 석유정제품 제조업",특수 윤활유 제조,Manufacture of Special Lubricating Oils,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CA034D61A9B6,제조업,"펄프, 종이 및 종이제품 제조업",가정용 종이제품 제조,Manufacture of Paper Products for Household,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9A122701C9A3,제조업,"펄프, 종이 및 종이제품 제조업",건설용 종이제품 제조,Manufacture of Paper Products for Construction,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A3DDC6433998,제조업,"펄프, 종이 및 종이제품 제조업",골판지 및 관련 제품 제조,Manufacture of Corrugated Cardboard and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F63023F9450F,제조업,"펄프, 종이 및 종이제품 제조업",광고물 관련 종이제품 제조,Manufacture of Paper Products for Advertisement,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CB0C95BC8716,제조업,"펄프, 종이 및 종이제품 제조업",기타 종이 및 판지 제조,Manufacture of Other Paper and Paperboard,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-73D3C671FBAC,제조업,"펄프, 종이 및 종이제품 제조업",농업 관련 종이제품 제조,Manufacture of Paper for Agriculture,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DF9BE1BA63D9,제조업,"펄프, 종이 및 종이제품 제조업","라벨지 택,바코드 제조",Manufacture of Label Tag and Barcode,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8C5A9CC56DDC,제조업,"펄프, 종이 및 종이제품 제조업",물티슈 등 종이제품 생산,Manufacture of Wet Tissue and Other Paper Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-228C18A1C44E,제조업,"펄프, 종이 및 종이제품 제조업",방습포장지 제조,Manufacture of Moisture-proof Packaging Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BA7254F68D58,제조업,"펄프, 종이 및 종이제품 제조업",부직포 및 관련 종이제품 제조,Manufacture of Non-woven Fabrics and Related Paper Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5639CAAECC41,제조업,"펄프, 종이 및 종이제품 제조업",사무용 종이제품 제조,Manufacture of Paper Products for Office,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DFFAE3EEF6C8,제조업,"펄프, 종이 및 종이제품 제조업",산업용 종이제품 제조,Manufacture of Industrial Paper Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1C3183E40CC7,제조업,"펄프, 종이 및 종이제품 제조업",스티커 및 라벨 관련 종이제품 제조,Manufacture of Paper Stickers and Labels,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BD249FE7BD47,제조업,"펄프, 종이 및 종이제품 제조업",식품 관련 종이제품 제조,Manufacture of Paper Products for Food,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-7CD8D09EA67F,제조업,"펄프, 종이 및 종이제품 제조업",위생용 종이제품 제조,Manufacture of Paper Products for Sanitation,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-69445A303547,제조업,"펄프, 종이 및 종이제품 제조업",의료 관련 종이제품 제조,Manufacture of Paper Products for Medicine,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5A191F53A58A,제조업,"펄프, 종이 및 종이제품 제조업",인쇄용 종이제품 제조,Manufacture of Paper Products for Printing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B8FFD523759B,제조업,"펄프, 종이 및 종이제품 제조업",일반 문구 제품 제조,Manufacture of Stationary Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-09D3D10B4196,제조업,"펄프, 종이 및 종이제품 제조업",일반 포장 제품 제조,Manufacture of Packaging Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-63486366F024,제조업,"펄프, 종이 및 종이제품 제조업",일회용 종이제품 제조,Manufacture of Disposable Paper Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0ACD52ACAB22,제조업,"펄프, 종이 및 종이제품 제조업",전산용 종이제품 제조,Manufacture of Paper Products for Computer,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F844C1EF3320,제조업,"펄프, 종이 및 종이제품 제조업",특수포장지 제조,Manufacture of Special Packaging Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-8FC5DC18F5DA,제조업,"펄프, 종이 및 종이제품 제조업",특수필림 및 관련 종이제품 제조,Manufacture of Special Films and Related Paper Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4CA0308C2C5F,제조업,"펄프, 종이 및 종이제품 제조업",펄프 성형 제품 제조,Manufacture of Pulp Molding Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C89EF955DA0F,제조업,"펄프, 종이 및 종이제품 제조업",포장용 종이제품 제조,Manufacture of Paper Products for Packaging,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CF29A40FE647,제조업,"펄프, 종이 및 종이제품 제조업",한지 및 관련 종이제품 제조,Manufacture of Korean Paper and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DDD73160AFBA,제조업,"펄프, 종이 및 종이제품 제조업",합지 및 관련 종이제품 제조,Manufacture of Laminated Paper and Related Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6E2084BCD32B,제조업,화학물질 및 화학제품 제조업; 의약품 제외,가성소다 및 관련 제품 제조,Manufacture of Caustic Soda Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-06C1400FA67F,제조업,화학물질 및 화학제품 제조업; 의약품 제외,가정용 화학제품 제조,Manufacture of Chemical Products for Household,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2AA064CB4B89,제조업,화학물질 및 화학제품 제조업; 의약품 제외,건설용 화학제품 제조,Manufacture of Chemical Products for Construction,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F8259BD90465,제조업,화학물질 및 화학제품 제조업; 의약품 제외,계면활성제 및 관련 제품 제조,Manufacture of Surfactant Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-04EA4F1C7705,제조업,화학물질 및 화학제품 제조업; 의약품 제외,고분자 화학물질 제조,Manufacture of Polymer Chemical Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-37D82773EC28,제조업,화학물질 및 화학제품 제조업; 의약품 제외,고체연료 및 관련 제품 제조,Manufacture of Solid Fuel Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-51333861827B,제조업,화학물질 및 화학제품 제조업; 의약품 제외,글리세린 및 지방산 제조,Manufacture of Glycerin and Fatty Acid,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-637085B4C69B,제조업,화학물질 및 화학제품 제조업; 의약품 제외,금속 세척제 및 방향제 제조,Manufacture of Metal Cleanser and Air Freshener,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0F05A0076A1C,제조업,화학물질 및 화학제품 제조업; 의약품 제외,금속표면처리제 제조,Manufacture of Metal Surface Treatment Agents,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C0168BE72781,제조업,화학물질 및 화학제품 제조업; 의약품 제외,기초 무기화합물 제조,Manufacture of Basic Inorganic Compound,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-1F1CFA7B897B,제조업,화학물질 및 화학제품 제조업; 의약품 제외,기초 유기화합물 제조,Manufacture of Basic Organic Compound,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C6F22EF18B4A,제조업,화학물질 및 화학제품 제조업; 의약품 제외,기타 화학제품 제조,Manufacture of Other Chemical Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-72BCF6B75216,제조업,화학물질 및 화학제품 제조업; 의약품 제외,냉난방 관련 부품 제조,Manufacture of Parts for Air Conditioning,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C83B935F7444,제조업,화학물질 및 화학제품 제조업; 의약품 제외,농업용 화학제품 제조,Manufacture of Agricultural Chemical Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-75D82CE5209D,제조업,화학물질 및 화학제품 제조업; 의약품 제외,도금 약품 제조,Manufacture of Chemical Products for Plating,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0C2A05F7B87A,제조업,화학물질 및 화학제품 제조업; 의약품 제외,도료/안료 및 합성수지등 제조,"Manufacture of Paint, Varnish, Pigment and Synthetic Resin",SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-5BAFF513D90E,제조업,화학물질 및 화학제품 제조업; 의약품 제외,반도체 관련 화학제품 제조,Manufacture of Chemical Products for Semiconductor,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-80F92E11A36F,제조업,화학물질 및 화학제품 제조업; 의약품 제외,보온재 및 단열재 제조,Manufacture of Insulating Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E56F257F5E7D,제조업,화학물질 및 화학제품 제조업; 의약품 제외,비누 및 세정제 제조,Manufacture of Soap and Cleaner,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-6835D974080B,제조업,화학물질 및 화학제품 제조업; 의약품 제외,비닐 및 관련 제품 제조,Manufacture of Vinyl Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-DCBAFAC7218B,제조업,화학물질 및 화학제품 제조업; 의약품 제외,비료/사료 및 관련 화학제품 제조,Manufacture of Fertilizer and Feed,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D6D953B638D1,제조업,화학물질 및 화학제품 제조업; 의약품 제외,산업용 화학제품 제조,Manufacture of Industrial Chemical Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-C175E0E175A2,제조업,화학물질 및 화학제품 제조업; 의약품 제외,생분해성 수지 및 관련 제품 제조,Manufacture of Biodegradable Resin Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B94541C53D1C,제조업,화학물질 및 화학제품 제조업; 의약품 제외,선박 관련 화학제품 제조,Manufacture of Chemical Products for Ship,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-92980F921208,제조업,화학물질 및 화학제품 제조업; 의약품 제외,섬유관련 화학제품 제조,Manufacture of Chemical Products for Textile,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A6604ADDA7B2,제조업,화학물질 및 화학제품 제조업; 의약품 제외,스치로폴 및 관련 화학제품 제조,Manufacture of Styrofoam Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-FBF1364E915F,제조업,화학물질 및 화학제품 제조업; 의약품 제외,스폰지 및 관련 화학제품 제조,Manufacture of Sponge Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-589AD898861B,제조업,화학물질 및 화학제품 제조업; 의약품 제외,신소재 개발 및 제조,Development and Manufacture of New Materials,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F67268163717,제조업,화학물질 및 화학제품 제조업; 의약품 제외,실리콘 및 관련 화학제품 제조,Manufacture of Chemical Products for Silicone,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-14738B5D5070,제조업,화학물질 및 화학제품 제조업; 의약품 제외,아스팔트 관련 화학제품 제조,Manufacture of Chemical Products for Asphalt,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0746A5C20B4F,제조업,화학물질 및 화학제품 제조업; 의약품 제외,어업용 화학제품 제조,Manufacture of Chemical Products for Fishing,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-2182B3E4FDF5,제조업,화학물질 및 화학제품 제조업; 의약품 제외,에폭시 및 관련 화학제품 제조,Manufacture of Epoxy Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-9946705438D4,제조업,화학물질 및 화학제품 제조업; 의약품 제외,열가소성 수지 제조,Manufacture of Thermoplastic Resin,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-169DECCF0ACC,제조업,화학물질 및 화학제품 제조업; 의약품 제외,요업용 화학제품 제조,Manufacture of Ceramic Chemical Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-E36E087CB829,제조업,화학물질 및 화학제품 제조업; 의약품 제외,우레탄 및 관련 화학제품 제조,Manufacture of Urethane Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-B9E26A1708FF,제조업,화학물질 및 화학제품 제조업; 의약품 제외,위생용 화학제품 제조,Manufacture of Chemical Products for Sanitation,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F247EDD0FC95,제조업,화학물질 및 화학제품 제조업; 의약품 제외,인산/질산 및 관련 화학제품 제조,Manufacture of Phosphoric/Nitric Acid,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-818D083D1100,제조업,화학물질 및 화학제품 제조업; 의약품 제외,인테리어용 화학제품 제조,Manufacture of Chemical Products for Interior Decoration,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-3A9F155C7B7F,제조업,화학물질 및 화학제품 제조업; 의약품 제외,일반 방부제 제조,Manufacture of Preservatives,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CDE2318D7950,제조업,화학물질 및 화학제품 제조업; 의약품 제외,일반 방향제 제조,Manufacture of Air Fresheners,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-278245EC4656,제조업,화학물질 및 화학제품 제조업; 의약품 제외,자동차 관련 화학제품 제조,Manufacture of Chemical Products for Motor Vehicle,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-BD6001BA6EEA,제조업,화학물질 및 화학제품 제조업; 의약품 제외,전산용 화학제품 제조,Manufacture of Chemical Products for Computer,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F1DE221145E7,제조업,화학물질 및 화학제품 제조업; 의약품 제외,점착/접착제 및 관련 화학제품 제조,Manufacture of Adhesive/Glue Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-A31661E2CEAB,제조업,화학물질 및 화학제품 제조업; 의약품 제외,정밀화학제품 제조,Manufacture of Precision Chemical Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-85D42C5B31B6,제조업,화학물질 및 화학제품 제조업; 의약품 제외,통신용 화학제품 제조,Manufacture of Chemical Products for Communication,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-D23E12D6FC90,제조업,화학물질 및 화학제품 제조업; 의약품 제외,폴리머 분말 제조,Manufacture of Polymer Powder,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-CEADEA15E83D,제조업,화학물질 및 화학제품 제조업; 의약품 제외,폴리에스터 및 관련 화학제품 제조,Manufacture of Polyester and Other Chemical Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-4716BB939026,제조업,화학물질 및 화학제품 제조업; 의약품 제외,폴리에틸렌 및 관련 화학제품 제조,Manufacture of Polyethylene and Other Chemical Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-F683A46182D2,제조업,화학물질 및 화학제품 제조업; 의약품 제외,폴리우레탄 및 관련 화학제품 제조,Manufacture of Polyurethane and Other Chemical Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-568693E0FF04,제조업,화학물질 및 화학제품 제조업; 의약품 제외,합성수지 및 기타 플라스틱 제조,Manufacture of Synthetic Resin and Plastic Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-0F63855C4968,제조업,화학물질 및 화학제품 제조업; 의약품 제외,핸드폰 관련 화학제품 제조,Manufacture of Chemical Products for Mobile Phone,SRC-KEIS-ALLOWED-INDUSTRIES,20251121
+IND-273BA912AD75,제조업,화학물질 및 화학제품 제조업; 의약품 제외,화장품 및 관련 화학제품 제조,Manufacture of Cosmetic Products,SRC-KEIS-ALLOWED-INDUSTRIES,20251121

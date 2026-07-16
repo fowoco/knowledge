@@ -1,0 +1,83 @@
+version: 0.1.0
+last_verified: 2026-07-16
+status: draft_requires_domain_review
+policy:
+  generic_report_term_requires_classification: true
+  automatic_external_submission: false
+  official_deadline_requires_hr_confirmation: true
+  source_version_must_be_displayed: true
+  completion_requires_receipt_or_manual_note: true
+  note: >-
+    인터뷰에서 말한 신고를 하나의 기능으로 처리하지 않는다. 사건 발생형 고용변동 신고와
+    계약·고용허가·체류 연장처럼 선행 결과물이 필요한 절차를 구분한다.
+
+procedures:
+  - id: PROC-CONTRACT-PERMIT-RENEWAL-001
+    name: 근로계약 갱신과 고용허가기간 연장 준비
+    workflow_id: WF-CON-001
+    trigger_type: expiry_based
+    submission_pattern: first_stage_then_review
+    responsible_party: EMPLOYER_HR
+    official_channel: EPS_OR_EMPLOYMENT_CENTER
+    deadline_rule:
+      kind: calendar_days_before
+      value: 7
+      input_field: contract_end_date
+      action: 고용허가기간 연장 신청
+      note: 실제 적용 대상과 최신 기한은 EPS에서 HR이 최종 확인
+    stage_outputs:
+      - renewed_contract_record
+      - employment_permit_extension_receipt_or_note
+    next_workflow_ids: [WF-STY-001]
+    source_ids: [SRC-EPS-EMPLOYMENT-PROCESS]
+
+  - id: PROC-STAY-PERIOD-EXTENSION-001
+    name: 체류기간 연장 준비
+    workflow_id: WF-STY-001
+    trigger_type: expiry_based
+    submission_pattern: dependent_external_process
+    responsible_party: WORKER_WITH_HR_SUPPORT
+    official_channel: HIKOREA_OR_IMMIGRATION_OFFICE
+    deadline_rule:
+      kind: before_expiry
+      input_field: stay_expiry_date
+      action: 체류기간 연장 허가 신청
+      note: 체류자격과 개별 사정에 따른 구비서류를 하이코리아에서 최종 확인
+    possible_prerequisite_workflow_ids: [WF-CON-001]
+    stage_outputs:
+      - stay_extension_receipt_or_note
+      - next_review_at
+    source_ids: [SRC-LAW-IMMIGRATION-ACT-25, SRC-HIKOREA]
+
+  - id: PROC-EMPLOYMENT-CHANGE-REPORT-001
+    name: 외국인근로자 고용변동 등 신고
+    workflow_id: WF-CHG-001
+    trigger_type: event_based
+    submission_pattern: one_stop_report
+    responsible_party: EMPLOYER_HR
+    official_channel: EPS_OR_HIKOREA_OR_OFFLINE
+    reportable_event_candidates:
+      - DISMISSAL_OR_RESIGNATION
+      - DEATH
+      - WHEREABOUTS_UNKNOWN
+      - MATERIAL_EMPLOYMENT_CONTRACT_CHANGE
+    deadline_rule:
+      kind: calendar_days_after_event_or_awareness
+      value: 15
+      input_fields: [incident_at, awareness_at]
+      action: 고용변동 등 신고
+      note: 사건 유형에 따라 기산점이 달라 HR이 사실관계와 기준일을 확인
+    one_stop_note: >-
+      동일 사실에 대해 출입국관서에 신고한 경우 외국인고용법상 신고가 이루어진 것으로
+      보는 연계 규정이 있으므로 두 기관 중복 제출을 기본 절차로 안내하지 않음
+    dataset_application_name: 외국인 고용변동 등 신고
+    stage_outputs:
+      - confirmed_event_type
+      - report_due_at
+      - external_receipt_or_manual_note
+    source_ids:
+      - SRC-LAW-IMMIGRATION-ACT-19
+      - SRC-LAW-IMMIGRATION-DECREE-24
+      - SRC-LAW-FOREIGN-WORKERS-ACT-17
+      - SRC-MOEL-1350-EMPLOYMENT-CHANGE
+      - SRC-KEIS-REQUIRED-DOCS

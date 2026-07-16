@@ -24,8 +24,19 @@ def test_compiled_context_is_cross_linked() -> None:
     assert context["slot_policy"]["required"] == ["worker_id", "due_at"]
     assert {source["id"] for source in context["official_sources"]} == {
         "SRC-HIKOREA",
+        "SRC-LAW-IMMIGRATION-ACT-25",
         "SRC-KEIS-REQUIRED-DOCS",
         "SRC-HOLIDAY-API",
     }
     assert context["checklist"]["id"] == "CHK-STAY-RENEW-001"
+    assert context["administrative_procedure"]["id"] == "PROC-STAY-PERIOD-EXTENSION-001"
     assert any(rule["id"] == "GRD-003" for rule in context["guardrails"])
+
+
+def test_employment_change_context_uses_one_stop_reporting_procedure() -> None:
+    context = KnowledgeRepository(ROOT).compile_context("WF-CHG-001")
+
+    procedure = context["administrative_procedure"]
+    assert procedure["submission_pattern"] == "one_stop_report"
+    assert procedure["deadline_rule"]["value"] == 15
+    assert "SRC-LAW-IMMIGRATION-DECREE-24" in context["workflow"]["source_ids"]

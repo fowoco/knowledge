@@ -1,4 +1,4 @@
-version: 0.1.0
+version: 0.2.0
 last_verified: 2026-07-16
 sources:
   - id: SRC-KEIS-REQUIRED-DOCS
@@ -9,7 +9,7 @@ sources:
     data_shape: CSV 187행, 신청서명·필요서류명·해당업종·샘플서식 제공 여부
     use_for: [document_checklist_seed, workflow_reference]
     use_as_model_label: false
-    license_note: 공공데이터포털 이용조건과 최신 파일의 메타데이터를 재확인한다.
+    license_note: 이용허락범위 제한 없음. 정규화 결과에도 출처 ID와 원본 버전을 유지한다.
 
   - id: SRC-KEIS-ALLOWED-INDUSTRIES
     title: 고용허가제 허용업종 및 사업내용 다국어 목록
@@ -17,9 +17,71 @@ sources:
     url: https://www.data.go.kr/data/15153406/fileData.do
     access: public_download
     data_shape: CSV 847행, 한국어·영어 및 송출국 언어 사업내용
-    use_for: [industry_taxonomy, multilingual_terminology]
+    use_for: [industry_taxonomy, korean_business_terminology]
     use_as_model_label: false
-    license_note: 번역모델 학습셋이 아니라 용어 검증과 업종 표준화에 사용한다.
+    license_note: >-
+      이용허락범위 제한 없음. 다국어 열의 의미 불일치 표본이 확인되어 번역 근거로 사용하지
+      않고 제조업 분류·한국어·영어 참고명만 사용한다.
+
+  - id: SRC-EPS-EMPLOYMENT-PROCESS
+    title: EPS 사업주 외국인근로자 고용절차
+    publisher: 고용노동부·한국산업인력공단
+    url: https://www.eps.go.kr/eo/EmployJobProc.eo
+    access: public_web
+    data_shape: 고용허가·근로계약·고용허가기간 연장 절차 안내
+    use_for: [contract_renewal_workflow, permit_extension_workflow]
+    use_as_model_label: false
+    license_note: 내부 준비일과 법정·공식 처리기한을 구분하고 실제 신청 전 최신 내용을 확인한다.
+
+  - id: SRC-MOEL-1350-EMPLOYMENT-CHANGE
+    title: 고용노동부 1350 외국인근로자 고용변동 신고 FAQ
+    publisher: 고용노동부
+    url: https://1350.moel.go.kr/home/hp/data/faqView.do?faq_idx=1000001238
+    access: public_web
+    data_shape: 신고기한·서식·고용센터와 출입국 신고 연계 안내
+    use_for: [employment_change_workflow, one_stop_reporting_reference]
+    use_as_model_label: false
+    license_note: FAQ를 자동 법률판단에 사용하지 않고 Workflow 근거와 HR 확인 항목으로 사용한다.
+
+  - id: SRC-LAW-IMMIGRATION-ACT-19
+    title: 출입국관리법 제19조 외국인을 고용한 자 등의 신고의무
+    publisher: 국가법령정보센터
+    url: https://www.law.go.kr/법령/출입국관리법/제19조
+    access: public_web
+    data_shape: 고용 외국인 관련 신고와 관계기관 연계 조문
+    use_for: [employment_change_workflow, one_stop_reporting_reference]
+    use_as_model_label: false
+    license_note: 시행일과 개정 이력을 함께 확인하고 조문 구조를 유지한다.
+
+  - id: SRC-LAW-IMMIGRATION-DECREE-24
+    title: 출입국관리법 시행령 제24조 외국인을 고용한 자 등의 신고
+    publisher: 국가법령정보센터
+    url: https://www.law.go.kr/법령/출입국관리법시행령/제24조
+    access: public_web
+    data_shape: 신고 대상 사건과 사건별 신고기한 기산점
+    use_for: [employment_change_event_type, deadline_reference]
+    use_as_model_label: false
+    license_note: AI가 사건 유형을 확정하지 않으며 HR 사실확인 후 기한 계산에 사용한다.
+
+  - id: SRC-LAW-FOREIGN-WORKERS-ACT-17
+    title: 외국인근로자의 고용 등에 관한 법률 제17조 외국인근로자의 고용관리
+    publisher: 국가법령정보센터
+    url: https://www.law.go.kr/법령/외국인근로자의고용등에관한법률/제17조
+    access: public_web
+    data_shape: 고용변동 신고 의무의 법률 근거
+    use_for: [employment_change_workflow]
+    use_as_model_label: false
+    license_note: 구체적 사건과 기한은 시행령·시행규칙 및 최신 공식안내와 함께 확인한다.
+
+  - id: SRC-LAW-IMMIGRATION-ACT-25
+    title: 출입국관리법 제25조 체류기간 연장허가
+    publisher: 국가법령정보센터
+    url: https://www.law.go.kr/법령/출입국관리법/제25조
+    access: public_web
+    data_shape: 체류기간 만료 전 연장허가 신청 근거
+    use_for: [stay_period_extension_workflow]
+    use_as_model_label: false
+    license_note: 체류자격별 세부 구비서류는 하이코리아에서 별도 확인한다.
 
   - id: SRC-EPS-FORMS
     title: EPS 외국인고용 관련 서식자료

@@ -36,7 +36,15 @@ class RequestEvaluator:
     """Validate classified model output before a Workflow is executed."""
 
     _RESOLUTION_FIELDS = {
-        "TIME": {"due_at", "effective_at", "incident_at", "pay_period"},
+        "TIME": {
+            "due_at",
+            "effective_at",
+            "incident_at",
+            "awareness_at",
+            "contract_end_date",
+            "stay_expiry_date",
+            "pay_period",
+        },
         "LOCATION": {"work_location", "submission_channel"},
         "OBJECT": {"document_type", "source_document_id", "work_action"},
         "TARGET": {"worker_id"},

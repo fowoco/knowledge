@@ -1,0 +1,11 @@
+version: 0.1.0
+source_verified_at: 2026-07-16
+datasets:
+- source_id: SRC-KEIS-REQUIRED-DOCS
+  path: required_documents_manufacturing.csv
+  row_count: 122
+  sha256: 96a712f01cbcd13e43c53501f386803be973a79da4c379f143c53ddfb288a053
+- source_id: SRC-KEIS-ALLOWED-INDUSTRIES
+  path: manufacturing_industries.csv
+  row_count: 569
+  sha256: 4cfc3a1ce928f3f04011b166533e871b1a47b58da70d8650d7fbd7248fdee04e
