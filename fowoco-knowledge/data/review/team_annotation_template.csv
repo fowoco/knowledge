@@ -1,1 +1,1 @@
-request_id,reviewer_code,intents,domains,workflow_ids,slots_json,missing_slots,ambiguities,sensitivity,next_action,decision,notes,reviewed_at
+request_id,reviewer_code,source,input_mode,hr_utterance,system_context,intents,domains,workflow_ids,slots_json,missing_slots,ambiguities,sensitivity,next_action,decision,notes,reviewed_at

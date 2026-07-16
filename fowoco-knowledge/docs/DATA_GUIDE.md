@@ -5,6 +5,9 @@
 `gold_seed.csv`는 당장 파인튜닝하기 위한 대규모 학습셋이 아닙니다.
 팀이 같은 라벨 기준으로 문장을 만들고, Agent 분기와 모델 출력을 검증하기 위한 초기 기준입니다.
 
+대표 모델과 데이터셋 역할·잠금·증강 정책은 `data/dataset_manifest.yaml`을 단일 기준으로
+사용합니다. 실제 검수 작업 순서는 `docs/DATA_OPERATIONS.md`를 따릅니다.
+
 ## 컬럼
 
 | 컬럼 | 작성 기준 |
@@ -31,8 +34,8 @@
 2. 검수자 A와 B가 서로의 답을 보지 않고 별도 양식에 전체 라벨 작성
 3. Intent·Domain은 Cohen's Kappa, Slot은 필드 Exact Match로 사전 일치도 확인
 4. 불일치는 회의에서 합의하고 라벨 가이드 갱신
-5. low·medium은 해당 Intent의 전문가 층화표본 검수가 통과해야 `GOLD_TEAM` 승격
-6. high·critical, 팀 불일치, 법령·서류·기관절차 사례는 전문가가 직접 확인해야 `GOLD_EXPERT` 승격
+5. Intent·Domain은 민감도와 무관하게 팀 합의 후 분류용 `GOLD_TEAM` 승격 가능
+6. high·critical의 Workflow·필수서류·조치안은 전문가 확인 후 `GOLD_EXPERT` 승격
 7. 평가용 사례는 별도 파일로 이동하고 이후 프롬프트 예시에 사용하지 않음
 
 팀 내부 운영 기준으로 Intent·Domain Kappa가 0.70 미만이면 라벨 가이드를 먼저 수정합니다.
@@ -49,6 +52,9 @@
 | 고도화 | 실제 운영 표현과 복합요청 반영 | 익명 운영 로그를 검수해 점진 확장 |
 
 600건은 성능을 보장하는 숫자가 아니라, 작은 분류모델과 LLM baseline을 비교할 최소 프로젝트 목표입니다.
+
+현재 18건의 독립 평가는 최종 Test가 아니라 후보 모델의 작동 여부를 확인하는 잠긴
+Smoke Evaluation입니다. 최종 성능평가 세트는 Gold 기준이 안정된 뒤 별도로 확장합니다.
 수량보다 클래스 균형, 표현 다양성, 독립 평가셋, 교차 검수 품질이 중요합니다.
 
 ## 금지사항
@@ -60,3 +66,4 @@
 - 공공 민원 Intent를 FOWOCO Intent 정답으로 그대로 치환
 
 전문가 검수 범위와 양식은 [`EXPERT_REVIEW.md`](EXPERT_REVIEW.md)를 따릅니다.
+Intent·Domain의 경계 사례는 [`LABELING_GUIDE_V1.md`](LABELING_GUIDE_V1.md)를 따릅니다.
