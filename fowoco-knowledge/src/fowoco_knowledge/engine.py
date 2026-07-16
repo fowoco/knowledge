@@ -50,7 +50,9 @@ class RequestEvaluator:
         self.schema_validator = Draft202012Validator(schema)
 
     def evaluate(self, request: dict[str, Any]) -> EvaluationResult:
-        schema_errors = sorted(self.schema_validator.iter_errors(request), key=lambda e: list(e.path))
+        schema_errors = sorted(
+            self.schema_validator.iter_errors(request), key=lambda e: list(e.path)
+        )
         if schema_errors:
             message = "; ".join(error.message for error in schema_errors)
             raise ValueError(f"Invalid agent request: {message}")

@@ -1,0 +1,27 @@
+name: PR Conventions
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  title:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Validate PR title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pattern='^(feat|fix|data|docs|test|refactor|chore|experiment|ci|perf|revert)(\([a-z0-9-]+\))?: .+'
+          if [[ ! "$PR_TITLE" =~ $pattern ]]; then
+            echo "PR 제목은 <type>(<scope>): <한국어 요약> 형식이어야 합니다."
+            exit 1
+          fi
+          if ! printf '%s' "$PR_TITLE" | grep -q '[가-힣]'; then
+            echo "콜론 뒤 요약에 한국어를 포함해야 합니다."
+            exit 1
+          fi

@@ -8,7 +8,6 @@ from pathlib import Path
 from fowoco_knowledge.repository import KnowledgeRepository
 from fowoco_knowledge.validation import KnowledgeValidator, split_codes
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -18,15 +17,11 @@ def test_all_knowledge_files_are_valid() -> None:
 
 
 def test_seed_has_coverage_but_is_not_claimed_as_training_ready() -> None:
-    with (ROOT / "data/seed/gold_seed.csv").open(
-        "r", encoding="utf-8-sig", newline=""
-    ) as handle:
+    with (ROOT / "data/seed/gold_seed.csv").open("r", encoding="utf-8-sig", newline="") as handle:
         rows = list(csv.DictReader(handle))
 
     assert len(rows) == 40
-    intent_counts = Counter(
-        intent for row in rows for intent in split_codes(row["intents"])
-    )
+    intent_counts = Counter(intent for row in rows for intent in split_codes(row["intents"]))
     for intent in {
         "WORKER_ONBOARDING",
         "EXPIRY_RENEWAL",

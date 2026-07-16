@@ -29,6 +29,10 @@ jobs:
           cache-dependency-path: fowoco-knowledge/pyproject.toml
       - name: Install package
         run: python -m pip install -e "./fowoco-knowledge[dev]"
+      - name: Lint and format check
+        run: |
+          python -m ruff format --check fowoco-knowledge/src fowoco-knowledge/tests
+          python -m ruff check fowoco-knowledge/src fowoco-knowledge/tests
       - name: Validate context pack
         run: python -m fowoco_knowledge validate
       - name: Run tests

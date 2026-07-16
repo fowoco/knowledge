@@ -4,7 +4,6 @@ from pathlib import Path
 
 from fowoco_knowledge.repository import KnowledgeRepository
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 from .engine import RequestEvaluator
 from .repository import KnowledgeRepository
@@ -53,7 +53,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     if args.command == "compile-context":
-        print(json.dumps(repository.compile_context(args.workflow_id), ensure_ascii=False, indent=2))
+        print(
+            json.dumps(repository.compile_context(args.workflow_id), ensure_ascii=False, indent=2)
+        )
         return 0
 
     if args.command == "check-request":

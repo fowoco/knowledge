@@ -2,13 +2,11 @@ from __future__ import annotations
 
 import csv
 import json
-from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator
 
 from .repository import KnowledgeRepository
-
 
 SEED_COLUMNS = {
     "request_id",
@@ -99,9 +97,7 @@ class KnowledgeValidator:
         document_types = set(context["checklists"]["document_types"])
         for checklist_id, checklist in checklists.items():
             if checklist["workflow_id"] not in workflows:
-                self.errors.append(
-                    f"{checklist_id}: unknown workflow {checklist['workflow_id']}"
-                )
+                self.errors.append(f"{checklist_id}: unknown workflow {checklist['workflow_id']}")
             for item in checklist["items"]:
                 if item["document_type"] not in document_types:
                     self.errors.append(
@@ -113,9 +109,7 @@ class KnowledgeValidator:
 
         for template in context["multilingual_templates"]["templates"]:
             if template["workflow_id"] not in workflows:
-                self.errors.append(
-                    f"{template['id']}: unknown workflow {template['workflow_id']}"
-                )
+                self.errors.append(f"{template['id']}: unknown workflow {template['workflow_id']}")
 
         valid_guardrail_targets = set(intents) | {"ALL"}
         for rule in context["guardrails"]["rules"]:
@@ -131,9 +125,7 @@ class KnowledgeValidator:
         known_domains = {item["id"] for item in context["domains"]["domains"]}
         known_workflows = {item["id"] for item in context["workflows"]["workflows"]}
         known_sources = set(self.repository.load_yaml("data/provenance.yaml")["sources"])
-        review_statuses = set(
-            self.repository.load_yaml("data/provenance.yaml")["review_statuses"]
-        )
+        review_statuses = set(self.repository.load_yaml("data/provenance.yaml")["review_statuses"])
         input_modes = set(self.repository.manifest["input_modes"])
 
         path = self.repository.root / "data/seed/gold_seed.csv"
@@ -185,7 +177,9 @@ class KnowledgeValidator:
         known_workflows = {item["id"] for item in context["workflows"]["workflows"]}
         seen: set[str] = set()
         path = self.repository.root / "data/evaluation/golden_cases.jsonl"
-        for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        for line_number, raw_line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), start=1
+        ):
             if not raw_line.strip():
                 continue
             try:
@@ -199,8 +193,12 @@ class KnowledgeValidator:
             if case_id in seen:
                 self.errors.append(f"evaluation line {line_number}: duplicate {case_id}")
             seen.add(case_id)
-            self._check_codes(line_number, "intent", case.get("expected_intents", []), known_intents)
-            self._check_codes(line_number, "domain", case.get("expected_domains", []), known_domains)
+            self._check_codes(
+                line_number, "intent", case.get("expected_intents", []), known_intents
+            )
+            self._check_codes(
+                line_number, "domain", case.get("expected_domains", []), known_domains
+            )
             self._check_codes(
                 line_number,
                 "workflow",
@@ -217,9 +215,7 @@ class KnowledgeValidator:
             indexed[item_id] = item
         return indexed
 
-    def _check_codes(
-        self, line_number: int, kind: str, values: list[str], known: set[str]
-    ) -> None:
+    def _check_codes(self, line_number: int, kind: str, values: list[str], known: set[str]) -> None:
         for value in values:
             if value not in known:
                 self.errors.append(f"line {line_number}: unknown {kind} {value}")

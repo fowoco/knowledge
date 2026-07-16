@@ -37,8 +37,7 @@ def discover_project_root(explicit_root: str | Path | None = None) -> Path:
             return resolved
 
     raise KnowledgeNotFoundError(
-        "FOWOCO knowledge root를 찾지 못했습니다. "
-        "--root 또는 FOWOCO_KNOWLEDGE_ROOT를 지정하세요."
+        "FOWOCO knowledge root를 찾지 못했습니다. --root 또는 FOWOCO_KNOWLEDGE_ROOT를 지정하세요."
     )
 
 
@@ -96,15 +95,11 @@ class KnowledgeRepository:
             item for item in context["intents"]["intents"] if item["id"] == workflow["intent"]
         )
         domains = [
-            item
-            for item in context["domains"]["domains"]
-            if item["id"] in workflow["domains"]
+            item for item in context["domains"]["domains"] if item["id"] in workflow["domains"]
         ]
         slot_policy = context["slots"]["workflow_requirements"][workflow["required_slots_ref"]]
         sources = [
-            item
-            for item in context["sources"]["sources"]
-            if item["id"] in workflow["source_ids"]
+            item for item in context["sources"]["sources"] if item["id"] in workflow["source_ids"]
         ]
         guardrails = [
             item
