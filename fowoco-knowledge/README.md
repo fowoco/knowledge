@@ -55,6 +55,14 @@ python3.11 -m venv .venv
 # 분류·Slot Filling 결과가 Workflow를 실행할 수 있는지 확인
 .venv/bin/python -m fowoco_knowledge check-request \
   fowoco-knowledge/examples/ambiguous_document_request.json
+
+# 공식 원본 검증 후 제조업 Knowledge 스냅샷 재생성
+.venv/bin/python -m fowoco_knowledge sync-official-data
+
+# 신청서별 필요서류와 제조업 세부업종 조회
+.venv/bin/python -m fowoco_knowledge \
+  list-required-documents "외국인 고용변동 등 신고"
+.venv/bin/python -m fowoco_knowledge search-industries "금속가공제품"
 ```
 
 `check-request`는 자연어 모델을 대신하지 않습니다. 모델이 출력한 Workflow와 Slot이
@@ -80,3 +88,7 @@ python3.11 -m venv .venv
 - 실제 운영 로그: 개인정보를 제거하고 별도 승인된 경우에만 Active Learning 후보로 사용
 
 세부 기준은 [`docs/DATA_GUIDE.md`](docs/DATA_GUIDE.md)를 확인합니다.
+
+공식 데이터 변환은 [`docs/OFFICIAL_DATA_PIPELINE.md`](docs/OFFICIAL_DATA_PIPELINE.md),
+신고·연장 기능의 범위는 [`docs/E9_REPORTING_WORKFLOWS.md`](docs/E9_REPORTING_WORKFLOWS.md)를
+확인합니다.
