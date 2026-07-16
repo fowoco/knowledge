@@ -1,5 +1,17 @@
 # Contributing
 
+전체 개발·리뷰·보안 기준은 [`docs/DEVELOPMENT_STRATEGY.md`](docs/DEVELOPMENT_STRATEGY.md)를 따릅니다.
+
+## Standard workflow
+
+1. 완료 조건이 있는 GitHub Issue 생성
+2. `<type>/issue-<번호>-<short-slug>` 브랜치 생성
+3. 되돌릴 수 있는 기능 단위로 커밋
+4. 작업 초기에 Draft PR 생성
+5. CI·자체 점검 후 Ready for review 전환
+6. 리뷰 반영 후 Squash 또는 Rebase merge
+7. Issue 종료와 원격 브랜치 삭제
+
 ## Branch
 
 `<type>/<short-description>` 형식을 사용합니다.
@@ -53,3 +65,5 @@ Conventional Commits를 따릅니다.
 - 데이터 변경 시 추가·수정·삭제 건수와 라벨 분포 기재
 - 공식자료 변경 시 출처와 확인일 기재
 - 개인정보·원본 인터뷰·원본 신분서류 업로드 금지
+- 제목은 Commit 형식과 동일하게 작성하고 콜론 뒤에 한국어 포함
+- 되돌리기 어려운 기술 결정은 `docs/adr`에 ADR 추가
