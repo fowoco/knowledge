@@ -42,6 +42,16 @@ body:
       label: 변경 내용과 근거
     validations:
       required: true
+  - type: dropdown
+    id: expert_review
+    attributes:
+      label: 전문가 검수 수준
+      options:
+        - 고위험·공식절차 직접 검수 필요
+        - low·medium 층화표본 검수 필요
+        - 기술·문서 변경으로 전문가 검수 불필요
+    validations:
+      required: true
   - type: checkboxes
     id: safety
     attributes:

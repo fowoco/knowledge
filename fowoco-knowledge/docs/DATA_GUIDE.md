@@ -23,16 +23,21 @@
 | `sensitivity` | `low`, `medium`, `high`, `critical` |
 | `next_action` | 추가질문, HR 검토, 후보 분리 등 시스템의 다음 행동 |
 | `expected_output` | 화면에 생성되어야 할 산출물 |
-| `review_status` | `DRAFT` → `REVIEWED_ONCE` → `GOLD` |
+| `review_status` | `DRAFT` → `REVIEWED_ONCE` → `TEAM_AGREED` → `GOLD_TEAM` 또는 `GOLD_EXPERT` |
 
 ## 작성·검수 순서
 
 1. 작성자가 한 행 작성
-2. 검수자 A가 Intent·Domain·Workflow 확인
-3. 검수자 B가 Slot·누락·모호성 확인
-4. 불일치는 회의에서 기준을 정하고 가이드 갱신
-5. 합의된 행만 `GOLD`로 변경
-6. 평가용 사례는 별도 파일로 이동하고 이후 프롬프트 예시에 사용하지 않음
+2. 검수자 A와 B가 서로의 답을 보지 않고 별도 양식에 전체 라벨 작성
+3. Intent·Domain은 Cohen's Kappa, Slot은 필드 Exact Match로 사전 일치도 확인
+4. 불일치는 회의에서 합의하고 라벨 가이드 갱신
+5. low·medium은 해당 Intent의 전문가 층화표본 검수가 통과해야 `GOLD_TEAM` 승격
+6. high·critical, 팀 불일치, 법령·서류·기관절차 사례는 전문가가 직접 확인해야 `GOLD_EXPERT` 승격
+7. 평가용 사례는 별도 파일로 이동하고 이후 프롬프트 예시에 사용하지 않음
+
+팀 내부 운영 기준으로 Intent·Domain Kappa가 0.70 미만이면 라벨 가이드를 먼저 수정합니다.
+전문가 표본의 수정·거절률이 10%를 넘으면 해당 Intent 또는 Workflow 전체를 전문가 재검수합니다.
+이 수치는 보편적인 학술 기준이 아니라 FOWOCO의 초기 품질 게이트입니다.
 
 ## 현실적인 수량 단계
 
@@ -53,3 +58,5 @@
 - 합성 문장을 실제 기업 데이터로 표기
 - 평가 문장을 학습셋이나 Few-shot 예시에 재사용
 - 공공 민원 Intent를 FOWOCO Intent 정답으로 그대로 치환
+
+전문가 검수 범위와 양식은 [`EXPERT_REVIEW.md`](EXPERT_REVIEW.md)를 따릅니다.
