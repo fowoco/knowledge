@@ -70,6 +70,10 @@ python3.11 -m venv .venv
 # 기존 제안 라벨을 숨긴 독립 검수 파일 생성
 .venv/bin/python -m fowoco_knowledge \
   build-review-queue REV-A reviewer-a.csv
+
+# 독립 검수 결과 비교와 불일치 큐 생성
+.venv/bin/python -m fowoco_knowledge compare-reviews \
+  reviewer-a.csv reviewer-b.csv --output disagreements.csv
 ```
 
 `check-request`는 자연어 모델을 대신하지 않습니다. 모델이 출력한 Workflow와 Slot이

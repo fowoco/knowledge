@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
-from fowoco_knowledge.dataset import DatasetManager
+from fowoco_knowledge.dataset import DatasetManager, ReviewComparator
 from fowoco_knowledge.repository import KnowledgeRepository
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,3 +41,60 @@ def test_blind_review_queue_does_not_expose_proposed_labels(tmp_path: Path) -> N
     assert all(row["domains"] == "" for row in rows)
     assert all(row["workflow_ids"] == "" for row in rows)
     assert all(row["slots_json"] == "{}" for row in rows)
+
+
+def test_review_comparison_reports_pending_rows(tmp_path: Path) -> None:
+    manager = DatasetManager(KnowledgeRepository(ROOT))
+    reviewer_a = tmp_path / "reviewer-a.csv"
+    reviewer_b = tmp_path / "reviewer-b.csv"
+    manager.write_blind_review_queue("REV-A", reviewer_a)
+    manager.write_blind_review_queue("REV-B", reviewer_b)
+
+    report = ReviewComparator(KnowledgeRepository(ROOT)).compare(reviewer_a, reviewer_b)
+
+    assert report["completed_rows"] == 0
+    assert report["pending_rows"] == 40
+    assert report["disagreement_rows"] == 0
+    assert report["label_guide_ready"] is False
+
+
+def test_review_comparison_writes_only_disagreements(tmp_path: Path) -> None:
+    manager = DatasetManager(KnowledgeRepository(ROOT))
+    reviewer_a = tmp_path / "reviewer-a.csv"
+    reviewer_b = tmp_path / "reviewer-b.csv"
+    output = tmp_path / "disagreements.csv"
+    manager.write_blind_review_queue("REV-A", reviewer_a)
+    manager.write_blind_review_queue("REV-B", reviewer_b)
+
+    for path, second_intent in (
+        (reviewer_a, "EXPIRY_RENEWAL"),
+        (reviewer_b, "DOCUMENT_REQUEST"),
+    ):
+        with path.open("r", encoding="utf-8-sig", newline="") as handle:
+            reader = csv.DictReader(handle)
+            rows = list(reader)
+            fieldnames = reader.fieldnames
+        for row in rows[:2]:
+            row["intents"] = "WORKER_ONBOARDING"
+            row["domains"] = "WORKER_PROFILE"
+            row["decision"] = "APPROVE"
+        rows[1]["intents"] = second_intent
+        with path.open("w", encoding="utf-8-sig", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows)
+
+    report = ReviewComparator(KnowledgeRepository(ROOT)).compare(
+        reviewer_a,
+        reviewer_b,
+        output,
+    )
+
+    with output.open("r", encoding="utf-8-sig", newline="") as handle:
+        disagreements = list(csv.DictReader(handle))
+    assert report["completed_rows"] == 2
+    assert report["pending_rows"] == 38
+    assert report["agreement"]["intent_exact_match"] == 0.5
+    assert report["disagreement_rows"] == 1
+    assert len(disagreements) == 1
+    assert disagreements[0]["disagreement_fields"] == "intents"

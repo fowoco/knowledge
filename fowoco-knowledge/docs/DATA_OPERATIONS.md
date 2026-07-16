@@ -53,6 +53,18 @@ python -m fowoco_knowledge build-review-queue REV-B reviewer-b.csv
 - 전문가 확인까지 끝난 전체 사례만 `GOLD_EXPERT`로 승격
 - 수정·거절률이 10%를 넘은 Intent는 해당 유형 전체 재검수
 
+두 검수 파일을 회수한 뒤 다음 명령으로 일치도와 합의 대상을 생성합니다.
+
+```bash
+python -m fowoco_knowledge compare-reviews \
+  reviewer-a.csv reviewer-b.csv \
+  --output disagreements.csv
+```
+
+출력에는 Intent·Domain·Workflow Exact Match, 라벨별 Cohen's Kappa의 Macro 평균,
+미완료 행 수와 불일치 행이 포함됩니다. Kappa가 0.70 미만이면 문장을 늘리기 전에
+라벨 가이드와 경계 사례를 먼저 수정합니다.
+
 ### 단계 C. 데이터 품질 확인
 
 ```bash
