@@ -6,6 +6,7 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
+from .ingestion import file_sha256
 from .repository import KnowledgeRepository
 
 SEED_COLUMNS = {
@@ -35,6 +36,29 @@ NEXT_ACTIONS = {
     "OUT_OF_SCOPE",
 }
 
+PROCESSED_DATASET_COLUMNS = {
+    "required_documents_manufacturing.csv": {
+        "requirement_id",
+        "application_name",
+        "document_name",
+        "applicable_scope",
+        "requirement_marker",
+        "sample_form_available",
+        "source_industry_text",
+        "source_id",
+        "source_version",
+    },
+    "manufacturing_industries.csv": {
+        "industry_id",
+        "major_category",
+        "middle_category",
+        "business_content_ko",
+        "business_content_en",
+        "source_id",
+        "source_version",
+    },
+}
+
 
 def split_codes(raw: str | None) -> list[str]:
     return [item.strip() for item in (raw or "").split("|") if item.strip()]
@@ -48,6 +72,7 @@ class KnowledgeValidator:
     def validate_all(self) -> list[str]:
         self.errors = []
         self._validate_manifest_files()
+        self._validate_processed_datasets()
         self._validate_workflow_schema()
         self._validate_cross_references()
         self._validate_seed_data()
@@ -59,6 +84,60 @@ class KnowledgeValidator:
         for key, relative_path in manifest.get("files", {}).items():
             if not (self.repository.root / relative_path).is_file():
                 self.errors.append(f"manifest file missing: {key} -> {relative_path}")
+        for key, relative_path in manifest.get("datasets", {}).items():
+            if not (self.repository.root / relative_path).is_file():
+                self.errors.append(f"manifest dataset missing: {key} -> {relative_path}")
+
+    def _validate_processed_datasets(self) -> None:
+        processed_manifest_path = self.repository.root / "data/processed/manifest.yaml"
+        if not processed_manifest_path.is_file():
+            return
+        processed_manifest = self.repository.load_yaml("data/processed/manifest.yaml")
+        source_manifest = self.repository.load_yaml("data/external/source_manifest.yaml")
+        known_sources = {item["id"] for item in source_manifest["sources"]}
+
+        for dataset in processed_manifest.get("datasets", []):
+            filename = dataset["path"]
+            path = self.repository.root / "data/processed" / filename
+            if not path.is_file():
+                self.errors.append(f"processed dataset missing: {filename}")
+                continue
+            if dataset["source_id"] not in known_sources:
+                self.errors.append(
+                    f"processed dataset {filename}: unknown source {dataset['source_id']}"
+                )
+            if file_sha256(path) != dataset["sha256"]:
+                self.errors.append(f"processed dataset {filename}: checksum mismatch")
+
+            with path.open("r", encoding="utf-8", newline="") as handle:
+                reader = csv.DictReader(handle)
+                rows = list(reader)
+            if len(rows) != dataset["row_count"]:
+                self.errors.append(f"processed dataset {filename}: row count mismatch")
+            expected_columns = PROCESSED_DATASET_COLUMNS.get(filename)
+            if expected_columns and set(reader.fieldnames or []) != expected_columns:
+                self.errors.append(f"processed dataset {filename}: column mismatch")
+            if filename == "manufacturing_industries.csv" and any(
+                row["major_category"] != "제조업" for row in rows
+            ):
+                self.errors.append(f"processed dataset {filename}: non-manufacturing row")
+            critical_fields = {
+                "required_documents_manufacturing.csv": [
+                    "requirement_id",
+                    "application_name",
+                    "document_name",
+                ],
+                "manufacturing_industries.csv": [
+                    "industry_id",
+                    "middle_category",
+                    "business_content_ko",
+                ],
+            }.get(filename, [])
+            for line_number, row in enumerate(rows, start=2):
+                if any(not row.get(field, "").strip() for field in critical_fields):
+                    self.errors.append(
+                        f"processed dataset {filename} line {line_number}: blank critical field"
+                    )
 
     def _validate_workflow_schema(self) -> None:
         schema = self.repository.load_json("schemas/workflow-catalog.schema.json")
@@ -75,6 +154,7 @@ class KnowledgeValidator:
         sources = self._index_unique(context["sources"]["sources"], "source")
         workflows = self._index_unique(context["workflows"]["workflows"], "workflow")
         checklists = self._index_unique(context["checklists"]["checklists"], "checklist")
+        procedures = self._index_unique(context["procedures"]["procedures"], "procedure")
         slot_refs = context["slots"]["workflow_requirements"]
 
         for workflow_id, workflow in workflows.items():
@@ -110,6 +190,26 @@ class KnowledgeValidator:
         for template in context["multilingual_templates"]["templates"]:
             if template["workflow_id"] not in workflows:
                 self.errors.append(f"{template['id']}: unknown workflow {template['workflow_id']}")
+
+        required_documents = self.repository.load_csv(
+            "data/processed/required_documents_manufacturing.csv"
+        )
+        application_names = {row["application_name"] for row in required_documents}
+        for procedure_id, procedure in procedures.items():
+            if procedure["workflow_id"] not in workflows:
+                self.errors.append(f"{procedure_id}: unknown workflow {procedure['workflow_id']}")
+            for source_id in procedure["source_ids"]:
+                if source_id not in sources:
+                    self.errors.append(f"{procedure_id}: unknown source {source_id}")
+            for key in ("next_workflow_ids", "possible_prerequisite_workflow_ids"):
+                for workflow_id in procedure.get(key, []):
+                    if workflow_id not in workflows:
+                        self.errors.append(f"{procedure_id}: unknown workflow {workflow_id}")
+            application_name = procedure.get("dataset_application_name")
+            if application_name and application_name not in application_names:
+                self.errors.append(
+                    f"{procedure_id}: unknown dataset application {application_name}"
+                )
 
         valid_guardrail_targets = set(intents) | {"ALL"}
         for rule in context["guardrails"]["rules"]:

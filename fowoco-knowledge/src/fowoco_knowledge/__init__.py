@@ -4,4 +4,4 @@ from .engine import RequestEvaluator
 from .repository import KnowledgeRepository
 
 __all__ = ["KnowledgeRepository", "RequestEvaluator"]
-__version__ = "0.1.0"
+__version__ = "0.2.0"

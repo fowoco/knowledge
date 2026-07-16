@@ -1,4 +1,4 @@
-version: 0.1.0
+version: 0.2.0
 status: draft_requires_domain_review
 policy:
   source_of_truth: SRC-KEIS-REQUIRED-DOCS
@@ -66,7 +66,7 @@ checklists:
         requirement: verify_contract_period
       - document_type: APPLICATION_FORM
         requirement: select_current_official_form
-    official_sources: [SRC-HIKOREA, SRC-KEIS-REQUIRED-DOCS]
+    official_sources: [SRC-HIKOREA, SRC-LAW-IMMIGRATION-ACT-25, SRC-KEIS-REQUIRED-DOCS]
     hr_confirmation: 체류자격과 개별 사정에 따른 추가서류를 하이코리아에서 최종 확인한다.
 
   - id: CHK-CONTRACT-RENEW-001
@@ -77,8 +77,8 @@ checklists:
         requirement: use_current_standard_form
       - document_type: EMPLOYMENT_PERMIT
         requirement: verify_permit_period
-    official_sources: [SRC-MOEL-CONTRACT-2026, SRC-EPS-FORMS]
-    hr_confirmation: 근로조건과 당사자 서명은 HR이 확인한다.
+    official_sources: [SRC-MOEL-CONTRACT-2026, SRC-EPS-FORMS, SRC-EPS-EMPLOYMENT-PROCESS]
+    hr_confirmation: 근로조건·당사자 서명·고용허가기간 연장 적용 여부를 HR이 확인한다.
 
   - id: CHK-PAYROLL-EXPLAIN-001
     workflow_id: WF-PAY-001
@@ -101,5 +101,12 @@ checklists:
         requirement: select_after_hr_confirms_change_type
       - document_type: EMPLOYMENT_CONTRACT
         requirement: reference_only
-    official_sources: [SRC-EPS, SRC-EPS-FORMS]
-    hr_confirmation: 사건 유형·발생일·신고 필요 여부를 담당 기관 또는 전문가와 확인한다.
+    official_sources:
+      - SRC-EPS
+      - SRC-EPS-FORMS
+      - SRC-KEIS-REQUIRED-DOCS
+      - SRC-MOEL-1350-EMPLOYMENT-CHANGE
+      - SRC-LAW-IMMIGRATION-ACT-19
+      - SRC-LAW-IMMIGRATION-DECREE-24
+      - SRC-LAW-FOREIGN-WORKERS-ACT-17
+    hr_confirmation: 사건 유형·기준일·신고 필요 여부와 제출 채널을 HR이 최종 확인한다.

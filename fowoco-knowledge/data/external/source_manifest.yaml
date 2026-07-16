@@ -1,0 +1,57 @@
+version: 0.1.0
+verified_at: 2026-07-16
+policy:
+  raw_files_committed: false
+  normalized_snapshots_committed: true
+  checksum_mismatch_action: stop_and_review
+sources:
+  - id: SRC-KEIS-REQUIRED-DOCS
+    title: 한국고용정보원_고용허가제 민원서식별 업종별 필요 서류_20250826
+    landing_url: https://www.data.go.kr/data/15153513/fileData.do
+    download_url: https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003536044&fileDetailSn=1&insertDataPrcus=N
+    source_version: "20250826"
+    filename: required_documents.csv
+    encoding: utf-8-sig
+    sha256: 3816528c5f41285c9d9b87582a5c650a52f7d48868fee46dcc2bd7dc1073ec00
+    expected_rows: 187
+    expected_columns: [신청서명, 필요서류명, 해당업종, 샘플서식제공여부]
+    transform: required_documents_manufacturing
+    output: required_documents_manufacturing.csv
+    license: 이용허락범위 제한 없음
+
+  - id: SRC-KEIS-ALLOWED-INDUSTRIES
+    title: 한국고용정보원_업종별 EPS 허용 세부업종 및 사업내용_20251121
+    landing_url: https://www.data.go.kr/data/15153406/fileData.do
+    download_url: https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003535225&fileDetailSn=1&insertDataPrcus=N
+    source_version: "20251121"
+    filename: allowed_industries.csv
+    encoding: utf-8-sig
+    sha256: 274c2d0084878a8f5122a00f92086983391fd9176ab5821a06cccf0e2e1a2eeb
+    expected_rows: 847
+    expected_columns:
+      - 대분류 업종명
+      - 중분류 업종명
+      - 사업내용
+      - 사업내용 영어
+      - 사업내용 방글라데시
+      - 사업내용 카자흐스탄
+      - 사업내용 베트남
+      - 사업내용 네팔
+      - 사업내용 필리핀
+      - 사업내용 스리랑카
+      - 사업내용 태국
+      - 사업내용 파키스탄
+      - 사업내용 미얀마
+      - 사업내용 캄보디아
+      - 사업내용 라오스
+      - 사업내용 중국
+      - 사업내용 우즈베키스탄
+      - 사업내용 몽골
+      - 사업내용 인도네시아
+      - 사업내용 동티모르
+    transform: manufacturing_industries
+    output: manufacturing_industries.csv
+    license: 이용허락범위 제한 없음
+    quality_note: >-
+      다국어 열은 한국어 사업내용과 의미가 일치하지 않는 표본이 확인되어 사용을 보류한다.
+      MVP에서는 한국어 업종 분류와 영어 참고명만 정규화한다.

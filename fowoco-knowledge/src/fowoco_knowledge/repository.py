@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import os
 from pathlib import Path
 from typing import Any
@@ -65,6 +66,11 @@ class KnowledgeRepository:
             raise ValueError(f"JSON root must be an object: {path}")
         return data
 
+    def load_csv(self, relative_path: str | Path) -> list[dict[str, str]]:
+        path = self.root / relative_path
+        with path.open("r", encoding="utf-8", newline="") as handle:
+            return list(csv.DictReader(handle))
+
     @property
     def manifest(self) -> dict[str, Any]:
         return self.load_yaml("knowledge/manifest.yaml")
@@ -83,6 +89,29 @@ class KnowledgeRepository:
             if workflow["id"] == workflow_id:
                 return workflow
         raise KeyError(f"Unknown workflow_id: {workflow_id}")
+
+    def list_required_documents(self, application_name: str) -> list[dict[str, str]]:
+        rows = self.load_csv("data/processed/required_documents_manufacturing.csv")
+        return [row for row in rows if row["application_name"] == application_name]
+
+    def search_manufacturing_industries(self, query: str, limit: int = 20) -> list[dict[str, str]]:
+        normalized_query = query.casefold().strip()
+        if not normalized_query:
+            return []
+        rows = self.load_csv("data/processed/manufacturing_industries.csv")
+        matches = [
+            row
+            for row in rows
+            if normalized_query
+            in " ".join(
+                [
+                    row["middle_category"],
+                    row["business_content_ko"],
+                    row["business_content_en"],
+                ]
+            ).casefold()
+        ]
+        return matches[: max(0, limit)]
 
     def compile_context(self, workflow_id: str) -> dict[str, Any]:
         """Build the smallest coherent context bundle for one Workflow."""
@@ -119,6 +148,14 @@ class KnowledgeRepository:
             for item in context["multilingual_templates"]["templates"]
             if item["workflow_id"] == workflow_id
         ]
+        administrative_procedure = next(
+            (
+                item
+                for item in context["procedures"]["procedures"]
+                if item["workflow_id"] == workflow_id
+            ),
+            None,
+        )
 
         return {
             "pack": {
@@ -136,4 +173,5 @@ class KnowledgeRepository:
             "guardrails": guardrails,
             "checklist": checklist,
             "official_sources": sources,
+            "administrative_procedure": administrative_procedure,
         }

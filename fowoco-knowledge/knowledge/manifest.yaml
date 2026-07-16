@@ -1,5 +1,5 @@
 pack_id: FOWOCO-KNOWLEDGE
-version: 0.1.0
+version: 0.2.0
 status: draft
 released_at: 2026-07-16
 default_locale: ko-KR
@@ -20,11 +20,17 @@ files:
   slots: knowledge/required_slots.yaml
   ambiguities: knowledge/ambiguity_patterns.yaml
   workflows: knowledge/workflow_catalog.yaml
+  procedures: knowledge/administrative_procedures.yaml
   sources: knowledge/official_links.yaml
   checklists: knowledge/document_checklists.yaml
   easy_korean: knowledge/easy_korean_rules.yaml
   multilingual_templates: knowledge/multilingual_templates.yaml
   guardrails: knowledge/guardrail_rules.yaml
+datasets:
+  source_manifest: data/external/source_manifest.yaml
+  processed_manifest: data/processed/manifest.yaml
+  required_documents: data/processed/required_documents_manufacturing.csv
+  manufacturing_industries: data/processed/manufacturing_industries.csv
 review_policy:
   minimum_reviewers_for_official_knowledge: 2
   all_outbound_messages_require_hr_approval: true
