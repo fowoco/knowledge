@@ -71,6 +71,7 @@ fix(server): 만료일 기준일 계산 오류 수정
 ### Pull Request
 
 - 제목도 Commit 형식과 동일하며 콜론 뒤에 한국어 포함
+- Dependabot 등 자동화 Bot PR은 Conventional Commit 형식만 검사하고 한글 요약 규칙에서 제외
 - 500줄 이상 변경은 생성 데이터와 스키마를 제외하고 분리 검토
 - API·DB·보안 정책 변경은 영향 범위와 롤백 방식을 작성
 - UI 변경은 화면 캡처 또는 Figma 링크 첨부
