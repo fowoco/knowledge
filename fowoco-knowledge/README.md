@@ -63,6 +63,10 @@ python3.11 -m venv .venv
 .venv/bin/python -m fowoco_knowledge check-notice-quality \
   fowoco-knowledge/examples/notice_quality_check.json
 
+# LLM 전송 전 원본 문서·직접식별자 제거와 Workflow 최소화
+.venv/bin/python -m fowoco_knowledge sanitize-llm-payload \
+  WF-DOC-001 fowoco-knowledge/examples/llm_payload_with_pii.json
+
 # 공식 원본 검증 후 제조업 Knowledge 스냅샷 재생성
 .venv/bin/python -m fowoco_knowledge sync-official-data
 
@@ -85,6 +89,7 @@ python3.11 -m venv .venv
 
 안내문 품질 기준과 평가 데이터 해석은
 [`docs/OUTPUT_QUALITY.md`](docs/OUTPUT_QUALITY.md)를 확인합니다.
+데이터 보호 경계는 [`docs/DATA_PROTECTION.md`](docs/DATA_PROTECTION.md)를 확인합니다.
 
 ## Agent 연동 위치
 

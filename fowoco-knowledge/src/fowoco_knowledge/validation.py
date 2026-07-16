@@ -78,6 +78,7 @@ class KnowledgeValidator:
         self._validate_dataset_manifest()
         self._validate_workflow_schema()
         self._validate_quality_policy_schema()
+        self._validate_data_protection_schema()
         self._validate_cross_references()
         self._validate_seed_data()
         self._validate_evaluation_data()
@@ -188,6 +189,24 @@ class KnowledgeValidator:
         for error in validator.iter_errors(policy):
             path = ".".join(str(item) for item in error.path)
             self.errors.append(f"quality policy [{path}]: {error.message}")
+
+    def _validate_data_protection_schema(self) -> None:
+        schema = self.repository.load_json("schemas/data-protection-policy.schema.json")
+        policy = self.repository.load_yaml("knowledge/data_protection.yaml")
+        validator = Draft202012Validator(schema)
+        for error in validator.iter_errors(policy):
+            path = ".".join(str(item) for item in error.path)
+            self.errors.append(f"data protection policy [{path}]: {error.message}")
+        boundary = policy.get("llm_boundary", {})
+        patterns = boundary.get("text_masking_patterns", {})
+        replacements = boundary.get("replacements", {})
+        for name, pattern in patterns.items():
+            try:
+                __import__("re").compile(pattern)
+            except __import__("re").error as exc:
+                self.errors.append(f"data protection pattern {name}: invalid regex ({exc})")
+            if name not in replacements:
+                self.errors.append(f"data protection pattern {name}: replacement missing")
 
     def _validate_cross_references(self) -> None:
         context = self.repository.load_context_files()

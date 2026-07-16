@@ -2,11 +2,13 @@
 
 from .dataset import DatasetManager, ReviewComparator
 from .engine import RequestEvaluator
+from .privacy import DataProtector
 from .quality import NoticeQualityEvaluator
 from .repository import KnowledgeRepository
 
 __all__ = [
     "DatasetManager",
+    "DataProtector",
     "KnowledgeRepository",
     "NoticeQualityEvaluator",
     "RequestEvaluator",

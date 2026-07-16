@@ -61,6 +61,15 @@ llm_boundary:
     - address
     - bank_account
     - worker_question_text
+  contextual_exact_value_fields:
+    - legal_name
+    - worker_name
+    - foreigner_registration_number
+    - passport_number
+    - phone
+    - email
+    - address
+    - bank_account
   allowed_slot_source: workflow_required_and_optional_slots_only
   text_masking_patterns:
     resident_or_foreigner_number: "(?<!\\d)\\d{6}-?[1-8]\\d{6}(?!\\d)"

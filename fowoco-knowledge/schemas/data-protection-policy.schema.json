@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.local/schemas/data-protection-policy.schema.json",
+  "title": "FOWOCO data protection policy",
+  "type": "object",
+  "required": [
+    "version",
+    "classifications",
+    "llm_boundary",
+    "access_control",
+    "transport_and_storage",
+    "learning_log"
+  ],
+  "properties": {
+    "version": { "type": "string" },
+    "purpose": { "type": "string" },
+    "classifications": { "type": "object", "minProperties": 1 },
+    "llm_boundary": {
+      "type": "object",
+      "required": [
+        "allowed_top_level_fields",
+        "blocked_fields",
+        "contextual_exact_value_fields",
+        "allowed_slot_source",
+        "text_masking_patterns",
+        "replacements"
+      ],
+      "properties": {
+        "allowed_top_level_fields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "blocked_fields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "contextual_exact_value_fields": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "allowed_slot_source": {
+          "const": "workflow_required_and_optional_slots_only"
+        },
+        "text_masking_patterns": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "type": "string" }
+        },
+        "replacements": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "access_control": { "type": "object" },
+    "transport_and_storage": { "type": "object" },
+    "learning_log": { "type": "object" }
+  },
+  "additionalProperties": false
+}

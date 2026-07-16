@@ -1,0 +1,19 @@
+{
+  "request_id": "REQ-DEMO-001",
+  "input_mode": "WORKER_MESSAGE",
+  "workflow_id": "WF-DOC-001",
+  "worker_name": "응우옌 반 A",
+  "phone": "010-1234-5678",
+  "raw_document": "여권 원본 이미지 데이터",
+  "utterance": "응우옌 반 A에게 010-1234-5678로 연락해서 여권 사본을 요청해줘",
+  "slots": {
+    "worker_id": "WRK-DEMO-001",
+    "worker_name": "응우옌 반 A",
+    "document_type": "PASSPORT_COPY",
+    "due_at": "2026-07-20T17:00:00+09:00",
+    "submission_channel": "SECURE_LINK",
+    "passport_number": "M12345678",
+    "unrelated_company_note": "외부 전송 금지 메모"
+  },
+  "debug_dump": "전송하면 안 되는 내부 디버그 값"
+}
