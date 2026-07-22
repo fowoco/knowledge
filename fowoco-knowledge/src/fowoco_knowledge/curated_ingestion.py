@@ -154,7 +154,7 @@ def generate(
             prev_app, prev_doc = seen_ids[requirement_id]
             if prev_app != application_name or prev_doc != document_name:
                 raise ValueError(
-                    f"{line_no}행: 해시 충돌 의심 -" 
+                    f"{line_no}행: 해시 충돌 의심 -"
                     f"{requirement_id} 가 서로 다른 항목에서 재사용됨 "
                     f"(기존: {prev_app}/{prev_doc}, 신규: {application_name}/{document_name})"
                 )
