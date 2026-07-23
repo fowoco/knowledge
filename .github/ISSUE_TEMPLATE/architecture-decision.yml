@@ -1,7 +1,7 @@
-name: Architecture decision
-description: 패키지·Framework·DB·보안·Agent 구조 결정을 제안합니다.
-title: "[Architecture] "
-labels: ["area:platform", "type:feature"]
+name: Knowledge 설계 결정
+description: 지식 스키마·출처 정책·검수 체계·데이터 계약 변경을 제안합니다.
+title: "[Decision] "
+labels: ["area:knowledge", "type:chore"]
 body:
   - type: textarea
     id: context

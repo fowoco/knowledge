@@ -1,6 +1,13 @@
 # Contributing
 
-전체 개발·리뷰·보안 기준은 [`docs/DEVELOPMENT_STRATEGY.md`](docs/DEVELOPMENT_STRATEGY.md)를 따릅니다.
+이 문서는 `fowoco/knowledge`의 지식·데이터·스키마·검증 도구 변경 기준을 정의합니다.
+
+## Repository scope
+
+- Context Pack, 공식 출처, 정규화 데이터, 평가·검수 데이터와 Schema 변경은 이 저장소에서 진행
+- 모델 학습·추론과 Agent 실행 코드는 `fowoco/ai`에서 진행
+- API·DB, UI, 배포 설정은 각각 `fowoco/server`, `fowoco/client`, `fowoco/infra`에서 진행
+- 다른 저장소와 연결되는 변경은 이곳에서 계약을 먼저 갱신하고 소비 저장소 Issue를 연결
 
 ## Standard workflow
 
@@ -67,4 +74,4 @@ Conventional Commits를 따릅니다.
 - 개인정보·원본 인터뷰·원본 신분서류 업로드 금지
 - 제목은 Commit 형식과 동일하게 작성하고 콜론 뒤에 한국어 포함
 - Dependabot 등 자동화 Bot PR은 Conventional Commit 형식만 검사하고 한글 요약 규칙에서 제외
-- 되돌리기 어려운 기술 결정은 `docs/adr`에 ADR 추가
+- 되돌리기 어려운 지식 스키마·출처 정책·검수 체계·데이터 계약 결정은 `docs/adr`에 ADR 추가
