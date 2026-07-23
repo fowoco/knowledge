@@ -1,0 +1,5 @@
+application_id,application_name,online_submission,location,link,note
+p1,외국인 등록증 발급,N,출입국사무소,www.hikorea.go.kr,예약필요
+p2,외국인 고용변동 등 신고,Y,하이코리아,https://foreigner.gov.kr/contents/foreignerContents?htmlNo=m020104,
+p3,취업기간만료자 취업 활동기간 연장신청,Y,고용24,https://www.work24.go.kr/ep/a/f/0008/hpepaf0008m00Per.do?dtlContextPath=&redirectUrl=%2Fa%2Ff%2F0008%2Fhpepaf0008m00PerPost.do%3FfavType%3De9&topArea=&dtlSmtmConcCtrlId=&dtlExnwMenuConcSecd=&programMenuIdentification=EBG020000500337&menuPurpSecd=&dtlPwdCfrmYn=&serverToday=20260720&currentMenuId=X&dtlForwardPolyUrl=&dtlMenuId=&dtlMenuPurpSecd=&favType=e9&postType=PerPost.do,
+p4,체류기간연장허가,Y,하이코리아,https://www.hikorea.go.kr/cvlappl/CvlapplStep1.pt#this,
