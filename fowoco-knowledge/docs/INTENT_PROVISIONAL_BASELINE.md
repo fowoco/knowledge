@@ -26,6 +26,9 @@ Intent를 one-vs-rest 방식으로 학습하고 Train 내부 점수만으로 임
 이 모델은 데이터·평가 파이프라인 검증용이며 A.X, BERT 또는 Transformer 후보를
 대체하지 않는다.
 
+실제 A.X zero-shot 테스트는
+[`INTENT_AX_TESTING.md`](INTENT_AX_TESTING.md)를 따른다.
+
 ## 저장소 경계
 
 AI 저장소의 작업 충돌을 피하기 위해 현재는 knowledge 저장소의 `model` 브랜치에서

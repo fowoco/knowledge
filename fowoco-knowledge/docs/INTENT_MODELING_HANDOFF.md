@@ -14,6 +14,7 @@ knowledge 저장소는 다음 자료를 제공한다.
 | 평가 정책 | `knowledge/intent_evaluation_policy.yaml` | baseline 전 임시 목표 |
 | Gold 계획 | `docs/INTENT_GOLD_TEST_PLAN.md` | 작성 전 |
 | 임시 baseline 가이드 | `docs/INTENT_PROVISIONAL_BASELINE.md` | 수정 전 라벨 실험 |
+| A.X 테스트 가이드 | `docs/INTENT_AX_TESTING.md` | zero-shot smoke 준비 |
 
 AI 저장소는 프롬프트, 모델 어댑터, 추론·평가 코드와 실험 결과를 관리한다.
 

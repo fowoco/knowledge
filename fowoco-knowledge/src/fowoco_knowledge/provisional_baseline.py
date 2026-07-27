@@ -348,6 +348,22 @@ def evaluate_baseline(
     validation_cases: list[dict[str, Any]],
     output_schema: dict[str, Any],
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    outputs = [model.predict(case["hr_input"]) for case in validation_cases]
+    return evaluate_prediction_outputs(
+        cases=validation_cases,
+        outputs=outputs,
+        output_schema=output_schema,
+    )
+
+
+def evaluate_prediction_outputs(
+    *,
+    cases: list[dict[str, Any]],
+    outputs: list[Any],
+    output_schema: dict[str, Any],
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    if len(cases) != len(outputs):
+        raise ProvisionalBaselineError("case and prediction counts differ")
     label_counts = {intent: Counter() for intent in INTENT_CODES}
     structural_failures: Counter[str] = Counter()
     error_counts: Counter[str] = Counter()
@@ -356,8 +372,7 @@ def evaluate_baseline(
     evidence_exact_matches = 0
     evidence_expected_count = 0
 
-    for case in validation_cases:
-        output = model.predict(case["hr_input"])
+    for case, output in zip(cases, outputs, strict=True):
         issues = validate_intent_model_output(
             case["hr_input"],
             output,
@@ -367,7 +382,16 @@ def evaluate_baseline(
         structural_failures.update(issue_codes)
 
         expected_codes = [item["intent"] for item in case["intents"]]
-        predicted_codes = [item["intent"] for item in output["intents"]]
+        predicted_items = (
+            output.get("intents", [])
+            if isinstance(output, dict) and isinstance(output.get("intents"), list)
+            else []
+        )
+        predicted_codes = [
+            item["intent"]
+            for item in predicted_items
+            if isinstance(item, dict) and isinstance(item.get("intent"), str)
+        ]
         expected_set = set(expected_codes)
         predicted_set = set(predicted_codes)
         _metric_counts(expected_set, predicted_set, label_counts)
@@ -385,8 +409,10 @@ def evaluate_baseline(
         }
         predicted_evidence = {
             item["intent"]: item["evidence"]
-            for item in output["intents"]
-            if item["intent"] != "OUT_OF_SCOPE"
+            for item in predicted_items
+            if isinstance(item, dict)
+            and item.get("intent") != "OUT_OF_SCOPE"
+            and isinstance(item.get("intent"), str)
         }
         for intent, evidence in expected_evidence.items():
             evidence_expected_count += 1
@@ -410,7 +436,7 @@ def evaluate_baseline(
         )
 
     per_intent, macro_f1, micro_f1 = _metrics_from_counts(label_counts)
-    record_count = len(validation_cases)
+    record_count = len(cases)
     metrics = {
         "record_count": record_count,
         "intent_exact_match": round(
