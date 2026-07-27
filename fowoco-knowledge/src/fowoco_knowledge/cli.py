@@ -7,6 +7,11 @@ from pathlib import Path
 
 from .engine import RequestEvaluator
 from .ingestion import OfficialDataPipeline
+from .intent_split import (
+    DEFAULT_SEED,
+    DEFAULT_VALIDATION_RATIO,
+    build_and_write_intent_split,
+)
 from .repository import KnowledgeRepository
 from .validation import KnowledgeValidator
 
@@ -62,6 +67,22 @@ def build_parser() -> argparse.ArgumentParser:
     )
     industry_parser.add_argument("query")
     industry_parser.add_argument("--limit", type=int, default=20)
+
+    split_parser = subparsers.add_parser(
+        "build-intent-splits",
+        help="Build provisional grouped Train/Validation ID manifests",
+    )
+    split_parser.add_argument(
+        "--output-dir",
+        type=Path,
+        help="Output directory inside the knowledge project",
+    )
+    split_parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
+    split_parser.add_argument(
+        "--validation-ratio",
+        type=float,
+        default=DEFAULT_VALIDATION_RATIO,
+    )
     return parser
 
 
@@ -128,6 +149,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "search-industries":
         for row in repository.search_manufacturing_industries(args.query, args.limit):
             print(f"{row['industry_id']}\t{row['middle_category']}\t{row['business_content_ko']}")
+        return 0
+
+    if args.command == "build-intent-splits":
+        manifest = build_and_write_intent_split(
+            repository.root,
+            output_dir=args.output_dir,
+            seed=args.seed,
+            validation_ratio=args.validation_ratio,
+        )
+        print(json.dumps(manifest, ensure_ascii=False, indent=2))
         return 0
 
     return 2

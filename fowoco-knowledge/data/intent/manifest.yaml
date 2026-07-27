@@ -4,6 +4,10 @@ status: recheck_required
 path: data/intent/hr_intent_dataset.jsonl
 schema: schemas/intent-training-case.schema.json
 label_guide: docs/INTENT_DATA.md
+model_contract: knowledge/intent_model_contract.yaml
+model_output_schema: schemas/intent-model-output.schema.json
+evaluation_policy: knowledge/intent_evaluation_policy.yaml
+split_manifest: data/intent/splits/provisional-v1/manifest.yaml
 record_count: 1340
 sha256: 4f4ebfdd4170a78def33e31edbed8315921c0b67934f5ff8612595dcd479bed2
 contains_real_personal_data: false
@@ -14,3 +18,4 @@ limitations:
   - 독립 Gold Test가 아님
   - 최종 모델 성능 주장에 사용할 수 없음
   - 의미 라벨은 규칙 v1.1에 따른 A/B 합의 검수가 필요함
+  - provisional split은 source 또는 consensus 변경 시 재생성해야 함

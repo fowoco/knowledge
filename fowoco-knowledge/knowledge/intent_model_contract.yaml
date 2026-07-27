@@ -1,0 +1,47 @@
+contract_id: FOWOCO-INTENT-MODEL-CONTRACT
+version: 0.1.0
+status: provisional_pending_consensus
+task:
+  name: HR 발화 Intent와 evidence 추출
+  input_fields:
+    - hr_input
+  output_schema: schemas/intent-model-output.schema.json
+  responsibilities:
+    - 하나 이상의 지원 Intent 분류
+    - Intent별 evidence exact substring 추출
+    - evidence 원문 등장 순서대로 Intent 배열 정렬
+  excluded_responsibilities:
+    - Domain 또는 Workflow 선택
+    - Slot Filling
+    - request_id, status, meta envelope 생성
+    - confidence를 이용한 최종 승인 판단
+    - 외부기관 신고·접수·제출 실행
+    - 법률·체류·급여의 최종 판단
+allowed_intents:
+  - WORK_INSTRUCTION
+  - DOCUMENT_REQUEST
+  - PAYROLL_EXPLANATION
+  - WORKER_ONBOARDING
+  - EMPLOYMENT_CHANGE
+  - EXPIRY_RENEWAL
+  - OUT_OF_SCOPE
+data:
+  source_manifest: data/intent/manifest.yaml
+  split_manifest: data/intent/splits/provisional-v1/manifest.yaml
+  evaluation_policy: knowledge/intent_evaluation_policy.yaml
+  label_guide: docs/INTENT_DATA.md
+  handoff_guide: docs/INTENT_MODELING_HANDOFF.md
+  gold_test_plan: docs/INTENT_GOLD_TEST_PLAN.md
+consumer_rules:
+  - split manifest의 source SHA-256이 현재 원본과 같을 때만 사용
+  - provisional split으로 최종 성능을 주장하지 않음
+  - Gold Test는 모델·프롬프트 선택 과정에서 열람하거나 학습에 사용하지 않음
+  - 모델 출력은 JSON Schema와 exact substring 규칙 검증 후에만 후속 단계로 전달
+  - 민감 Intent와 모든 외부 실행은 HR 승인·Guardrail 검사를 별도로 적용
+regeneration:
+  required_when:
+    - A/B consensus가 현재 라벨을 변경
+    - source record count 또는 SHA-256이 변경
+    - Intent 규칙 버전 또는 split 정책이 변경
+  command: >-
+    python -m fowoco_knowledge build-intent-splits

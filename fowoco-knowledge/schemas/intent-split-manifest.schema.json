@@ -1,0 +1,302 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.dev/schemas/intent-split-manifest.schema.json",
+  "title": "FOWOCO Intent Train and Validation split manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "split_id",
+    "version",
+    "status",
+    "schema",
+    "source",
+    "consensus",
+    "policy",
+    "outputs",
+    "statistics",
+    "limitations"
+  ],
+  "properties": {
+    "split_id": {
+      "type": "string",
+      "const": "FOWOCO-HR-INTENT-PROVISIONAL-SPLIT"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "provisional_pending_consensus",
+        "locked"
+      ]
+    },
+    "schema": {
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "consensus": {
+      "$ref": "#/$defs/consensus"
+    },
+    "policy": {
+      "$ref": "#/$defs/policy"
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "train",
+        "validation"
+      ],
+      "properties": {
+        "train": {
+          "$ref": "#/$defs/output"
+        },
+        "validation": {
+          "$ref": "#/$defs/output"
+        }
+      }
+    },
+    "statistics": {
+      "$ref": "#/$defs/statistics"
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataset_id",
+        "version",
+        "status",
+        "path",
+        "record_count",
+        "sha256"
+      ],
+      "properties": {
+        "dataset_id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "record_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "consensus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "assumed_for_provisional_split",
+        "dependency_issue",
+        "dependency_pr",
+        "regenerate_when_source_changes"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "completed"
+          ]
+        },
+        "assumed_for_provisional_split": {
+          "type": "boolean"
+        },
+        "dependency_issue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "dependency_pr": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "regenerate_when_source_changes": {
+          "type": "boolean"
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "seed",
+        "train_ratio",
+        "validation_ratio",
+        "target_train_count",
+        "target_validation_count",
+        "template_normalization",
+        "stratification_features"
+      ],
+      "properties": {
+        "method": {
+          "type": "string",
+          "const": "grouped_multilabel_greedy"
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "train_ratio": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 1
+        },
+        "validation_ratio": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 1
+        },
+        "target_train_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "target_validation_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "template_normalization": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "worker_id_pattern",
+            "worker_id_replacement",
+            "collapse_whitespace",
+            "casefold",
+            "preserve_dates_amounts_and_task_terms"
+          ],
+          "properties": {
+            "worker_id_pattern": {
+              "type": "string"
+            },
+            "worker_id_replacement": {
+              "type": "string"
+            },
+            "collapse_whitespace": {
+              "type": "boolean"
+            },
+            "casefold": {
+              "type": "boolean"
+            },
+            "preserve_dates_amounts_and_task_terms": {
+              "type": "boolean"
+            }
+          }
+        },
+        "stratification_features": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "record_count",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "record_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "statistics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "template_group_count",
+        "duplicate_template_group_count",
+        "max_template_group_size",
+        "label_counts",
+        "intent_cardinality_counts"
+      ],
+      "properties": {
+        "template_group_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "duplicate_template_group_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_template_group_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "label_counts": {
+          "$ref": "#/$defs/partitionedCounts"
+        },
+        "intent_cardinality_counts": {
+          "$ref": "#/$defs/partitionedCounts"
+        }
+      }
+    },
+    "partitionedCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "train",
+        "validation"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/counts"
+        },
+        "train": {
+          "$ref": "#/$defs/counts"
+        },
+        "validation": {
+          "$ref": "#/$defs/counts"
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    }
+  }
+}

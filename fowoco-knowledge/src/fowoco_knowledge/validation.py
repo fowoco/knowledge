@@ -3,11 +3,20 @@ from __future__ import annotations
 import csv
 import json
 import re
+from collections import Counter
 from typing import Any
 
 from jsonschema import Draft202012Validator
+from jsonschema.exceptions import SchemaError
 
 from .ingestion import file_sha256
+from .intent_split import (
+    IntentSplitError,
+    build_intent_split,
+    load_intent_cases,
+    normalize_intent_template,
+    read_split_ids,
+)
 from .repository import KnowledgeRepository
 
 SEED_COLUMNS = {
@@ -85,6 +94,8 @@ class KnowledgeValidator:
         self._validate_seed_data()
         self._validate_evaluation_data()
         self._validate_intent_data()
+        self._validate_intent_model_contract()
+        self._validate_intent_split_data()
         return self.errors
 
     def _validate_manifest_files(self) -> None:
@@ -95,6 +106,15 @@ class KnowledgeValidator:
         for key, relative_path in manifest.get("datasets", {}).items():
             if not (self.repository.root / relative_path).is_file():
                 self.errors.append(f"manifest dataset missing: {key} -> {relative_path}")
+        for key, relative_path in manifest.get("schemas", {}).items():
+            path = self.repository.root / relative_path
+            if not path.is_file():
+                self.errors.append(f"manifest schema missing: {key} -> {relative_path}")
+                continue
+            try:
+                Draft202012Validator.check_schema(self.repository.load_json(relative_path))
+            except SchemaError as exc:
+                self.errors.append(f"manifest schema invalid: {key} ({exc.message})")
 
     def _validate_processed_datasets(self) -> None:
         processed_manifest_path = self.repository.root / "data/processed/manifest.yaml"
@@ -416,6 +436,136 @@ class KnowledgeValidator:
             self.errors.append("intent data: record count mismatch")
         if file_sha256(path) != intent_manifest["sha256"]:
             self.errors.append("intent data: checksum mismatch")
+
+    def _validate_intent_model_contract(self) -> None:
+        manifest = self.repository.manifest
+        contract = self.repository.load_yaml(manifest["files"]["intent_model_contract"])
+        evaluation_policy = self.repository.load_yaml(manifest["files"]["intent_evaluation_policy"])
+        context = self.repository.load_context_files()
+        known_intents = {item["id"] for item in context["intents"]["intents"]} | {
+            context["intents"]["out_of_scope_label"]
+        }
+
+        if set(contract["allowed_intents"]) != known_intents:
+            self.errors.append("intent model contract: allowed intents differ from knowledge")
+        if contract["task"]["output_schema"] != manifest["schemas"]["intent_model_output"]:
+            self.errors.append("intent model contract: output schema path mismatch")
+        if evaluation_policy["applies_to"] != contract["contract_id"]:
+            self.errors.append("intent evaluation policy: contract reference mismatch")
+        required_gate_ids = {
+            "JSON_SCHEMA_VALID",
+            "EVIDENCE_EXACT_SUBSTRING",
+            "INTENT_ORDER",
+            "OUT_OF_SCOPE_EXCLUSIVE",
+        }
+        actual_gate_ids = {item["id"] for item in evaluation_policy["structural_gates"]}
+        if actual_gate_ids != required_gate_ids:
+            self.errors.append("intent evaluation policy: structural gate set mismatch")
+        if any(item["required_rate"] != 1.0 for item in evaluation_policy["structural_gates"]):
+            self.errors.append("intent evaluation policy: structural gates must require 100%")
+
+    def _validate_intent_split_data(self) -> None:
+        intent_manifest = self.repository.load_yaml("data/intent/manifest.yaml")
+        split_manifest_path = intent_manifest["split_manifest"]
+        split_manifest_file = self.repository.root / split_manifest_path
+        if not split_manifest_file.is_file():
+            self.errors.append(f"intent split manifest missing: {split_manifest_path}")
+            return
+
+        split_manifest = self.repository.load_yaml(split_manifest_path)
+        split_schema = self.repository.load_json(split_manifest["schema"])
+        for error in Draft202012Validator(split_schema).iter_errors(split_manifest):
+            error_path = ".".join(str(item) for item in error.path)
+            location = f" [{error_path}]" if error_path else ""
+            self.errors.append(f"intent split manifest{location}: {error.message}")
+
+        source = split_manifest["source"]
+        source_path = self.repository.root / source["path"]
+        if source["path"] != intent_manifest["path"]:
+            self.errors.append("intent split: source path differs from intent manifest")
+        if source["version"] != intent_manifest["version"]:
+            self.errors.append("intent split: source version differs from intent manifest")
+        if source["record_count"] != intent_manifest["record_count"]:
+            self.errors.append("intent split: source count differs from intent manifest")
+        if source["sha256"] != intent_manifest["sha256"]:
+            self.errors.append("intent split: source checksum differs from intent manifest")
+        if source_path.is_file() and file_sha256(source_path) != source["sha256"]:
+            self.errors.append("intent split: source file checksum mismatch")
+
+        split_ids: dict[str, tuple[int, ...]] = {}
+        for split_name in ("train", "validation"):
+            output = split_manifest["outputs"][split_name]
+            output_path = self.repository.root / output["path"]
+            if not output_path.is_file():
+                self.errors.append(f"intent split: missing {split_name} ID file")
+                continue
+            if file_sha256(output_path) != output["sha256"]:
+                self.errors.append(f"intent split: {split_name} checksum mismatch")
+            try:
+                ids = read_split_ids(output_path)
+            except IntentSplitError as exc:
+                self.errors.append(f"intent split: {exc}")
+                continue
+            split_ids[split_name] = ids
+            if len(ids) != output["record_count"]:
+                self.errors.append(f"intent split: {split_name} count mismatch")
+            if len(ids) != len(set(ids)):
+                self.errors.append(f"intent split: duplicate ID in {split_name}")
+            if tuple(sorted(ids)) != ids:
+                self.errors.append(f"intent split: {split_name} IDs are not sorted")
+
+        if set(split_ids) != {"train", "validation"} or not source_path.is_file():
+            return
+
+        cases = load_intent_cases(source_path)
+        source_ids = {case["id"] for case in cases}
+        train_ids = set(split_ids["train"])
+        validation_ids = set(split_ids["validation"])
+        if train_ids & validation_ids:
+            self.errors.append("intent split: Train and Validation overlap")
+        if train_ids | validation_ids != source_ids:
+            self.errors.append("intent split: IDs do not cover the full source")
+
+        split_by_id = {
+            **{case_id: "train" for case_id in train_ids},
+            **{case_id: "validation" for case_id in validation_ids},
+        }
+        template_splits: dict[str, set[str]] = {}
+        for case in cases:
+            template = normalize_intent_template(case["hr_input"])
+            template_splits.setdefault(template, set()).add(split_by_id.get(case["id"], "missing"))
+        if any(len(splits) != 1 for splits in template_splits.values()):
+            self.errors.append("intent split: normalized template leaks across splits")
+
+        policy = split_manifest["policy"]
+        regenerated = build_intent_split(
+            cases,
+            seed=policy["seed"],
+            validation_ratio=policy["validation_ratio"],
+        )
+        if regenerated.train_ids != split_ids["train"]:
+            self.errors.append("intent split: Train IDs are not reproducible")
+        if regenerated.validation_ids != split_ids["validation"]:
+            self.errors.append("intent split: Validation IDs are not reproducible")
+
+        cases_by_id = {case["id"]: case for case in cases}
+        partition_cases = {
+            "source": cases,
+            "train": [cases_by_id[case_id] for case_id in split_ids["train"]],
+            "validation": [cases_by_id[case_id] for case_id in split_ids["validation"]],
+        }
+        expected_label_counts = {
+            split_name: dict(
+                sorted(
+                    Counter(
+                        item["intent"] for case in split_cases for item in case["intents"]
+                    ).items()
+                )
+            )
+            for split_name, split_cases in partition_cases.items()
+        }
+        if expected_label_counts != split_manifest["statistics"]["label_counts"]:
+            self.errors.append("intent split: label count statistics mismatch")
 
     def _index_unique(self, items: list[dict[str, Any]], kind: str) -> dict[str, dict[str, Any]]:
         indexed: dict[str, dict[str, Any]] = {}

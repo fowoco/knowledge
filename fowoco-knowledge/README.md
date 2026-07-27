@@ -59,6 +59,9 @@ python3.11 -m venv .venv
 # 공식 원본 검증 후 제조업 Knowledge 스냅샷 재생성
 .venv/bin/python -m fowoco_knowledge sync-official-data
 
+# 현재 Intent 원본에서 provisional Train/Validation ID 재생성
+.venv/bin/python -m fowoco_knowledge build-intent-splits
+
 # 신청서별 필요서류와 제조업 세부업종 조회
 .venv/bin/python -m fowoco_knowledge \
   list-required-documents "외국인 고용변동 등 신고"
@@ -83,13 +86,19 @@ python3.11 -m venv .venv
 ## 데이터 상태
 
 - `gold_seed.csv`: 프롬프트·분기 개발용 초기 Seed이며 모델 학습 완료 데이터가 아님
-- `golden_cases.jsonl`: 코드와 모델 평가에만 사용하는 독립 사례
+- `golden_cases.jsonl`: 구조·분기 확인용 Smoke Evaluation이며 최종 Gold Test가 아님
 - `hr_intent_dataset.jsonl`: Intent Train/Validation 후보 1,340건이며 재검수 전 Gold Test가 아님
+- `data/intent/splits/provisional-v1/`: A/B 합의 전 재현성 검증용 80:20 ID 분할
 - 공개데이터: 절차·용어·분포 보조자료이며 FOWOCO Intent의 정답 라벨로 간주하지 않음
 - 실제 운영 로그: 개인정보를 제거하고 별도 승인된 경우에만 Active Learning 후보로 사용
 
 일반 데이터 기준은 [`docs/DATA_GUIDE.md`](docs/DATA_GUIDE.md), Intent 라벨과
 evidence 기준은 [`docs/INTENT_DATA.md`](docs/INTENT_DATA.md)를 확인합니다.
+
+Intent 모델 출력·분할·평가 인계 기준은
+[`docs/INTENT_MODELING_HANDOFF.md`](docs/INTENT_MODELING_HANDOFF.md), 독립 Gold Test
+구성 기준은 [`docs/INTENT_GOLD_TEST_PLAN.md`](docs/INTENT_GOLD_TEST_PLAN.md)를
+확인합니다.
 
 공식 데이터 변환은 [`docs/OFFICIAL_DATA_PIPELINE.md`](docs/OFFICIAL_DATA_PIPELINE.md),
 신고·연장 기능의 범위는 [`docs/E9_REPORTING_WORKFLOWS.md`](docs/E9_REPORTING_WORKFLOWS.md)를

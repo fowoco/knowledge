@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- MVP Intent 모델 책임을 `Intent + evidence`로 제한한 Knowledge→AI 계약 추가
+- A/B consensus 변경에 재생성 가능한 provisional Train/Validation ID 분할 추가
+- 모델 출력 Schema, 구조적 Gate, 오류 유형과 Gold Test 240건 구성 계획 추가
+
 ## 0.2.0 - 2026-07-16
 
 - 필요서류 187건과 EPS 세부업종 847건의 원본 해시·버전을 고정

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.dev/schemas/intent-model-output.schema.json",
+  "title": "FOWOCO MVP Intent model output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "intents"
+  ],
+  "properties": {
+    "intents": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "$ref": "#/$defs/intentEvidence"
+      }
+    }
+  },
+  "$defs": {
+    "intentCode": {
+      "type": "string",
+      "enum": [
+        "WORK_INSTRUCTION",
+        "DOCUMENT_REQUEST",
+        "PAYROLL_EXPLANATION",
+        "WORKER_ONBOARDING",
+        "EMPLOYMENT_CHANGE",
+        "EXPIRY_RENEWAL",
+        "OUT_OF_SCOPE"
+      ]
+    },
+    "intentEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intent",
+        "evidence"
+      ],
+      "properties": {
+        "intent": {
+          "$ref": "#/$defs/intentCode"
+        },
+        "evidence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "OUT_OF_SCOPE"
+              }
+            },
+            "required": [
+              "intent"
+            ]
+          },
+          "then": {
+            "properties": {
+              "evidence": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "evidence": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

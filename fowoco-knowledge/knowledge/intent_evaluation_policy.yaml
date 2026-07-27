@@ -1,0 +1,55 @@
+policy_id: FOWOCO-INTENT-EVALUATION
+version: 0.1.0
+status: provisional_until_baseline
+applies_to: FOWOCO-INTENT-MODEL-CONTRACT
+structural_gates:
+  - id: JSON_SCHEMA_VALID
+    description: 출력이 intent-model-output JSON Schema를 만족함
+    required_rate: 1.0
+  - id: EVIDENCE_EXACT_SUBSTRING
+    description: OUT_OF_SCOPE 외 모든 evidence가 hr_input의 연속 부분 문자열임
+    required_rate: 1.0
+  - id: INTENT_ORDER
+    description: Multi-Intent 배열이 evidence의 원문 등장 순서와 같음
+    required_rate: 1.0
+  - id: OUT_OF_SCOPE_EXCLUSIVE
+    description: OUT_OF_SCOPE는 단독 Intent이며 evidence는 null임
+    required_rate: 1.0
+selection_metrics:
+  - id: INTENT_EXACT_MATCH
+    description: 예측 Intent 배열과 정답 Intent 배열이 순서까지 동일한 비율
+    provisional_target: 0.8
+  - id: MACRO_F1
+    description: 7개 Intent별 F1의 산술평균
+    provisional_target: 0.85
+  - id: MICRO_F1
+    description: 전체 Intent label decision 기준 Micro F1
+    provisional_target: null
+sensitive_recall_targets:
+  EXPIRY_RENEWAL: 0.9
+  EMPLOYMENT_CHANGE: 0.9
+error_taxonomy:
+  - id: MISSING_INTENT
+    description: 정답 Intent를 하나 이상 누락
+  - id: EXTRA_INTENT
+    description: 근거 없이 Intent를 추가
+  - id: WRONG_BOUNDARY
+    description: 휴가·급여계좌·완료 상태 등 정의된 경계를 잘못 적용
+  - id: EVIDENCE_NOT_SUBSTRING
+    description: evidence가 원문과 정확히 일치하지 않음
+  - id: EVIDENCE_TOO_BROAD
+    description: 다른 Intent 근거나 외부 실행 문구까지 evidence에 포함
+  - id: INTENT_ORDER_ERROR
+    description: Multi-Intent가 evidence 원문 순서와 다름
+  - id: OUT_OF_SCOPE_MIXED
+    description: OUT_OF_SCOPE를 다른 Intent와 함께 출력
+  - id: DUPLICATE_INTENT
+    description: 동일 Intent를 evidence만 바꿔 중복 출력
+  - id: INVALID_JSON
+    description: JSON 파싱 또는 Schema 검증 실패
+reporting_rules:
+  - 구조적 Gate 실패율을 Intent 성능 지표와 분리해 보고
+  - 전체 Accuracy 하나로 모델을 선택하지 않음
+  - Intent별 Recall과 오류 유형별 건수를 함께 보고
+  - Smoke Evaluation 결과를 최종 성능 주장에 사용하지 않음
+  - locked Gold Test 결과에 사용한 모델·프롬프트·데이터 버전을 함께 기록

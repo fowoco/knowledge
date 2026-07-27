@@ -1,0 +1,94 @@
+split_id: FOWOCO-HR-INTENT-PROVISIONAL-SPLIT
+version: 0.1.0
+status: provisional_pending_consensus
+schema: schemas/intent-split-manifest.schema.json
+source:
+  dataset_id: FOWOCO-HR-INTENT-CANDIDATES
+  version: 1.1.0
+  status: recheck_required
+  path: data/intent/hr_intent_dataset.jsonl
+  record_count: 1340
+  sha256: 4f4ebfdd4170a78def33e31edbed8315921c0b67934f5ff8612595dcd479bed2
+consensus:
+  status: pending
+  assumed_for_provisional_split: true
+  dependency_issue: 30
+  dependency_pr: 31
+  regenerate_when_source_changes: true
+policy:
+  method: grouped_multilabel_greedy
+  seed: 20260727
+  train_ratio: 0.8
+  validation_ratio: 0.2
+  target_train_count: 1072
+  target_validation_count: 268
+  template_normalization:
+    worker_id_pattern: (?i)\bwrk[-_ ]?\d+\b
+    worker_id_replacement: <WORKER>
+    collapse_whitespace: true
+    casefold: true
+    preserve_dates_amounts_and_task_terms: true
+  stratification_features:
+  - intent_code
+  - intent_cardinality
+  - ordered_intent_combination
+outputs:
+  train:
+    path: data/intent/splits/provisional-v1/train_ids.txt
+    record_count: 1072
+    sha256: 264011422e233e28ab7ab4b93579f634a6e53c00730d254b7ca2749d71575cb6
+  validation:
+    path: data/intent/splits/provisional-v1/validation_ids.txt
+    record_count: 268
+    sha256: 96da74e15519f9610ef316bc3e7499d06832c36564180607a3565b851bc8ba85
+statistics:
+  template_group_count: 1335
+  duplicate_template_group_count: 5
+  max_template_group_size: 2
+  label_counts:
+    source:
+      DOCUMENT_REQUEST: 345
+      EMPLOYMENT_CHANGE: 273
+      EXPIRY_RENEWAL: 234
+      OUT_OF_SCOPE: 128
+      PAYROLL_EXPLANATION: 275
+      WORKER_ONBOARDING: 193
+      WORK_INSTRUCTION: 339
+    train:
+      DOCUMENT_REQUEST: 275
+      EMPLOYMENT_CHANGE: 217
+      EXPIRY_RENEWAL: 186
+      OUT_OF_SCOPE: 102
+      PAYROLL_EXPLANATION: 219
+      WORKER_ONBOARDING: 154
+      WORK_INSTRUCTION: 269
+    validation:
+      DOCUMENT_REQUEST: 70
+      EMPLOYMENT_CHANGE: 56
+      EXPIRY_RENEWAL: 48
+      OUT_OF_SCOPE: 26
+      PAYROLL_EXPLANATION: 56
+      WORKER_ONBOARDING: 39
+      WORK_INSTRUCTION: 70
+  intent_cardinality_counts:
+    source:
+      '1': 970
+      '2': 297
+      '3': 69
+      '4': 4
+    train:
+      '1': 778
+      '2': 240
+      '3': 52
+      '4': 2
+    validation:
+      '1': 192
+      '2': 57
+      '3': 17
+      '4': 2
+limitations:
+- Reviewer B와 A/B consensus 완료 전에는 최종 학습 분할이 아님
+- Reviewer A의 proposed_intents_json은 현재 원본에 적용하지 않은 상태임
+- 독립 Gold Test를 포함하지 않음
+- source SHA-256이 바뀌면 생성기를 다시 실행해야 함
+- 분할 비율과 내부 목표치는 baseline 비교용이며 성능 보장을 뜻하지 않음

@@ -26,6 +26,11 @@ files:
   easy_korean: knowledge/easy_korean_rules.yaml
   multilingual_templates: knowledge/multilingual_templates.yaml
   guardrails: knowledge/guardrail_rules.yaml
+  intent_model_contract: knowledge/intent_model_contract.yaml
+  intent_evaluation_policy: knowledge/intent_evaluation_policy.yaml
+schemas:
+  intent_model_output: schemas/intent-model-output.schema.json
+  intent_split_manifest: schemas/intent-split-manifest.schema.json
 datasets:
   source_manifest: data/external/source_manifest.yaml
   processed_manifest: data/processed/manifest.yaml
@@ -33,6 +38,9 @@ datasets:
   manufacturing_industries: data/processed/manufacturing_industries.csv
   intent_manifest: data/intent/manifest.yaml
   intent_training_candidates: data/intent/hr_intent_dataset.jsonl
+  intent_split_manifest: data/intent/splits/provisional-v1/manifest.yaml
+  intent_train_ids: data/intent/splits/provisional-v1/train_ids.txt
+  intent_validation_ids: data/intent/splits/provisional-v1/validation_ids.txt
 review_policy:
   minimum_reviewers_for_official_knowledge: 2
   all_outbound_messages_require_hr_approval: true
