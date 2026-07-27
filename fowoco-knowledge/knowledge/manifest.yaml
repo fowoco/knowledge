@@ -31,6 +31,8 @@ datasets:
   processed_manifest: data/processed/manifest.yaml
   required_documents: data/processed/required_documents_manufacturing.csv
   manufacturing_industries: data/processed/manufacturing_industries.csv
+  intent_manifest: data/intent/manifest.yaml
+  intent_training_candidates: data/intent/hr_intent_dataset.jsonl
 review_policy:
   minimum_reviewers_for_official_knowledge: 2
   all_outbound_messages_require_hr_approval: true

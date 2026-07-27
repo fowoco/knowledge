@@ -1,0 +1,16 @@
+dataset_id: FOWOCO-HR-INTENT-CANDIDATES
+version: 1.1.0
+status: recheck_required
+path: data/intent/hr_intent_dataset.jsonl
+schema: schemas/intent-training-case.schema.json
+label_guide: docs/INTENT_DATA.md
+record_count: 1340
+sha256: 4f4ebfdd4170a78def33e31edbed8315921c0b67934f5ff8612595dcd479bed2
+contains_real_personal_data: false
+intended_use:
+  - Intent 분기와 출력 구조 개발
+  - Train/Validation 후보 데이터의 A/B 재검수
+limitations:
+  - 독립 Gold Test가 아님
+  - 최종 모델 성능 주장에 사용할 수 없음
+  - 의미 라벨은 규칙 v1.1에 따른 A/B 합의 검수가 필요함

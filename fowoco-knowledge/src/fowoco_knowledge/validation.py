@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 from typing import Any
 
 from jsonschema import Draft202012Validator
@@ -59,6 +60,12 @@ PROCESSED_DATASET_COLUMNS = {
     },
 }
 
+INTENT_DATA_PII_PATTERNS = {
+    "resident_or_alien_registration_number": re.compile(r"(?<!\d)\d{6}-?[1-8]\d{6}(?!\d)"),
+    "mobile_phone_number": re.compile(r"(?<!\d)01[016789]-?\d{3,4}-?\d{4}(?!\d)"),
+    "passport_number": re.compile(r"(?<![A-Z0-9])[A-Z]{1,2}\d{7,8}(?![A-Z0-9])"),
+}
+
 
 def split_codes(raw: str | None) -> list[str]:
     return [item.strip() for item in (raw or "").split("|") if item.strip()]
@@ -77,6 +84,7 @@ class KnowledgeValidator:
         self._validate_cross_references()
         self._validate_seed_data()
         self._validate_evaluation_data()
+        self._validate_intent_data()
         return self.errors
 
     def _validate_manifest_files(self) -> None:
@@ -305,6 +313,109 @@ class KnowledgeValidator:
                 case.get("expected_workflow_ids", []),
                 known_workflows,
             )
+
+    def _validate_intent_data(self) -> None:
+        intent_manifest = self.repository.load_yaml("data/intent/manifest.yaml")
+        schema = self.repository.load_json(intent_manifest["schema"])
+        validator = Draft202012Validator(schema)
+        context = self.repository.load_context_files()
+        known_intents = {item["id"] for item in context["intents"]["intents"]} | {
+            context["intents"]["out_of_scope_label"]
+        }
+        out_of_scope_label = context["intents"]["out_of_scope_label"]
+        seen_ids: set[int] = set()
+        seen_inputs: set[str] = set()
+        path = self.repository.root / intent_manifest["path"]
+        record_count = 0
+
+        for line_number, raw_line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), start=1
+        ):
+            if not raw_line.strip():
+                continue
+            record_count += 1
+            try:
+                case = json.loads(raw_line)
+            except json.JSONDecodeError as exc:
+                self.errors.append(f"intent data line {line_number}: invalid JSON ({exc})")
+                continue
+            if not isinstance(case, dict):
+                self.errors.append(f"intent data line {line_number}: record must be an object")
+                continue
+
+            for error in validator.iter_errors(case):
+                error_path = ".".join(str(item) for item in error.path)
+                location = f" [{error_path}]" if error_path else ""
+                self.errors.append(f"intent data line {line_number}{location}: {error.message}")
+
+            case_id = case.get("id")
+            if isinstance(case_id, int):
+                if case_id in seen_ids:
+                    self.errors.append(f"intent data line {line_number}: duplicate id {case_id}")
+                seen_ids.add(case_id)
+
+            hr_input = case.get("hr_input")
+            if not isinstance(hr_input, str):
+                continue
+            if not hr_input.strip():
+                self.errors.append(f"intent data line {line_number}: blank hr_input")
+                continue
+
+            normalized_input = " ".join(hr_input.split()).casefold()
+            if normalized_input in seen_inputs:
+                self.errors.append(f"intent data line {line_number}: duplicate normalized hr_input")
+            seen_inputs.add(normalized_input)
+
+            for pii_kind, pattern in INTENT_DATA_PII_PATTERNS.items():
+                if pattern.search(hr_input):
+                    self.errors.append(f"intent data line {line_number}: possible PII ({pii_kind})")
+
+            intents = case.get("intents")
+            if not isinstance(intents, list):
+                continue
+
+            intent_codes: list[str] = []
+            evidence_positions: list[int] = []
+            for item in intents:
+                if not isinstance(item, dict):
+                    continue
+                intent = item.get("intent")
+                evidence = item.get("evidence")
+                if isinstance(intent, str):
+                    if intent in intent_codes:
+                        self.errors.append(
+                            f"intent data line {line_number}: duplicate intent {intent}"
+                        )
+                    intent_codes.append(intent)
+                    if intent not in known_intents:
+                        self.errors.append(
+                            f"intent data line {line_number}: unknown intent {intent}"
+                        )
+
+                if intent == out_of_scope_label:
+                    continue
+                if isinstance(evidence, str) and evidence:
+                    position = hr_input.find(evidence)
+                    if position < 0:
+                        self.errors.append(
+                            f"intent data line {line_number}: evidence is not an exact substring"
+                        )
+                    else:
+                        evidence_positions.append(position)
+
+            if out_of_scope_label in intent_codes and len(intent_codes) != 1:
+                self.errors.append(
+                    f"intent data line {line_number}: OUT_OF_SCOPE must be the only intent"
+                )
+            if evidence_positions != sorted(evidence_positions):
+                self.errors.append(
+                    f"intent data line {line_number}: intents are not in evidence order"
+                )
+
+        if record_count != intent_manifest["record_count"]:
+            self.errors.append("intent data: record count mismatch")
+        if file_sha256(path) != intent_manifest["sha256"]:
+            self.errors.append("intent data: checksum mismatch")
 
     def _index_unique(self, items: list[dict[str, Any]], kind: str) -> dict[str, dict[str, Any]]:
         indexed: dict[str, dict[str, Any]] = {}
