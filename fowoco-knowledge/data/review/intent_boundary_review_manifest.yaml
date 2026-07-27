@@ -1,0 +1,41 @@
+review_pack_id: FOWOCO-INTENT-BOUNDARY-REVIEW
+version: 0.1.0
+status: awaiting_independent_review
+rule_version: "1.1"
+depends_on_pr: 29
+source:
+  path: data/intent/hr_intent_dataset.jsonl
+  record_count: 1340
+  sha256: 4f4ebfdd4170a78def33e31edbed8315921c0b67934f5ff8612595dcd479bed2
+selection:
+  mode: any
+  candidate_count: 361
+  priority_counts:
+    HIGH: 242
+    MEDIUM: 119
+  flag_counts:
+    PAYROLL_ACCOUNT: 61
+    LEAVE_BOUNDARY: 52
+    COMPLETED_STATUS: 73
+    EXTERNAL_EXECUTION: 123
+    LONG_EVIDENCE: 100
+  long_evidence_min_chars: 24
+outputs:
+  - reviewer_code: A
+    path: data/review/intent_boundary_review_a.csv
+    row_count: 361
+    sha256: 7b161f30a03bef4e7764f1532153befbcdb862ca34e04d17a5b1b8f8ae338243
+  - reviewer_code: B
+    path: data/review/intent_boundary_review_b.csv
+    row_count: 361
+    sha256: 182cb27b4f8a1c18c05753b7336a49b2c37108bba117aa1e24fbfeb0c29a1f58
+allowed_decisions:
+  - KEEP
+  - CHANGE
+  - EXCLUDE
+  - NEEDS_DISCUSSION
+contains_real_personal_data: false
+limitations:
+  - 키워드 기반 후보 추출이므로 모든 의미 오류를 보장하지 않음
+  - 후보 선정은 현재 라벨이 잘못됐다는 판정이 아님
+  - A/B 합의 전 원본 Intent 데이터에 반영하지 않음

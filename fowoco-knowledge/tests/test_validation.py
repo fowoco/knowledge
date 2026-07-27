@@ -58,3 +58,21 @@ def test_intent_training_candidates_match_documented_contract() -> None:
 
     assert len(cases) == 1340
     assert [case["id"] for case in cases] == list(range(1, 1341))
+
+
+def test_intent_boundary_review_packs_are_independent_and_aligned() -> None:
+    reviewer_rows = {}
+    for reviewer_code in ("A", "B"):
+        with (ROOT / f"data/review/intent_boundary_review_{reviewer_code.lower()}.csv").open(
+            "r", encoding="utf-8-sig", newline=""
+        ) as handle:
+            reviewer_rows[reviewer_code] = list(csv.DictReader(handle))
+
+    assert len(reviewer_rows["A"]) == 361
+    assert len(reviewer_rows["B"]) == 361
+    assert [row["source_record_id"] for row in reviewer_rows["A"]] == [
+        row["source_record_id"] for row in reviewer_rows["B"]
+    ]
+    assert all(row["reviewer_code"] == "A" for row in reviewer_rows["A"])
+    assert all(row["reviewer_code"] == "B" for row in reviewer_rows["B"])
+    assert all(not row["decision"] for rows in reviewer_rows.values() for row in rows)

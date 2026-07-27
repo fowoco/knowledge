@@ -3,11 +3,13 @@ from __future__ import annotations
 import csv
 import json
 import re
+from collections import Counter
 from typing import Any
 
 from jsonschema import Draft202012Validator
 
 from .ingestion import file_sha256
+from .intent_review import review_case_id, review_priority, select_boundary_flags
 from .repository import KnowledgeRepository
 
 SEED_COLUMNS = {
@@ -66,6 +68,19 @@ INTENT_DATA_PII_PATTERNS = {
     "passport_number": re.compile(r"(?<![A-Z0-9])[A-Z]{1,2}\d{7,8}(?![A-Z0-9])"),
 }
 
+INTENT_REVIEW_COLUMNS = {
+    "review_case_id",
+    "source_record_id",
+    "review_priority",
+    "boundary_flags",
+    "hr_input",
+    "current_intents_json",
+    "reviewer_code",
+    "decision",
+    "proposed_intents_json",
+    "review_note",
+}
+
 
 def split_codes(raw: str | None) -> list[str]:
     return [item.strip() for item in (raw or "").split("|") if item.strip()]
@@ -85,6 +100,7 @@ class KnowledgeValidator:
         self._validate_seed_data()
         self._validate_evaluation_data()
         self._validate_intent_data()
+        self._validate_intent_review_data()
         return self.errors
 
     def _validate_manifest_files(self) -> None:
@@ -416,6 +432,144 @@ class KnowledgeValidator:
             self.errors.append("intent data: record count mismatch")
         if file_sha256(path) != intent_manifest["sha256"]:
             self.errors.append("intent data: checksum mismatch")
+
+    def _validate_intent_review_data(self) -> None:
+        review_manifest = self.repository.load_yaml(
+            "data/review/intent_boundary_review_manifest.yaml"
+        )
+        source_path = self.repository.root / review_manifest["source"]["path"]
+        source_cases = {
+            case["id"]: case
+            for case in (
+                json.loads(line)
+                for line in source_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            )
+        }
+        expected_cases = {
+            case_id: case for case_id, case in source_cases.items() if select_boundary_flags(case)
+        }
+        expected_flag_counts = Counter(
+            flag for case in expected_cases.values() for flag in select_boundary_flags(case)
+        )
+        expected_priority_counts = Counter(
+            review_priority(select_boundary_flags(case)) for case in expected_cases.values()
+        )
+
+        if len(source_cases) != review_manifest["source"]["record_count"]:
+            self.errors.append("intent review source: record count mismatch")
+        if file_sha256(source_path) != review_manifest["source"]["sha256"]:
+            self.errors.append("intent review source: checksum mismatch")
+        if len(expected_cases) != review_manifest["selection"]["candidate_count"]:
+            self.errors.append("intent review: candidate count mismatch")
+        if dict(expected_flag_counts) != review_manifest["selection"]["flag_counts"]:
+            self.errors.append("intent review: boundary flag counts mismatch")
+        if dict(expected_priority_counts) != review_manifest["selection"]["priority_counts"]:
+            self.errors.append("intent review: priority counts mismatch")
+
+        schema = self.repository.load_json("schemas/intent-training-case.schema.json")
+        intent_validator = Draft202012Validator(schema)
+        allowed_decisions = set(review_manifest["allowed_decisions"])
+        output_case_ids: dict[str, set[int]] = {}
+
+        for output in review_manifest["outputs"]:
+            reviewer_code = output["reviewer_code"]
+            path = self.repository.root / output["path"]
+            with path.open("r", encoding="utf-8-sig", newline="") as handle:
+                reader = csv.DictReader(handle)
+                rows = list(reader)
+
+            if set(reader.fieldnames or []) != INTENT_REVIEW_COLUMNS:
+                self.errors.append(
+                    f"intent review {reviewer_code}: columns do not match the review schema"
+                )
+                continue
+            if len(rows) != output["row_count"]:
+                self.errors.append(f"intent review {reviewer_code}: row count mismatch")
+            if file_sha256(path) != output["sha256"]:
+                self.errors.append(f"intent review {reviewer_code}: checksum mismatch")
+
+            seen_source_ids: set[int] = set()
+            for line_number, row in enumerate(rows, start=2):
+                prefix = f"intent review {reviewer_code} line {line_number}"
+                try:
+                    source_record_id = int(row["source_record_id"])
+                except ValueError:
+                    self.errors.append(f"{prefix}: invalid source_record_id")
+                    continue
+                if source_record_id in seen_source_ids:
+                    self.errors.append(f"{prefix}: duplicate source_record_id")
+                seen_source_ids.add(source_record_id)
+
+                source_case = expected_cases.get(source_record_id)
+                if source_case is None:
+                    self.errors.append(f"{prefix}: source record is not a selected candidate")
+                    continue
+                if row["review_case_id"] != review_case_id(source_record_id):
+                    self.errors.append(f"{prefix}: invalid review_case_id")
+
+                expected_flags = select_boundary_flags(source_case)
+                actual_flags = split_codes(row["boundary_flags"])
+                if actual_flags != expected_flags:
+                    self.errors.append(f"{prefix}: boundary flags mismatch")
+                if row["review_priority"] != review_priority(expected_flags):
+                    self.errors.append(f"{prefix}: review priority mismatch")
+                if row["hr_input"] != source_case["hr_input"]:
+                    self.errors.append(f"{prefix}: hr_input differs from source")
+                if row["reviewer_code"] != reviewer_code:
+                    self.errors.append(f"{prefix}: reviewer_code mismatch")
+
+                try:
+                    current_intents = json.loads(row["current_intents_json"])
+                except json.JSONDecodeError:
+                    self.errors.append(f"{prefix}: invalid current_intents_json")
+                else:
+                    if current_intents != source_case["intents"]:
+                        self.errors.append(f"{prefix}: current intents differ from source")
+
+                decision = row["decision"].strip()
+                proposed_raw = row["proposed_intents_json"].strip()
+                if decision and decision not in allowed_decisions:
+                    self.errors.append(f"{prefix}: invalid decision {decision}")
+                if decision == "CHANGE" and not proposed_raw:
+                    self.errors.append(f"{prefix}: CHANGE requires proposed_intents_json")
+                if proposed_raw:
+                    try:
+                        proposed_intents = json.loads(proposed_raw)
+                    except json.JSONDecodeError:
+                        self.errors.append(f"{prefix}: invalid proposed_intents_json")
+                    else:
+                        proposed_case = {
+                            "id": source_record_id,
+                            "hr_input": source_case["hr_input"],
+                            "intents": proposed_intents,
+                        }
+                        for error in intent_validator.iter_errors(proposed_case):
+                            self.errors.append(
+                                f"{prefix}: invalid proposed intents ({error.message})"
+                            )
+                        if isinstance(proposed_intents, list):
+                            for item in proposed_intents:
+                                evidence = item.get("evidence") if isinstance(item, dict) else None
+                                if (
+                                    isinstance(evidence, str)
+                                    and evidence not in source_case["hr_input"]
+                                ):
+                                    self.errors.append(
+                                        f"{prefix}: proposed evidence is not an exact substring"
+                                    )
+
+                reviewer_input = " ".join([row["proposed_intents_json"], row["review_note"]])
+                for pii_kind, pattern in INTENT_DATA_PII_PATTERNS.items():
+                    if pattern.search(reviewer_input):
+                        self.errors.append(f"{prefix}: possible PII ({pii_kind})")
+
+            output_case_ids[reviewer_code] = seen_source_ids
+            if seen_source_ids != set(expected_cases):
+                self.errors.append(f"intent review {reviewer_code}: candidate ID set mismatch")
+
+        if len(output_case_ids) == 2 and len(set(map(frozenset, output_case_ids.values()))) != 1:
+            self.errors.append("intent review: reviewer candidate sets differ")
 
     def _index_unique(self, items: list[dict[str, Any]], kind: str) -> dict[str, dict[str, Any]]:
         indexed: dict[str, dict[str, Any]] = {}
