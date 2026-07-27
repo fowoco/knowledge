@@ -36,6 +36,8 @@ datasets:
   intent_boundary_review_manifest: data/review/intent_boundary_review_manifest.yaml
   intent_boundary_review_a: data/review/intent_boundary_review_a.csv
   intent_boundary_review_b: data/review/intent_boundary_review_b.csv
+  intent_boundary_consensus_manifest: data/review/intent_boundary_consensus_manifest.yaml
+  intent_boundary_review_consensus: data/review/intent_boundary_review_consensus.csv
 review_policy:
   minimum_reviewers_for_official_knowledge: 2
   all_outbound_messages_require_hr_approval: true

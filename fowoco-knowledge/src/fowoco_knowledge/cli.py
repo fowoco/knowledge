@@ -7,6 +7,14 @@ from pathlib import Path
 
 from .engine import RequestEvaluator
 from .ingestion import OfficialDataPipeline
+from .intent_consensus import (
+    ConsensusNotFinalError,
+    apply_consensus,
+    build_consensus_manifest,
+    build_consensus_rows,
+    write_consensus_csv,
+    write_manifest,
+)
 from .repository import KnowledgeRepository
 from .validation import KnowledgeValidator
 
@@ -62,6 +70,26 @@ def build_parser() -> argparse.ArgumentParser:
     )
     industry_parser.add_argument("query")
     industry_parser.add_argument("--limit", type=int, default=20)
+
+    consensus_parser = subparsers.add_parser(
+        "build-intent-consensus",
+        help="Compare Reviewer A/B results and build the Intent consensus pack",
+    )
+    consensus_parser.add_argument(
+        "--assume-b-agrees",
+        action="store_true",
+        help="Build a clearly marked provisional proposal from Reviewer A results",
+    )
+
+    apply_parser = subparsers.add_parser(
+        "apply-intent-consensus",
+        help="Apply only a fully agreed Intent consensus to a separate JSONL output",
+    )
+    apply_parser.add_argument("--consensus", type=Path)
+    apply_parser.add_argument("--manifest", type=Path)
+    apply_parser.add_argument("--source", type=Path)
+    apply_parser.add_argument("--output", type=Path, required=True)
+    apply_parser.add_argument("--allow-exclude", action="store_true")
     return parser
 
 
@@ -128,6 +156,63 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "search-industries":
         for row in repository.search_manufacturing_industries(args.query, args.limit):
             print(f"{row['industry_id']}\t{row['middle_category']}\t{row['business_content_ko']}")
+        return 0
+
+    if args.command == "build-intent-consensus":
+        reviewer_a_path = repository.root / "data/review/intent_boundary_review_a.csv"
+        reviewer_b_path = repository.root / "data/review/intent_boundary_review_b.csv"
+        output_path = repository.root / "data/review/intent_boundary_review_consensus.csv"
+        manifest_path = repository.root / "data/review/intent_boundary_consensus_manifest.yaml"
+        rows = build_consensus_rows(
+            reviewer_a_path,
+            reviewer_b_path,
+            assume_b_agrees=args.assume_b_agrees,
+        )
+        write_consensus_csv(output_path, rows)
+        manifest = build_consensus_manifest(
+            root=repository.root,
+            reviewer_a_path=reviewer_a_path,
+            reviewer_b_path=reviewer_b_path,
+            output_path=output_path,
+            rows=rows,
+            assume_b_agrees=args.assume_b_agrees,
+        )
+        write_manifest(manifest_path, manifest)
+        print(
+            f"BUILT\t{manifest['status']}\t{len(rows)}\t"
+            f"source_apply_allowed={manifest['source_application']['allowed']}"
+        )
+        return 0
+
+    if args.command == "apply-intent-consensus":
+        consensus_path = args.consensus or (
+            repository.root / "data/review/intent_boundary_review_consensus.csv"
+        )
+        if not consensus_path.is_absolute():
+            consensus_path = repository.root / consensus_path
+        manifest_path = args.manifest or (
+            repository.root / "data/review/intent_boundary_consensus_manifest.yaml"
+        )
+        if not manifest_path.is_absolute():
+            manifest_path = repository.root / manifest_path
+        source_path = args.source or (repository.root / "data/intent/hr_intent_dataset.jsonl")
+        if not source_path.is_absolute():
+            source_path = repository.root / source_path
+        output_path = args.output
+        if not output_path.is_absolute():
+            output_path = repository.root / output_path
+        try:
+            changed_count, record_count = apply_consensus(
+                consensus_path=consensus_path,
+                source_path=source_path,
+                output_path=output_path,
+                manifest_path=manifest_path,
+                allow_exclude=args.allow_exclude,
+            )
+        except ConsensusNotFinalError as error:
+            print(f"BLOCKED: {error}")
+            return 1
+        print(f"APPLIED\tchanged={changed_count}\trecords={record_count}\t{output_path}")
         return 0
 
     return 2

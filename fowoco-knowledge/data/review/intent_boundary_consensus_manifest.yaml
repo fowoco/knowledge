@@ -1,0 +1,37 @@
+consensus_pack_id: FOWOCO-INTENT-BOUNDARY-CONSENSUS
+version: 0.1.0
+status: provisional_assuming_reviewer_b_agreement
+rule_version: '1.1'
+depends_on_pr: 31
+source:
+  path: data/intent/hr_intent_dataset.jsonl
+  record_count: 1340
+  sha256: 4f4ebfdd4170a78def33e31edbed8315921c0b67934f5ff8612595dcd479bed2
+inputs:
+- reviewer_code: A
+  path: data/review/intent_boundary_review_a.csv
+  sha256: 09c6abd939f9c32e7425e27b3451e32b57f1b8f228f042afbf2d952460a283af
+  completed: true
+- reviewer_code: B
+  path: data/review/intent_boundary_review_b.csv
+  sha256: 182cb27b4f8a1c18c05753b7336a49b2c37108bba117aa1e24fbfeb0c29a1f58
+  completed: false
+generation:
+  mode: provisional_assume_b_agrees
+  candidate_count: 361
+  agreement_status_counts:
+    ASSUMED_PENDING_B_CONFIRMATION: 335
+    NEEDS_ADJUDICATION: 26
+output:
+  path: data/review/intent_boundary_review_consensus.csv
+  row_count: 361
+  sha256: d727ea51aedfb8e460d8dddde9d5635194f876181f86266193e6c6160f06a6be
+source_application:
+  allowed: false
+  block_reasons:
+  - Reviewer B 판정이 모든 행에 기록되지 않음
+  - AGREED가 아닌 consensus 행이 존재함
+limitations:
+- ASSUMED_PENDING_B_CONFIRMATION은 Reviewer B의 실제 판정이 아님
+- NEEDS_ADJUDICATION과 DISAGREED는 합의 검수 전 원본에 반영하지 않음
+- source_application.allowed가 true인 최종 합의본만 원본 반영에 사용함

@@ -9,6 +9,7 @@ from typing import Any
 from jsonschema import Draft202012Validator
 
 from .ingestion import file_sha256
+from .intent_consensus import CONSENSUS_COLUMNS, build_consensus_rows
 from .intent_review import review_case_id, review_priority, select_boundary_flags
 from .repository import KnowledgeRepository
 
@@ -101,6 +102,7 @@ class KnowledgeValidator:
         self._validate_evaluation_data()
         self._validate_intent_data()
         self._validate_intent_review_data()
+        self._validate_intent_consensus_data()
         return self.errors
 
     def _validate_manifest_files(self) -> None:
@@ -570,6 +572,84 @@ class KnowledgeValidator:
 
         if len(output_case_ids) == 2 and len(set(map(frozenset, output_case_ids.values()))) != 1:
             self.errors.append("intent review: reviewer candidate sets differ")
+
+    def _validate_intent_consensus_data(self) -> None:
+        manifest = self.repository.load_yaml("data/review/intent_boundary_consensus_manifest.yaml")
+        input_paths = {
+            item["reviewer_code"]: self.repository.root / item["path"]
+            for item in manifest["inputs"]
+        }
+        output_path = self.repository.root / manifest["output"]["path"]
+        source_path = self.repository.root / manifest["source"]["path"]
+
+        for item in manifest["inputs"]:
+            path = self.repository.root / item["path"]
+            if file_sha256(path) != item["sha256"]:
+                self.errors.append(
+                    f"intent consensus input {item['reviewer_code']}: checksum mismatch"
+                )
+        if file_sha256(source_path) != manifest["source"]["sha256"]:
+            self.errors.append("intent consensus source: checksum mismatch")
+        if file_sha256(output_path) != manifest["output"]["sha256"]:
+            self.errors.append("intent consensus output: checksum mismatch")
+
+        with output_path.open("r", encoding="utf-8-sig", newline="") as handle:
+            reader = csv.DictReader(handle)
+            rows = list(reader)
+        if tuple(reader.fieldnames or ()) != CONSENSUS_COLUMNS:
+            self.errors.append("intent consensus: columns do not match the consensus schema")
+            return
+        if len(rows) != manifest["output"]["row_count"]:
+            self.errors.append("intent consensus: row count mismatch")
+
+        mode = manifest["generation"]["mode"]
+        expected_rows = build_consensus_rows(
+            input_paths["A"],
+            input_paths["B"],
+            assume_b_agrees=mode == "provisional_assume_b_agrees",
+        )
+        if rows != expected_rows:
+            self.errors.append("intent consensus: output differs from reproducible build")
+
+        actual_status_counts = dict(
+            sorted(Counter(row["agreement_status"] for row in rows).items())
+        )
+        if actual_status_counts != manifest["generation"]["agreement_status_counts"]:
+            self.errors.append("intent consensus: agreement status counts mismatch")
+        if len(rows) != manifest["generation"]["candidate_count"]:
+            self.errors.append("intent consensus: candidate count mismatch")
+
+        reviewer_b_completed = all(row["reviewer_b_decision"] for row in rows)
+        source_apply_allowed = (
+            bool(rows)
+            and reviewer_b_completed
+            and all(row["agreement_status"] == "AGREED" for row in rows)
+        )
+        if manifest["source_application"]["allowed"] != source_apply_allowed:
+            self.errors.append("intent consensus: source application gate mismatch")
+
+        schema = self.repository.load_json("schemas/intent-training-case.schema.json")
+        intent_validator = Draft202012Validator(schema)
+        for line_number, row in enumerate(rows, start=2):
+            final_raw = row["final_intents_json"].strip()
+            if not final_raw:
+                continue
+            try:
+                final_intents = json.loads(final_raw)
+            except json.JSONDecodeError:
+                self.errors.append(
+                    f"intent consensus line {line_number}: invalid final_intents_json"
+                )
+                continue
+            case = {
+                "id": int(row["source_record_id"]),
+                "hr_input": row["hr_input"],
+                "intents": final_intents,
+            }
+            for error in intent_validator.iter_errors(case):
+                self.errors.append(
+                    f"intent consensus line {line_number}: invalid final intents ({error.message})"
+                )
 
     def _index_unique(self, items: list[dict[str, Any]], kind: str) -> dict[str, dict[str, Any]]:
         indexed: dict[str, dict[str, Any]] = {}
