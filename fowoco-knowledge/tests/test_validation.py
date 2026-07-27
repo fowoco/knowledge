@@ -75,4 +75,18 @@ def test_intent_boundary_review_packs_are_independent_and_aligned() -> None:
     ]
     assert all(row["reviewer_code"] == "A" for row in reviewer_rows["A"])
     assert all(row["reviewer_code"] == "B" for row in reviewer_rows["B"])
-    assert all(not row["decision"] for rows in reviewer_rows.values() for row in rows)
+
+    allowed_decisions = {"KEEP", "CHANGE", "EXCLUDE", "NEEDS_DISCUSSION"}
+    assert all(row["decision"] in allowed_decisions for row in reviewer_rows["A"])
+    assert Counter(row["decision"] for row in reviewer_rows["A"]) == Counter(
+        {
+            "KEEP": 210,
+            "CHANGE": 125,
+            "NEEDS_DISCUSSION": 26,
+        }
+    )
+    assert all(
+        bool(row["proposed_intents_json"]) == (row["decision"] == "CHANGE")
+        for row in reviewer_rows["A"]
+    )
+    assert all(not row["decision"] for row in reviewer_rows["B"])

@@ -1,6 +1,6 @@
 review_pack_id: FOWOCO-INTENT-BOUNDARY-REVIEW
 version: 0.1.0
-status: awaiting_independent_review
+status: reviewer_a_completed_awaiting_reviewer_b
 rule_version: "1.1"
 depends_on_pr: 29
 source:
@@ -24,11 +24,18 @@ outputs:
   - reviewer_code: A
     path: data/review/intent_boundary_review_a.csv
     row_count: 361
-    sha256: 7b161f30a03bef4e7764f1532153befbcdb862ca34e04d17a5b1b8f8ae338243
+    sha256: 09c6abd939f9c32e7425e27b3451e32b57f1b8f228f042afbf2d952460a283af
+    review_status: completed
+    decision_counts:
+      KEEP: 210
+      CHANGE: 125
+      NEEDS_DISCUSSION: 26
+      EXCLUDE: 0
   - reviewer_code: B
     path: data/review/intent_boundary_review_b.csv
     row_count: 361
     sha256: 182cb27b4f8a1c18c05753b7336a49b2c37108bba117aa1e24fbfeb0c29a1f58
+    review_status: awaiting_review
 allowed_decisions:
   - KEEP
   - CHANGE
