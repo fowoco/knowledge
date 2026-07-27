@@ -45,3 +45,16 @@ def test_evaluation_set_is_separate_and_has_compound_cases() -> None:
     assert len(cases) == 18
     assert any(len(case["expected_intents"]) > 1 for case in cases)
     assert any(case["expected_action"] == "OUT_OF_SCOPE" for case in cases)
+
+
+def test_intent_training_candidates_match_documented_contract() -> None:
+    cases = [
+        json.loads(line)
+        for line in (ROOT / "data/intent/hr_intent_dataset.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+        if line.strip()
+    ]
+
+    assert len(cases) == 1340
+    assert [case["id"] for case in cases] == list(range(1, 1341))
