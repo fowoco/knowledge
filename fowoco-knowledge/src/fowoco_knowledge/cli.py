@@ -12,6 +12,7 @@ from .intent_split import (
     DEFAULT_VALIDATION_RATIO,
     build_and_write_intent_split,
 )
+from .provisional_baseline import run_provisional_baseline
 from .repository import KnowledgeRepository
 from .validation import KnowledgeValidator
 
@@ -82,6 +83,16 @@ def build_parser() -> argparse.ArgumentParser:
         "--validation-ratio",
         type=float,
         default=DEFAULT_VALIDATION_RATIO,
+    )
+
+    baseline_parser = subparsers.add_parser(
+        "run-intent-provisional-baseline",
+        help="Run a dependency-free provisional Intent baseline",
+    )
+    baseline_parser.add_argument(
+        "--output-dir",
+        type=Path,
+        help="Output directory inside the knowledge project",
     )
     return parser
 
@@ -159,6 +170,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             validation_ratio=args.validation_ratio,
         )
         print(json.dumps(manifest, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "run-intent-provisional-baseline":
+        report = run_provisional_baseline(
+            repository.root,
+            output_dir=args.output_dir,
+        )
+        print(json.dumps(report, ensure_ascii=False, indent=2))
         return 0
 
     return 2
