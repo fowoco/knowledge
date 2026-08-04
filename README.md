@@ -7,6 +7,12 @@ FOWOCO는 E-9 외국인근로자를 고용한 사업장의 반복 HR·행정업�
 `Intent + evidence`로 분류하기 위한 데이터 계약·검수·평가 및 모델 실험 이력을
 함께 관리합니다. 운영 앱과 모델 서버를 구현하는 저장소는 아닙니다.
 
+> [!IMPORTANT]
+> **🤗 [FOWOCO Hugging Face Model Hub](https://huggingface.co/fowoco)**
+>
+> 학습 checkpoint, adapter, tokenizer, model card와 공개 가능한 데이터셋은
+> FOWOCO Hugging Face 조직에서 배포합니다.
+
 ## 목표
 
 HR 담당자의 입력에서 다음 7개 Intent를 하나 이상 찾고, 판단 근거가 되는 원문의
@@ -80,11 +86,16 @@ Validation에서 만든 규칙이므로 별도 Test에서 다시 검증해야 �
 
 최신 BERT·A.X 학습 checkpoint와 운영 서빙 코드는 아직 `main`에 포함하지 않습니다.
 
-## 산출물 위치
+## Hugging Face Model Hub
 
-- GitHub: 업무 지식, 라벨 규칙, 데이터 계약, 분할·평가 코드와 실험 기록
-- [FOWOCO Hugging Face](https://huggingface.co/fowoco): 학습 checkpoint, adapter,
-  tokenizer와 model card의 배포 위치
+[FOWOCO Hugging Face](https://huggingface.co/fowoco)는 모델 산출물의 공식 공개
+창구입니다. GitHub에는 재현과 검증에 필요한 규칙·계약·코드를, Hugging Face에는
+실제로 배포할 모델 파일과 설명을 둡니다.
+
+| 위치 | 관리 대상 |
+| --- | --- |
+| **[Hugging Face](https://huggingface.co/fowoco)** | checkpoint, adapter, tokenizer, model card, 공개 가능한 데이터셋 |
+| GitHub | 업무 지식, 라벨 규칙, 데이터 계약, 분할·평가 코드, 실험 기록 |
 
 현재 Hugging Face 조직에는 공개된 모델·데이터셋이 없습니다. 산출물을 게시할 때는
 학습 데이터 version·SHA-256, 평가 조건, 라이선스와 사용 한계를 model card에 함께
