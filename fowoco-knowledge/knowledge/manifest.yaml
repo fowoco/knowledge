@@ -41,6 +41,8 @@ datasets:
   intent_split_manifest: data/intent/splits/provisional-v1/manifest.yaml
   intent_train_ids: data/intent/splits/provisional-v1/train_ids.txt
   intent_validation_ids: data/intent/splits/provisional-v1/validation_ids.txt
+  intent_provisional_baseline_report: data/experiments/intent/provisional-char-ngram-nb-v1/report.yaml
+  intent_provisional_baseline_predictions: data/experiments/intent/provisional-char-ngram-nb-v1/predictions.jsonl
 review_policy:
   minimum_reviewers_for_official_knowledge: 2
   all_outbound_messages_require_hr_approval: true

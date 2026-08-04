@@ -10,6 +10,7 @@ from jsonschema import Draft202012Validator
 from jsonschema.exceptions import SchemaError
 
 from .ingestion import file_sha256
+from .intent_model import validate_intent_model_output
 from .intent_split import (
     IntentSplitError,
     build_intent_split,
@@ -96,6 +97,7 @@ class KnowledgeValidator:
         self._validate_intent_data()
         self._validate_intent_model_contract()
         self._validate_intent_split_data()
+        self._validate_intent_provisional_baseline()
         return self.errors
 
     def _validate_manifest_files(self) -> None:
@@ -566,6 +568,98 @@ class KnowledgeValidator:
         }
         if expected_label_counts != split_manifest["statistics"]["label_counts"]:
             self.errors.append("intent split: label count statistics mismatch")
+
+    def _validate_intent_provisional_baseline(self) -> None:
+        manifest = self.repository.manifest
+        report_path = (
+            self.repository.root / manifest["datasets"]["intent_provisional_baseline_report"]
+        )
+        predictions_path = (
+            self.repository.root / manifest["datasets"]["intent_provisional_baseline_predictions"]
+        )
+        if not report_path.is_file() or not predictions_path.is_file():
+            return
+
+        report = self.repository.load_yaml(
+            manifest["datasets"]["intent_provisional_baseline_report"]
+        )
+        intent_manifest = self.repository.load_yaml("data/intent/manifest.yaml")
+        split_manifest = self.repository.load_yaml(intent_manifest["split_manifest"])
+        if report["status"] != "provisional_pre_consensus":
+            self.errors.append("intent baseline: status must remain provisional")
+        if report["source"]["status"] != "recheck_required":
+            self.errors.append("intent baseline: source status must show recheck_required")
+        for field in ("path", "version", "record_count", "sha256"):
+            if report["source"][field] != intent_manifest[field]:
+                self.errors.append(f"intent baseline: source {field} differs from intent manifest")
+        if report["split"]["manifest_sha256"] != file_sha256(
+            self.repository.root / intent_manifest["split_manifest"]
+        ):
+            self.errors.append("intent baseline: split manifest checksum mismatch")
+        if report["split"]["validation_used_for_training_or_thresholds"] is not False:
+            self.errors.append("intent baseline: Validation leakage flag must be false")
+
+        predictions_artifact = report["artifacts"]["predictions"]
+        if file_sha256(predictions_path) != predictions_artifact["sha256"]:
+            self.errors.append("intent baseline: predictions checksum mismatch")
+        prediction_rows = [
+            json.loads(line)
+            for line in predictions_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        if len(prediction_rows) != predictions_artifact["record_count"]:
+            self.errors.append("intent baseline: predictions record count mismatch")
+        if len(prediction_rows) != report["metrics"]["record_count"]:
+            self.errors.append("intent baseline: metric record count mismatch")
+
+        source_cases = {
+            case["id"]: case
+            for case in load_intent_cases(self.repository.root / intent_manifest["path"])
+        }
+        validation_ids = read_split_ids(
+            self.repository.root / split_manifest["outputs"]["validation"]["path"]
+        )
+        prediction_ids = [row["id"] for row in prediction_rows]
+        if prediction_ids != list(validation_ids):
+            self.errors.append("intent baseline: predictions do not match ordered Validation IDs")
+
+        output_schema = self.repository.load_json(manifest["schemas"]["intent_model_output"])
+        for line_number, prediction in enumerate(prediction_rows, start=1):
+            source_case = source_cases.get(prediction["id"])
+            if source_case is None:
+                self.errors.append(f"intent baseline line {line_number}: unknown source ID")
+                continue
+            if prediction["hr_input"] != source_case["hr_input"]:
+                self.errors.append(
+                    f"intent baseline line {line_number}: hr_input differs from source"
+                )
+            if prediction["expected"]["intents"] != source_case["intents"]:
+                self.errors.append(
+                    f"intent baseline line {line_number}: expected intents differ from source"
+                )
+            expected_issue_codes = sorted(
+                {
+                    issue.code
+                    for issue in validate_intent_model_output(
+                        prediction["hr_input"],
+                        prediction["predicted"],
+                        output_schema,
+                    )
+                }
+            )
+            if prediction["structural_issues"] != expected_issue_codes:
+                self.errors.append(
+                    f"intent baseline line {line_number}: structural issues mismatch"
+                )
+
+        required_claim_blocks = {
+            "최종 모델 성능",
+            "Gold Test 성능",
+            "운영 배포 가능",
+            "A/B consensus가 반영된 라벨 성능",
+        }
+        if set(report["claims_not_allowed"]) != required_claim_blocks:
+            self.errors.append("intent baseline: required claim blocks differ")
 
     def _index_unique(self, items: list[dict[str, Any]], kind: str) -> dict[str, dict[str, Any]]:
         indexed: dict[str, dict[str, Any]] = {}

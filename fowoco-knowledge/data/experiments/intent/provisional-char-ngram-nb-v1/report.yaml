@@ -1,0 +1,116 @@
+experiment_id: FOWOCO-INTENT-PROVISIONAL-CHAR-NGRAM-NB-V1
+version: 0.1.0
+status: provisional_pre_consensus
+purpose: 수정 전 라벨로 모델링·평가 파이프라인과 오류 유형을 검증하는 하한선
+source:
+  dataset_id: FOWOCO-HR-INTENT-CANDIDATES
+  version: 1.1.0
+  status: recheck_required
+  path: data/intent/hr_intent_dataset.jsonl
+  record_count: 1340
+  sha256: 4f4ebfdd4170a78def33e31edbed8315921c0b67934f5ff8612595dcd479bed2
+  manifest_path: data/intent/manifest.yaml
+split:
+  manifest_path: data/intent/splits/provisional-v1/manifest.yaml
+  manifest_sha256: 3118f4aa8e4c4859efefed1cbde04ad7773ae0e77323ad9022b3fee9e0b2364b
+  status: provisional_pending_consensus
+  train:
+    path: data/intent/splits/provisional-v1/train_ids.txt
+    record_count: 1072
+    sha256: 264011422e233e28ab7ab4b93579f634a6e53c00730d254b7ca2749d71575cb6
+  validation:
+    path: data/intent/splits/provisional-v1/validation_ids.txt
+    record_count: 268
+    sha256: 96da74e15519f9610ef316bc3e7499d06832c36564180607a3565b851bc8ba85
+  validation_used_for_training_or_thresholds: false
+model:
+  family: multilabel_multinomial_naive_bayes
+  features: character_ngrams
+  ngram_min: 2
+  ngram_max: 5
+  alpha: 1.0
+  threshold_calibration: train_in_sample_f1_only
+  thresholds:
+    WORK_INSTRUCTION: 6.096038744112
+    DOCUMENT_REQUEST: 37.285624039926
+    PAYROLL_EXPLANATION: 20.199619612251
+    WORKER_ONBOARDING: 35.842590492089
+    EMPLOYMENT_CHANGE: 18.694991220673
+    EXPIRY_RENEWAL: 25.444998825749
+    OUT_OF_SCOPE: 40.111322163511
+  evidence_strategy: highest_positive_weight_contiguous_token_span
+  evidence_max_tokens: 6
+  external_dependencies: []
+metrics:
+  record_count: 268
+  intent_exact_match: 0.854478
+  macro_f1: 0.938066
+  micro_f1: 0.940361
+  per_intent:
+    WORK_INSTRUCTION:
+      precision: 0.876712
+      recall: 0.914286
+      f1: 0.895105
+      support: 70
+    DOCUMENT_REQUEST:
+      precision: 1.0
+      recall: 0.971429
+      f1: 0.985507
+      support: 70
+    PAYROLL_EXPLANATION:
+      precision: 0.942308
+      recall: 0.875
+      f1: 0.907407
+      support: 56
+    WORKER_ONBOARDING:
+      precision: 1.0
+      recall: 0.923077
+      f1: 0.96
+      support: 39
+    EMPLOYMENT_CHANGE:
+      precision: 0.947368
+      recall: 0.964286
+      f1: 0.955752
+      support: 56
+    EXPIRY_RENEWAL:
+      precision: 0.959184
+      recall: 0.979167
+      f1: 0.969072
+      support: 48
+    OUT_OF_SCOPE:
+      precision: 1.0
+      recall: 0.807692
+      f1: 0.893617
+      support: 26
+  evidence_gold_exact_match: 0.286136
+  evidence_gold_item_count: 339
+  structural_gate_rates:
+    JSON_SCHEMA_VALID: 1.0
+    EVIDENCE_EXACT_SUBSTRING: 1.0
+    INTENT_ORDER: 1.0
+    OUT_OF_SCOPE_EXCLUSIVE: 1.0
+  error_case_counts:
+    EVIDENCE_TOO_BROAD: 114
+    EXTRA_INTENT: 17
+    MISSING_INTENT: 24
+artifacts:
+  predictions:
+    path: data/experiments/intent/provisional-char-ngram-nb-v1/predictions.jsonl
+    record_count: 268
+    sha256: 2b138faee3c91ab7fcae5e7fa7ed0fcc613138b07fc05fe1d65f0ecae063c108
+claims_not_allowed:
+- 최종 모델 성능
+- Gold Test 성능
+- 운영 배포 가능
+- A/B consensus가 반영된 라벨 성능
+rerun_required_when:
+- A/B consensus가 원본 라벨을 변경
+- source 또는 split checksum이 변경
+- Intent 규칙 또는 모델 설정이 변경
+limitations:
+- Reviewer B와 A/B consensus 전 수정 전 라벨을 사용함
+- Train 내부 점수로 threshold를 정해 운영 threshold로 사용할 수 없음
+- 문자 n-gram Naive Bayes는 A.X 또는 Transformer 모델 후보를 대체하지 않음
+- evidence 추출은 규칙 기반 하한선이며 자연스러움이나 최소 완결 구간을 보장하지 않음
+- Validation은 baseline 개발용이며 독립 Gold Test가 아님
+- 모델 학습·추론 코드는 최종적으로 fowoco/ai 저장소로 이전해야 함
