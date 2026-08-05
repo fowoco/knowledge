@@ -1,0 +1,8 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+pydantic-settings>=2.5.0
+transformers>=4.46.0
+accelerate
+bitsandbytes
+peft
+torch
