@@ -3,4 +3,4 @@ __pycache__/
 *.pyc
 .env
 server.log
-models/
+#models/
