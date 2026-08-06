@@ -1,0 +1,2 @@
+fowoco-knowledge/hr-intent-service/models/klue-roberta-base-intent-classifier/model.safetensors filter=lfs diff=lfs merge=lfs -text
+fowoco-knowledge/hr-intent-service/models/ax-4.0-light-qlora-classifier/adapter_model.safetensors filter=lfs diff=lfs merge=lfs -text

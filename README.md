@@ -101,6 +101,14 @@ Validation에서 만든 규칙이므로 별도 Test에서 다시 검증해야 �
 학습 데이터 version·SHA-256, 평가 조건, 라이선스와 사용 한계를 model card에 함께
 기록합니다.
 
+## 참고 구현 (hr-intent-service)
+
+Intent 모델을 실제로 서비스하는 참고 구현이 `fowoco-knowledge/hr-intent-service`에 
+포함되어 있습니다.
+
+- **API**: `POST /api/v1/intents/classify`
+- **입력**: `{"instruction": "발화문, INTENT_TAG(선택)"}`
+
 ## 남은 과제
 
 - 최종 consensus 데이터·manifest와 모델 실험 산출물의 저장소 반영
