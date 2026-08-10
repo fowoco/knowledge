@@ -1,16 +1,30 @@
-dataset_id: FOWOCO-HR-INTENT-CANDIDATES
-version: 1.1.0
-status: recheck_required
-path: data/intent/hr_intent_dataset.jsonl
+dataset_id: FOWOCO-HR-INTENT-TRAIN-VALIDATION
+version: 1.2.1
+status: reviewed_train_validation
+path: data/intent/hr_intent_dataset_final.jsonl
 schema: schemas/intent-training-case.schema.json
 label_guide: docs/INTENT_DATA.md
 record_count: 1340
-sha256: 4f4ebfdd4170a78def33e31edbed8315921c0b67934f5ff8612595dcd479bed2
+sha256: 84d1b0de9ec4a009c36ffcf7e06d146affe5535d0f0791c1afd593ef9aa80cfb
 contains_real_personal_data: false
+review:
+  rule_version: 1.1
+  pre_review_path: data/intent/hr_intent_dataset.jsonl
+  pre_review_sha256: 4f4ebfdd4170a78def33e31edbed8315921c0b67934f5ff8612595dcd479bed2
+  changed_label_record_count: 124
+  ids_and_hr_inputs_unchanged: true
+known_model_training_snapshot:
+  dataset_version: 1.2.0
+  sha256: 447174a992e31bd44ec8abe658dc4082d3197bf284e0cc08b7ac5e3e6341a237
+  matches_current_dataset: false
+  note: 최종 파일의 구조 오류 3건을 수정하기 전 모델 학습·검증에 사용한 snapshot
 intended_use:
-  - Intent 분기와 출력 구조 개발
-  - Train/Validation 후보 데이터의 A/B 재검수
+  - Intent 분류 모델의 Train 데이터 구성
+  - 모델 개발 단계의 Validation 비교
+  - Intent와 evidence 출력 구조 검증
 limitations:
   - 독립 Gold Test가 아님
-  - 최종 모델 성능 주장에 사용할 수 없음
-  - 의미 라벨은 규칙 v1.1에 따른 A/B 합의 검수가 필요함
+  - 같은 Validation으로 모델과 routing 규칙을 조정했으므로 최종 성능 주장에 사용할 수 없음
+  - Workflow 선택, Slot Filling, 외부기관 실행 또는 법적 판단의 정답 데이터가 아님
+  - 라벨 규칙이 바뀌면 재검수와 version 갱신이 필요함
+  - 현재 포함 모델 가중치는 version 1.2.0 snapshot으로 학습되어 version 1.2.1로 재학습되지 않음

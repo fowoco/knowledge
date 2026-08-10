@@ -1088,7 +1088,7 @@
 {"id": 1088, "hr_input": "WRK-698 무단결근으로 결원, 오늘 오전 급하게 인력 재배치했음", "intents": [{"intent": "EMPLOYMENT_CHANGE", "evidence": "무단결근으로 결원"}, {"intent": "WORK_INSTRUCTION", "evidence": "오늘 오전 급하게 인력 재배치했음"}]}
 {"id": 1089, "hr_input": "신규 WRK-699 여권 받아서 등록 진행하고, 최초 보험가입 및 급여계좌 개설까지 한번에 처리 부탁", "intents": [{"intent": "DOCUMENT_REQUEST", "evidence": "여권 받아서"}, {"intent": "WORKER_ONBOARDING", "evidence": "등록 진행하고, 최초 보험가입 및 급여계좌 개설까지 한번에 처리 부탁"}]}
 {"id": 1090, "hr_input": "WRK-700 오늘 작업 지연으로 잔업 지시했고, 잔업수당은 다음 급여에 반영해줘", "intents": [{"intent": "WORK_INSTRUCTION", "evidence": "오늘 작업 지연으로 잔업 지시했고"}, {"intent": "PAYROLL_EXPLANATION", "evidence": "잔업수당은 다음 급여에 반영해줘"}]}
-{"id": 1091, "hr_input": "WRK-701 사업장 변경 서류 받아서 정리하고, 새 근무지 작업 배치까지 확인 부탁", "intents": [{"intent": "DOCUMENT_REQUEST", "evidence": "서류 받아서 정리"}, {"intent": "EMPLOYMENT_CHANGE", "evidence": "사업장 변경"}, {"intent": "WORK_INSTRUCTION", "evidence": "새 근무지 작업 배치까지 확인"}]}
+{"id": 1091, "hr_input": "WRK-701 사업장 변경 서류 받아서 정리하고, 새 근무지 작업 배치까지 확인 부탁", "intents": [{"intent": "EMPLOYMENT_CHANGE", "evidence": "사업장 변경"}, {"intent": "DOCUMENT_REQUEST", "evidence": "서류 받아서 정리"}, {"intent": "WORK_INSTRUCTION", "evidence": "새 근무지 작업 배치까지 확인"}]}
 {"id": 1092, "hr_input": "WRK-702: 오늘 라인 교체 완료, 별도 지시 없음", "intents": [{"intent": "OUT_OF_SCOPE", "evidence": null}]}
 {"id": 1093, "hr_input": "WRK-703 급여 지급일 변경됐다고 안내해줘요", "intents": [{"intent": "PAYROLL_EXPLANATION", "evidence": "급여 지급일 변경됐다고 안내해줘요"}]}
 {"id": 1094, "hr_input": "WRK-704 무단결근 3일째, 자동 퇴사 처리 검토 및 대체인력 배치 시급함", "intents": [{"intent": "EMPLOYMENT_CHANGE", "evidence": "무단결근 3일째, 자동 퇴사 처리 검토"}, {"intent": "WORK_INSTRUCTION", "evidence": "대체인력 배치 시급함"}]}
@@ -1122,7 +1122,7 @@
 {"id": 1122, "hr_input": "WRK-732 여권과 등록증 받아서 연장 신청, 접수 결과는 급여명세서와 함께 안내해줘", "intents": [{"intent": "DOCUMENT_REQUEST", "evidence": "여권과 등록증 받아서"}, {"intent": "EXPIRY_RENEWAL", "evidence": "연장 신청"}, {"intent": "WORK_INSTRUCTION", "evidence": "접수 결과는 급여명세서와 함께 안내해줘"}]}
 {"id": 1123, "hr_input": "WRK-733: 오늘 라인 배치 그대로 유지", "intents": [{"intent": "WORK_INSTRUCTION", "evidence": "오늘 라인 배치 그대로 유지"}]}
 {"id": 1124, "hr_input": "WRK-734 퇴사 처리하고 남은 라인 인력 재배치 지시함", "intents": [{"intent": "EMPLOYMENT_CHANGE", "evidence": "퇴사 처리"}, {"intent": "WORK_INSTRUCTION", "evidence": "남은 라인 인력 재배치 지시함"}]}
-{"id": 1125, "hr_input": "WRK-735 급여 명세 확인차 통장사본 받아서 대조 부탁드립니다.", "intents": [{"intent": "DOCUMENT_REQUEST", "evidence": "통장사본 받아서"}, {"intent": "PAYROLL_EXPLANATION", "evidence": "급여 명세 확인차"}]}
+{"id": 1125, "hr_input": "WRK-735 급여 명세 확인차 통장사본 받아서 대조 부탁드립니다.", "intents": [{"intent": "PAYROLL_EXPLANATION", "evidence": "급여 명세 확인차"}, {"intent": "DOCUMENT_REQUEST", "evidence": "통장사본 받아서"}]}
 {"id": 1126, "hr_input": "WRK-736 오늘부터 신규 라인 근무, 3개월 후 정규 배치 예정", "intents": [{"intent": "WORK_INSTRUCTION", "evidence": "오늘부터 신규 라인 근무, 3개월 후 정규 배치 예정"}]}
 {"id": 1127, "hr_input": "WRK-737 무단결근 이틀째, 체류기간 만료도 임박해서 신고 서둘러야 함", "intents": [{"intent": "EMPLOYMENT_CHANGE", "evidence": "무단결근 이틀째"}, {"intent": "EXPIRY_RENEWAL", "evidence": "체류기간 만료도 임박"}]}
 {"id": 1128, "hr_input": "WRK-738: 급여 지연 문의, 확인 후 안내 요망", "intents": [{"intent": "PAYROLL_EXPLANATION", "evidence": "급여 지연 문의, 확인 후 안내 요망"}]}
@@ -1319,7 +1319,7 @@
 {"id": 1319, "hr_input": "WRK-929 계약만료 임박, 여권 받아서 연장 서류 접수, 새 근무 배치는 미정", "intents": [{"intent": "EXPIRY_RENEWAL", "evidence": "계약만료 임박"}, {"intent": "DOCUMENT_REQUEST", "evidence": "여권 받아서"}]}
 {"id": 1320, "hr_input": "WRK-930 오늘 무단결근으로 라인 공백, 급하게 대체인력 배치했고 신고도 접수함", "intents": [{"intent": "OUT_OF_SCOPE", "evidence": null}]}
 {"id": 1321, "hr_input": "WRK-931: 오늘 라인 청소 및 정리정돈 지시", "intents": [{"intent": "WORK_INSTRUCTION", "evidence": "오늘 라인 청소 및 정리정돈 지시"}]}
-{"id": 1322, "hr_input": "신규 WRK-932 여권과 계약서 받아서 등록 진행, 배치 및 급여계좌는 다음 주 처리 예정", "intents": [{"intent": "DOCUMENT_REQUEST", "evidence": "여권과 계약서 받아서"}, {"intent": "WORKER_ONBOARDING", "evidence": "등록 진행, 급여계좌는 다음 주 처리 예정"}, {"intent": "WORK_INSTRUCTION", "evidence": "배치"}]}
+{"id": 1322, "hr_input": "신규 WRK-932 여권과 계약서 받아서 등록 진행, 배치 및 급여계좌는 다음 주 처리 예정", "intents": [{"intent": "DOCUMENT_REQUEST", "evidence": "여권과 계약서 받아서"}, {"intent": "WORKER_ONBOARDING", "evidence": "등록 진행"}, {"intent": "WORK_INSTRUCTION", "evidence": "배치"}]}
 {"id": 1323, "hr_input": "WRK-933 급여계좌 오류, 통장사본 받아서 재등록 부탁", "intents": [{"intent": "DOCUMENT_REQUEST", "evidence": "통장사본 받아서"}, {"intent": "WORKER_ONBOARDING", "evidence": "재등록 부탁"}]}
 {"id": 1324, "hr_input": "WRK-934: 오늘 오전 결근, 오후 정상 출근 확인", "intents": [{"intent": "EMPLOYMENT_CHANGE", "evidence": "오늘 오전 결근, 오후 정상 출근 확인"}]}
 {"id": 1325, "hr_input": "WRK-935 사업장 변경 후 새 작업지시 및 급여체계 안내 필요", "intents": [{"intent": "EMPLOYMENT_CHANGE", "evidence": "사업장 변경"}, {"intent": "WORK_INSTRUCTION", "evidence": "새 작업지시"}, {"intent": "PAYROLL_EXPLANATION", "evidence": "급여체계 안내 필요"}]}

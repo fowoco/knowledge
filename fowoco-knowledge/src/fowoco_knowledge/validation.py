@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import json
 import re
+from collections import Counter
 from typing import Any
 
 from jsonschema import Draft202012Validator
@@ -85,6 +86,7 @@ class KnowledgeValidator:
         self._validate_seed_data()
         self._validate_evaluation_data()
         self._validate_intent_data()
+        self._validate_intent_split()
         return self.errors
 
     def _validate_manifest_files(self) -> None:
@@ -416,6 +418,159 @@ class KnowledgeValidator:
             self.errors.append("intent data: record count mismatch")
         if file_sha256(path) != intent_manifest["sha256"]:
             self.errors.append("intent data: checksum mismatch")
+
+        review = intent_manifest.get("review", {})
+        pre_review_relative_path = review.get("pre_review_path")
+        if pre_review_relative_path:
+            pre_review_path = self.repository.root / pre_review_relative_path
+            if not pre_review_path.is_file():
+                self.errors.append("intent data: pre-review archive missing")
+                return
+            if file_sha256(pre_review_path) != review.get("pre_review_sha256"):
+                self.errors.append("intent data: pre-review archive checksum mismatch")
+
+            final_cases = [
+                json.loads(line)
+                for line in path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            pre_review_cases = [
+                json.loads(line)
+                for line in pre_review_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            final_identity = [(case["id"], case["hr_input"]) for case in final_cases]
+            pre_review_identity = [(case["id"], case["hr_input"]) for case in pre_review_cases]
+            if review.get("ids_and_hr_inputs_unchanged") and final_identity != pre_review_identity:
+                self.errors.append("intent data: pre-review IDs or inputs differ from final data")
+            changed_count = sum(
+                final_case["intents"] != pre_review_case["intents"]
+                for final_case, pre_review_case in zip(final_cases, pre_review_cases, strict=False)
+            )
+            if changed_count != review.get("changed_label_record_count"):
+                self.errors.append("intent data: changed label record count mismatch")
+
+    def _validate_intent_split(self) -> None:
+        manifest = self.repository.load_yaml("data/intent/splits/manifest.yaml")
+        schema = self.repository.load_json(manifest["schema"])
+        schema_errors = list(Draft202012Validator(schema).iter_errors(manifest))
+        for error in schema_errors:
+            path = ".".join(str(item) for item in error.path)
+            self.errors.append(f"intent split schema [{path}]: {error.message}")
+        if schema_errors:
+            return
+
+        intent_manifest = self.repository.load_yaml("data/intent/manifest.yaml")
+        source = manifest["source"]
+        source_path = self.repository.root / source["path"]
+        if source["path"] != intent_manifest["path"]:
+            self.errors.append("intent split: source path differs from intent manifest")
+        if source["sha256"] != intent_manifest["sha256"]:
+            self.errors.append("intent split: source checksum differs from intent manifest")
+        if not source_path.is_file():
+            self.errors.append("intent split: source file missing")
+            return
+        if file_sha256(source_path) != source["sha256"]:
+            self.errors.append("intent split: source checksum mismatch")
+
+        cases = [
+            json.loads(line)
+            for line in source_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        case_by_id = {case["id"]: case for case in cases}
+        source_ids = set(case_by_id)
+        if len(cases) != source["record_count"]:
+            self.errors.append("intent split: source record count mismatch")
+        if len(case_by_id) != len(cases):
+            self.errors.append("intent split: duplicate source id")
+
+        split_ids: dict[str, set[int]] = {}
+        for split_name in ("train", "validation"):
+            output = manifest["outputs"][split_name]
+            output_path = self.repository.root / output["path"]
+            if not output_path.is_file():
+                self.errors.append(f"intent split {split_name}: output file missing")
+                continue
+            if file_sha256(output_path) != output["sha256"]:
+                self.errors.append(f"intent split {split_name}: checksum mismatch")
+
+            raw_ids = [
+                line.strip()
+                for line in output_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            try:
+                parsed_ids = [int(case_id) for case_id in raw_ids]
+            except ValueError:
+                self.errors.append(f"intent split {split_name}: non-integer id")
+                continue
+
+            current_ids = set(parsed_ids)
+            split_ids[split_name] = current_ids
+            if len(parsed_ids) != output["record_count"]:
+                self.errors.append(f"intent split {split_name}: record count mismatch")
+            if len(current_ids) != len(parsed_ids):
+                self.errors.append(f"intent split {split_name}: duplicate id")
+            if current_ids - source_ids:
+                self.errors.append(f"intent split {split_name}: unknown source id")
+
+        if set(split_ids) != {"train", "validation"}:
+            return
+
+        train_ids = split_ids["train"]
+        validation_ids = split_ids["validation"]
+        if train_ids & validation_ids:
+            self.errors.append("intent split: train and validation overlap")
+        if train_ids | validation_ids != source_ids:
+            self.errors.append("intent split: source ids are missing or duplicated across outputs")
+
+        policy = manifest["policy"]
+        if manifest["outputs"]["train"]["record_count"] != policy["target_train_count"]:
+            self.errors.append("intent split: train count differs from policy target")
+        if manifest["outputs"]["validation"]["record_count"] != policy["target_validation_count"]:
+            self.errors.append("intent split: validation count differs from policy target")
+
+        normalization = policy["template_normalization"]
+        worker_id_pattern = re.compile(normalization["worker_id_pattern"])
+
+        def normalize_template(value: str) -> str:
+            normalized = worker_id_pattern.sub(normalization["worker_id_replacement"], value)
+            if normalization["collapse_whitespace"]:
+                normalized = " ".join(normalized.split())
+            if normalization["casefold"]:
+                normalized = normalized.casefold()
+            return normalized
+
+        template_groups: dict[str, set[int]] = {}
+        for case in cases:
+            template = normalize_template(case["hr_input"])
+            template_groups.setdefault(template, set()).add(case["id"])
+        if any(group & train_ids and group & validation_ids for group in template_groups.values()):
+            self.errors.append("intent split: normalized template leaks across outputs")
+
+        statistics = manifest["statistics"]
+        group_sizes = [len(group) for group in template_groups.values()]
+        if len(template_groups) != statistics["template_group_count"]:
+            self.errors.append("intent split: template group count mismatch")
+        if sum(size > 1 for size in group_sizes) != statistics["duplicate_template_group_count"]:
+            self.errors.append("intent split: duplicate template group count mismatch")
+        if max(group_sizes, default=0) != statistics["max_template_group_size"]:
+            self.errors.append("intent split: maximum template group size mismatch")
+        for split_name, ids in {
+            "source": source_ids,
+            "train": train_ids,
+            "validation": validation_ids,
+        }.items():
+            selected_cases = [case_by_id[case_id] for case_id in ids]
+            label_counts = Counter(
+                item["intent"] for case in selected_cases for item in case["intents"]
+            )
+            cardinality_counts = Counter(str(len(case["intents"])) for case in selected_cases)
+            if dict(label_counts) != statistics["label_counts"][split_name]:
+                self.errors.append(f"intent split {split_name}: label statistics mismatch")
+            if dict(cardinality_counts) != statistics["intent_cardinality_counts"][split_name]:
+                self.errors.append(f"intent split {split_name}: cardinality statistics mismatch")
 
     def _index_unique(self, items: list[dict[str, Any]], kind: str) -> dict[str, dict[str, Any]]:
         indexed: dict[str, dict[str, Any]] = {}

@@ -32,7 +32,9 @@ datasets:
   required_documents: data/processed/required_documents_manufacturing.csv
   manufacturing_industries: data/processed/manufacturing_industries.csv
   intent_manifest: data/intent/manifest.yaml
-  intent_training_candidates: data/intent/hr_intent_dataset.jsonl
+  intent_training_validation: data/intent/hr_intent_dataset_final.jsonl
+  intent_pre_review_archive: data/intent/hr_intent_dataset.jsonl
+  intent_split_manifest: data/intent/splits/manifest.yaml
 review_policy:
   minimum_reviewers_for_official_knowledge: 2
   all_outbound_messages_require_hr_approval: true

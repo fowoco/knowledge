@@ -37,12 +37,20 @@ BERT(Full FT) 메인 모델 + A.X-4.0-Light(QLoRA) 보조 모델 cascade 구조�
 | A.X-4.0-Light | 보조 | QLoRA (checkpoint-402) | 92.2% |
 | Cascade 모델 | 최종 | 메인 모델 + 보조 모델 , 라우팅 조건 적용 | 93.2% |
 
+위 가중치와 Validation 결과의 학습 데이터 snapshot SHA-256은
+`447174a992e31bd44ec8abe658dc4082d3197bf284e0cc08b7ac5e3e6341a237`입니다.
+현재 Knowledge 데이터 version 1.2.1은 evidence·순서 구조 오류 3건을 고쳐 SHA-256이
+달라졌으며, 포함된 가중치는 아직 1.2.1로 재학습하지 않았습니다.
+
 
 ## Hugging Face Hub 연동
 
 https://huggingface.co/fowoco 
 
-모델 학습 가중치는 `fowoco` 조직의 private repo에 저장되어 있다. GitHub에는 코드만 올리고, 모델 파일은 여기서 관리한다 .
+모델 배포의 기준 위치는 `fowoco` 조직의 Hugging Face 저장소다. 현재 GitHub에는
+프로젝트 결과 재현과 인계를 위한 동일 가중치 스냅샷이 Git LFS로 포함되어 있다.
+새 모델 버전은 Hugging Face에 model card와 함께 게시하고, 이 저장소에는 데이터
+version·SHA-256과 호환되는 코드만 갱신한다.
 ```
 fowoco/klue-roberta-base-intent-classifier  
 fowoco/ax-intent-qlora                        

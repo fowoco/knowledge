@@ -1,96 +1,84 @@
-# FOWOCO Knowledge
+# FOWOCO Knowledge Package
 
-FOWOCO Agent가 공통으로 참조하는 **버전형 업무 지식 패키지**입니다.
-Intent·Domain·필수정보·Workflow·공식 출처·Guardrail과 평가 데이터를 한곳에서 관리합니다.
+FOWOCO Agent가 공통으로 참조하는 버전형 업무 지식 패키지입니다. Intent·Workflow·필수
+Slot·공식 출처·Guardrail을 조회하고, 데이터 계약과 교차참조가 맞는지 검증합니다.
 
-이 패키지는 LLM 자체가 아닙니다. Agent가 매 요청마다 같은 업무 기준을 사용하도록
-Context를 제공하고, 서로 맞지 않는 지식 변경을 CI에서 차단하는 역할을 합니다.
+이 패키지는 법적 판단이나 외부기관 제출을 수행하지 않습니다. 모델이 분류한 요청을
+업무 지식과 연결하고 누락·모호성을 찾는 것이 핵심 책임입니다.
 
-## MVP 범위
+## 디렉터리
 
-| 지원 업무 | 대표 Workflow |
+| 경로 | 내용 |
 | --- | --- |
-| 근로자 등록 | 문서 OCR 결과를 등록 초안으로 변환 후 HR 승인 |
-| 체류·계약 만료 | 내부 알림일에 업무 생성, 필요자료 확인, 수동 기관 제출 안내 |
-| 서류 요청 | 대상·서류·기한·제출처 점검 후 근로자 안내와 제출 추적 |
-| 급여 설명 | 전월·당월 명세 차이를 계산하고 설명 초안 생성 |
-| 업무·일정 안내 | 시간·장소·대상·행동을 명확히 한 다국어 안내 |
-| 고용변동 | 사건정보를 구조화하고 공식 신고 준비 업무 생성 |
+| [`knowledge/`](knowledge) | Agent Context Pack 원본 |
+| [`data/`](data) | 최종 Intent 데이터, split ID, Seed·평가·공공 정규화 데이터 |
+| [`schemas/`](schemas) | 입력·Workflow·Intent·분할 계약 |
+| [`src/`](src) | 로더, 검증기, 조회 CLI |
+| [`tests/`](tests) | Schema·SHA-256·교차참조·분할 테스트 |
+| [`docs/`](docs) | 라벨링, 출처, 검수, Agent 연동 기준 |
+| [`hr-intent-service/`](hr-intent-service) | BERT + A.X cascade 모델의 참고 서빙 구현 |
 
-기관 자동 제출, 법적 최종판단, 노무위반 확률예측은 포함하지 않습니다.
+모델 가중치의 배포 기준 위치는 [FOWOCO Hugging Face](https://huggingface.co/fowoco)입니다.
+`hr-intent-service/`는 프로젝트 결과 재현과 AI 저장소 인계를 위한 스냅샷입니다.
 
-## 구조
+## 데이터 기준
 
-```text
-fowoco-knowledge/
-├── knowledge/        # Agent Context Pack 원본
-├── data/             # Seed와 독립 평가 데이터
-├── schemas/          # 입력·Workflow·라벨 데이터 계약
-├── src/              # 로더, 검증기, CLI
-├── tests/            # 교차참조·동작 테스트
-├── examples/         # 실행 가능한 요청 예시
-└── docs/             # 데이터·Agent 연동·출처 정책
-```
+- 최종 학습·검증 원본: `data/intent/hr_intent_dataset_final.jsonl` 1,340건
+- Train ID: `data/intent/splits/train_ids.txt` 1,072건
+- Validation ID: `data/intent/splits/validation_ids.txt` 268건
+- 검수 전 원본: `data/intent/hr_intent_dataset.jsonl` — 감사·비교용, 신규 학습 금지
+- 독립 Gold Test: 아직 없음
+
+자세한 사용 기준은 [`data/README.md`](data/README.md)를 확인합니다.
 
 ## 설치와 검증
 
-저장소 루트에서 실행합니다.
+Git 저장소 루트에서 실행합니다.
 
 ```bash
 python3.11 -m venv .venv
-.venv/bin/python -m pip install -e "./fowoco-knowledge[dev]"
-.venv/bin/python -m fowoco_knowledge validate
-.venv/bin/python -m pytest fowoco-knowledge/tests
+make install
+make check
 ```
 
-## CLI 사용
+패키지 디렉터리에서 직접 실행할 때는 다음 명령을 사용할 수 있습니다.
+
+```bash
+../.venv/bin/python -m pip install -e ".[dev]"
+../.venv/bin/python -m fowoco_knowledge validate
+../.venv/bin/python -m pytest tests
+```
+
+## CLI 예시
 
 ```bash
 # 지원 Workflow 목록
 .venv/bin/python -m fowoco_knowledge list-workflows
 
-# Agent에 전달할 Context 묶음 확인
+# Workflow에 필요한 Context 확인
 .venv/bin/python -m fowoco_knowledge compile-context WF-STY-001
 
-# 분류·Slot Filling 결과가 Workflow를 실행할 수 있는지 확인
+# 분류·Slot Filling 결과 검증
 .venv/bin/python -m fowoco_knowledge check-request \
   fowoco-knowledge/examples/ambiguous_document_request.json
 
-# 공식 원본 검증 후 제조업 Knowledge 스냅샷 재생성
-.venv/bin/python -m fowoco_knowledge sync-official-data
-
-# 신청서별 필요서류와 제조업 세부업종 조회
+# 신청 업무별 정규화 필요서류 조회
 .venv/bin/python -m fowoco_knowledge \
   list-required-documents "외국인 고용변동 등 신고"
-.venv/bin/python -m fowoco_knowledge search-industries "금속가공제품"
 ```
 
-`check-request`는 자연어 모델을 대신하지 않습니다. 모델이 출력한 Workflow와 Slot이
-업무를 시작하기에 충분한지 규칙으로 검증합니다.
+`check-request`는 자연어 모델을 대신하지 않습니다. 모델 출력이 Workflow를 시작하기에
+충분한지 규칙으로 검사합니다.
 
-## Agent 연동 위치
+## 업무 경계
 
 ```text
-자연어/PDF/Excel
-  -> Intent·Domain·Slot 추론
-  -> 이 패키지로 Workflow·필수정보·공식출처 조회
-  -> 누락·모호성 검증
-  -> HR 업무카드와 안내문 초안 생성
+HR 입력
+  -> Intent + evidence 분류
+  -> Workflow·필수 Slot·공식 출처 조회
+  -> 누락·모호성·금지 실행 검증
+  -> 업무카드와 안내문 초안
   -> HR 승인
-  -> 근로자 응답과 후속 티켓
 ```
 
-## 데이터 상태
-
-- `gold_seed.csv`: 프롬프트·분기 개발용 초기 Seed이며 모델 학습 완료 데이터가 아님
-- `golden_cases.jsonl`: 코드와 모델 평가에만 사용하는 독립 사례
-- `hr_intent_dataset.jsonl`: Intent Train/Validation 후보 1,340건이며 재검수 전 Gold Test가 아님
-- 공개데이터: 절차·용어·분포 보조자료이며 FOWOCO Intent의 정답 라벨로 간주하지 않음
-- 실제 운영 로그: 개인정보를 제거하고 별도 승인된 경우에만 Active Learning 후보로 사용
-
-일반 데이터 기준은 [`docs/DATA_GUIDE.md`](docs/DATA_GUIDE.md), Intent 라벨과
-evidence 기준은 [`docs/INTENT_DATA.md`](docs/INTENT_DATA.md)를 확인합니다.
-
-공식 데이터 변환은 [`docs/OFFICIAL_DATA_PIPELINE.md`](docs/OFFICIAL_DATA_PIPELINE.md),
-신고·연장 기능의 범위는 [`docs/E9_REPORTING_WORKFLOWS.md`](docs/E9_REPORTING_WORKFLOWS.md)를
-확인합니다.
+기관 자동 제출, 법적 최종 판단, 노무위반 확률 예측은 MVP 범위가 아닙니다.

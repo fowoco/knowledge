@@ -1,9 +1,9 @@
 # Intent 라벨링 및 데이터 계약
 
 - 규칙 버전: 1.1
-- 갱신일: 2026-07-27
-- 대상 파일: `data/intent/hr_intent_dataset.jsonl`
-- 데이터 상태: Train/Validation 후보, 독립 Gold Test 아님
+- 갱신일: 2026-08-11
+- 기준 파일: `data/intent/hr_intent_dataset_final.jsonl`
+- 데이터 상태: 검수 완료 Train/Validation 데이터, 독립 Gold Test 아님
 
 이 문서는 HR 담당자의 발화에서 FOWOCO MVP가 지원하는 Intent와 근거 문구를
 라벨링하는 기준을 정의한다. Intent 모델의 책임은 `Intent + evidence` 추출까지다.
@@ -25,7 +25,7 @@ Workflow 선택, Slot 수집, 외부기관 제출, 법적 판단, 업무 실행 
 세부 설명의 기준 원본은 [`knowledge/intents.yaml`](../knowledge/intents.yaml)이다.
 이 문서와 원본의 의미가 충돌하면 두 파일을 함께 수정하고 검수한다.
 
-## 2. 학습·평가 후보 데이터 스키마
+## 2. 학습·검증 데이터 스키마
 
 현재 JSONL의 한 줄은 다음 구조만 사용한다.
 
@@ -54,9 +54,10 @@ Workflow 선택, Slot 수집, 외부기관 제출, 법적 판단, 업무 실행 
 | `intents[].intent` | string | 7개 Intent Code 중 하나 |
 | `intents[].evidence` | string \| null | 원문의 연속된 부분 문자열. `OUT_OF_SCOPE`만 `null` |
 
-`source`와 `split`은 현재 레코드 필드가 아니다. 작성 출처와 Train/Validation/Test
-분할은 데이터 검수 완료 후 별도 버전 manifest로 관리한다. 현재 1,340건을 독립
-Gold Test 또는 최종 성능 주장에 사용하지 않는다.
+`source`와 `split`은 레코드 필드가 아니다. 데이터 버전은
+`data/intent/manifest.yaml`, Train/Validation 분할은
+`data/intent/splits/manifest.yaml`과 ID 파일로 관리한다. 현재 1,340건과 Validation
+268건을 독립 Gold Test 또는 최종 성능 주장에 사용하지 않는다.
 
 정식 구조 검증 기준은
 [`schemas/intent-training-case.schema.json`](../schemas/intent-training-case.schema.json)이다.
@@ -190,10 +191,14 @@ HR 요청 분류 데이터의 범위 밖이므로 `OUT_OF_SCOPE`로 처리한다
 - `퇴사했으니 신고 준비 업무 만들어줘` → `EMPLOYMENT_CHANGE`
 - `등록 완료 여부 확인해줘` → `WORKER_ONBOARDING`
 
-## 7. 재검수 기준
+## 7. 검수 결과와 변경 기준
 
-현재 1,340건은 이 규칙에 따라 A/B 독립 재검수 후 합의본을 만들어야 한다. 다음
-항목은 우선 검수 대상으로 표시한다.
+`hr_intent_dataset_final.jsonl`은 규칙 v1.1 경계 사례 재검수를 반영한 현재 기준
+파일이다. 검수 전 원본과 비교해 124건의 Intent/evidence 라벨이 바뀌었고, ID와
+`hr_input`은 그대로 유지했다. 검수 전 파일은 감사와 비교를 위해
+`hr_intent_dataset.jsonl`에 보존한다.
+
+다음 항목은 라벨 규칙 또는 데이터를 변경할 때 다시 우선 검수한다.
 
 - Multi-Intent 순서가 원문의 evidence 순서와 다른 레코드
 - `급여계좌`를 `PAYROLL_EXPLANATION`으로 분류한 레코드
@@ -202,9 +207,7 @@ HR 요청 분류 데이터의 범위 밖이므로 `OUT_OF_SCOPE`로 처리한다
 - 외부기관 접수·자동 실행 문구가 evidence에 포함된 레코드
 - evidence가 판단에 필요한 범위보다 길거나 다른 Intent까지 포함한 레코드
 
-자동 검증은 JSON Schema, ID 중복, Intent Code, `OUT_OF_SCOPE` 단독성, evidence
-원문 포함 여부와 Multi-Intent 순서를 검사한다. 의미 경계는 자동으로 확정하지 않고
-검수자 합의로 변경한다.
-
-관련 작업은 [GitHub Issue #28](https://github.com/fowoco/knowledge/issues/28)에서
-추적한다.
+자동 검증은 JSON Schema, SHA-256, ID 중복, Intent Code, `OUT_OF_SCOPE` 단독성,
+evidence 원문 포함 여부, Multi-Intent 순서와 Train/Validation 분할을 검사한다.
+의미 경계는 자동으로 확정하지 않고 검수자 합의로 변경한다. 변경 시 final 데이터와
+두 manifest의 version·통계·SHA-256을 함께 갱신한다.
