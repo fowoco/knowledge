@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- 최종 검수 Intent 데이터 1,340건을 manifest의 기준 원본으로 지정
+- Train 1,072건 / Validation 268건의 실제 ID 경로·SHA-256·최종 라벨 분포 정정
+- 검수 전 데이터와 최종 데이터의 용도, Hugging Face와 Git LFS의 역할 구분
+- Intent split Schema와 중복·누락·해시·분포 검증 추가
+
 ## 0.2.0 - 2026-07-16
 
 - 필요서류 187건과 EPS 세부업종 847건의 원본 해시·버전을 고정

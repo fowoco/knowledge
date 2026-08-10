@@ -1,136 +1,62 @@
-# FOWOCO Knowledge & Intent Modeling
+# FOWOCO Knowledge
 
-FOWOCO는 E-9 외국인근로자를 고용한 사업장의 반복 HR·행정업무를 구조화하고,
-담당자가 다음 행동을 놓치지 않도록 지원하는 AI 업무보조 서비스입니다.
+FOWOCO는 E-9 외국인근로자를 고용한 사업장의 HR·총무 업무를 구조화하고,
+담당자가 놓치기 쉬운 다음 행동을 업무카드로 관리하는 AI 업무보조 서비스입니다.
 
-이 저장소는 Agent가 참고할 업무 지식과 공식 출처뿐 아니라, HR 발화문을
-`Intent + evidence`로 분류하기 위한 데이터 계약·검수·평가 및 모델 실험 이력을
-함께 관리합니다. 운영 앱과 모델 서버를 구현하는 저장소는 아닙니다.
+이 저장소는 FOWOCO Agent가 사용하는 **업무 지식, 공식자료 정규화 데이터, Intent
+라벨, 데이터 계약과 검증 기준**의 기준 저장소입니다. 외부기관 제출이나 법적 판단을
+자동화하지 않으며, 민감 업무는 HR 담당자의 승인 후 진행합니다.
 
 > [!IMPORTANT]
-> **🤗 [FOWOCO Hugging Face Model Hub](https://huggingface.co/fowoco)**
+> ## 🤗 [FOWOCO Hugging Face](https://huggingface.co/fowoco)
 >
-> 학습 checkpoint, adapter, tokenizer, model card와 공개 가능한 데이터셋은
-> FOWOCO Hugging Face 조직에서 배포합니다.
+> 학습된 BERT 모델과 A.X adapter의 배포 기준 위치입니다. 저장소 접근 권한에 따라
+> 일부 모델은 비공개일 수 있습니다. GitHub에는 재현에 필요한 데이터 기준·코드와
+> 프로젝트 제출용 Git LFS 스냅샷을 관리합니다.
 
-## 목표
+## 현재 결과
 
-HR 담당자의 입력에서 다음 7개 Intent를 하나 이상 찾고, 판단 근거가 되는 원문의
-연속 구간을 `evidence`로 반환합니다.
-
-- `WORKER_ONBOARDING`: 신규 근로자 등록·초기 처리
-- `EXPIRY_RENEWAL`: 체류·계약·고용허가 만료와 갱신 준비
-- `DOCUMENT_REQUEST`: 서류 요청·수령·미제출 추적
-- `PAYROLL_EXPLANATION`: 급여·수당·공제 설명
-- `WORK_INSTRUCTION`: 작업·근무일정·현장 안내
-- `EMPLOYMENT_CHANGE`: 퇴사·결근·사업장 변경 등 고용상태 변동
-- `OUT_OF_SCOPE`: 지원 범위 밖 요청
-
-모델은 Intent와 evidence까지만 판단합니다. Workflow 선택, 외부기관 제출, 법적
-판단과 업무 완료는 규칙 검증과 HR 담당자 승인 이후에 처리합니다.
-
-## 진행 과정
-
-| 단계 | 내용 | 저장소 상태 |
+| 구분 | 현재 상태 | 기준 파일 |
 | --- | --- | --- |
-| 규칙·후보 데이터 | Intent 규칙 v1.1, evidence exact substring, HR 발화문 1,340건 | `main` 반영 |
-| A/B 재검수 | 경계 사례 독립 검수와 consensus | [#31](https://github.com/fowoco/knowledge/pull/31), [#35](https://github.com/fowoco/knowledge/pull/35) 검토 중 |
-| 모델링 계약 | 유사 템플릿 누수를 막은 Train 1,072건 / Validation 268건 분할 | [#33](https://github.com/fowoco/knowledge/pull/33) 검토 중 |
-| 기준 실험 | 수정 전 라벨 baseline과 A.X 테스트 도구 | [#37](https://github.com/fowoco/knowledge/pull/37)이 #33 브랜치에 병합됨 |
-| 모델 비교 | A.X-4.0-Light와 KLUE-RoBERTa 실험 | 산출물 반영 예정 |
+| Intent | 7개 Intent와 evidence exact substring 규칙 v1.1 | [`intents.yaml`](fowoco-knowledge/knowledge/intents.yaml), [`INTENT_DATA.md`](fowoco-knowledge/docs/INTENT_DATA.md) |
+| 최종 검수 데이터 | HR 발화문 1,340건 | [`hr_intent_dataset_final.jsonl`](fowoco-knowledge/data/intent/hr_intent_dataset_final.jsonl) |
+| 고정 분할 | Train 1,072건 / Validation 268건 | [`splits/`](fowoco-knowledge/data/intent/splits) |
+| 업무 지식 | Intent·Workflow·필수 Slot·서류·공식 출처·Guardrail | [`knowledge/`](fowoco-knowledge/knowledge) |
+| 모델 | KLUE-RoBERTa 메인 + A.X-4.0-Light 보조 cascade 참고 구현 | [`hr-intent-service/`](fowoco-knowledge/hr-intent-service) |
 
-## 모델 실험 요약
+검수 전 데이터는 변경 이력 확인을 위해
+[`hr_intent_dataset.jsonl`](fowoco-knowledge/data/intent/hr_intent_dataset.jsonl)에
+보존합니다. 최종 학습·검증에는 `hr_intent_dataset_final.jsonl`과 split ID 파일을
+함께 사용합니다.
 
-아래 수치는 팀의 최신 Validation 268건 실험 기록입니다. 독립적으로 잠긴 Test
-성능이나 운영 성능을 의미하지 않습니다.
+Validation 268건에서 기록한 모델 결과는 BERT 95.5%, A.X QLoRA 92.2%, Cascade
+93.2%입니다. 같은 데이터로 모델을 개발하고 비교한 **내부 Validation 결과**이며,
+독립 Gold Test나 운영 성능을 뜻하지 않습니다. 현재 가중치는 데이터 구조 오류 3건을
+수정하기 전 version 1.2.0 snapshot 기준이며, 자세한 SHA-256은 모델 README에 기록합니다.
 
-| 모델 | Intent Exact Match | 결론 |
-| --- | ---: | --- |
-| A.X-4.0-Light Few-shot | 0.7612 | 초기 기준선 |
-| A.X-4.0-Light QLoRA | 0.9254 | 복잡한 입력의 보조 모델 후보 |
-| KLUE-RoBERTa Full FT | 0.9590 | 메인 모델 후보, 약 186ms |
-| KLUE-RoBERTa LoRA | 0.9104 | Full FT보다 낮아 기각 |
-
-A.X QLoRA는 evidence exact match가 `0.7377`로 Few-shot의 `0.1667`보다 크게
-개선됐습니다. BERT Full FT는 Intent 분류 성능과 응답속도가 가장 좋았습니다.
-
-## 현재 모델 결론
+## 저장소 구성
 
 ```text
-HR 입력
-  -> BERT Intent 분류
-  -> 복잡도·경계 패턴·예측 margin 검사
-      -> 위험하거나 불확실함: A.X로 라우팅
-      -> 그 외: BERT 결과 사용
-  -> 출력 Schema 검증
-  -> Workflow 선택과 HR 승인
+.
+├── fowoco-knowledge/
+│   ├── knowledge/          # Agent가 참조하는 업무 지식 원본
+│   ├── data/               # Intent·Seed·평가·공공 정규화 데이터
+│   ├── schemas/            # 데이터와 Agent 출력 JSON Schema
+│   ├── src/                # Knowledge 조회·검증 CLI
+│   ├── tests/              # Schema·해시·교차참조 검증
+│   ├── docs/               # 라벨·출처·검수·연동 기준
+│   └── hr-intent-service/  # 모델 서빙 참고 구현과 제출용 스냅샷
+├── Makefile
+└── .github/workflows/      # PR 규칙과 Knowledge CI
 ```
 
-A.X 라우팅 후보 조건은 다음과 같습니다.
+`hr-intent-service/`는 모델 결과를 재현하고 인계하기 위한 참고 구현입니다. 운영 모델
+서버의 장기 소유권은 `fowoco/ai`에 두고, 이 저장소는 데이터와 지식 계약을 기준으로
+유지합니다.
 
-- 활성 Intent가 3개 이상인 복잡한 문장
-- 완료·상태보고, 급여계좌, 서류 확보 등 검증된 경계 패턴
-- 선택·비선택 Intent 사이의 margin이 `0.76` 미만인 불확실한 예측
+## 빠른 검증
 
-현재 Validation에서는 34.3%가 A.X 라우팅 대상으로 선택됐고, BERT 오답이 모두
-라우팅 조건에 포함됐습니다. 이는 A.X가 모든 오답을 정정했다는 뜻이 아니며, 같은
-Validation에서 만든 규칙이므로 별도 Test에서 다시 검증해야 합니다.
-
-## 현재 데이터 상태
-
-- `main`에는 HR 발화문 후보 데이터 1,340건과 Intent 규칙 v1.1이 있습니다.
-- A/B consensus와 고정 split은 아직 `main`에 병합되지 않았습니다.
-- consensus 또는 원본이 변경되면 split과 모델 평가는 다시 생성해야 합니다.
-- Validation은 모델 개발용이며 최종 성능 주장을 위한 Gold Test가 아닙니다.
-- 실제 개인정보와 기업정보는 학습·평가 데이터에 저장하지 않습니다.
-
-최신 BERT·A.X 학습 checkpoint와 운영 서빙 코드는 아직 `main`에 포함하지 않습니다.
-
-## Hugging Face Model Hub
-
-[FOWOCO Hugging Face](https://huggingface.co/fowoco)는 모델 산출물의 공식 공개
-창구입니다. GitHub에는 재현과 검증에 필요한 규칙·계약·코드를, Hugging Face에는
-실제로 배포할 모델 파일과 설명을 둡니다.
-
-| 위치 | 관리 대상 |
-| --- | --- |
-| **[Hugging Face](https://huggingface.co/fowoco)** | checkpoint, adapter, tokenizer, model card, 공개 가능한 데이터셋 |
-| GitHub | 업무 지식, 라벨 규칙, 데이터 계약, 분할·평가 코드, 실험 기록 |
-
-현재 Hugging Face 조직에는 공개된 모델·데이터셋이 없습니다. 산출물을 게시할 때는
-학습 데이터 version·SHA-256, 평가 조건, 라이선스와 사용 한계를 model card에 함께
-기록합니다.
-
-## 참고 구현 (hr-intent-service)
-
-Intent 모델을 실제로 서비스하는 참고 구현이 `fowoco-knowledge/hr-intent-service`에 
-포함되어 있습니다.
-
-- **API**: `POST /api/v1/intents/classify`
-- **입력**: `{"instruction": "발화문, INTENT_TAG(선택)"}`
-
-## 남은 과제
-
-- 최종 consensus 데이터·manifest와 모델 실험 산출물의 저장소 반영
-- 독립 Gold Test에서 BERT·A.X·Cascade 재평가
-- BERT 경로의 evidence 추출 방식 확정
-- 다중 근로자·다중 지시 문장 보강
-- A.X GPU 서빙과 실제 운영 환경의 속도·자원 측정
-- 학습·서빙 코드는 최종적으로 `fowoco/ai`로 이전
-
-## 저장소 구조
-
-```text
-fowoco-knowledge/
-├── knowledge/        # Intent·Workflow·Guardrail·공식 링크
-├── data/             # Seed·Intent·평가·공공 정규화 데이터
-├── schemas/          # 데이터·모델 출력 계약
-├── src/              # Knowledge 검증·조회 CLI
-├── tests/            # Schema·누수·재현성 테스트
-└── docs/             # 라벨·검수·모델링·출처 문서
-```
-
-## 실행
+Python 3.11 이상이 필요합니다.
 
 ```bash
 python3.11 -m venv .venv
@@ -138,15 +64,23 @@ make install
 make check
 ```
 
-세부 기준은 다음 문서를 참고합니다.
+`make check`는 Ruff, Knowledge/Intent manifest·Schema·SHA-256·분할 검증, 전체 테스트를
+실행합니다. 모델 서버 실행 방법은
+[`hr-intent-service/README.md`](fowoco-knowledge/hr-intent-service/README.md)를 확인합니다.
 
-- [Intent 라벨 기준](fowoco-knowledge/docs/INTENT_DATA.md)
-- [모델 계획](fowoco-knowledge/docs/MODEL_PLAN.md)
-- [공식 데이터 파이프라인](fowoco-knowledge/docs/OFFICIAL_DATA_PIPELINE.md)
+## 사용 경계
 
-## 안전 원칙
-
-- 모델 출력만으로 법률·체류·급여·신고 결론을 확정하지 않습니다.
-- 외부기관 제출과 근로자 안내 발송은 HR 승인 후 수행합니다.
+- Intent 모델의 책임은 `Intent + evidence` 추출까지입니다.
+- Workflow 선택, Slot 확인, 완료 처리는 규칙과 HR 담당자의 책임입니다.
+- 체류·계약·급여·신고 관련 내용은 모델 출력만으로 확정하지 않습니다.
+- 외부기관 제출과 근로자 안내 발송은 자동 실행하지 않습니다.
 - 실제 외국인등록번호, 여권번호, 전화번호, 계좌번호를 저장하지 않습니다.
-- 날짜·금액·서류명·제출처·대상자·기한의 누락과 변경을 중점 검증합니다.
+- Validation 데이터는 독립 Gold Test가 아니므로 최종 성능 주장에 사용하지 않습니다.
+
+## 주요 문서
+
+- [데이터 사용 안내](fowoco-knowledge/data/README.md)
+- [Intent 라벨 기준](fowoco-knowledge/docs/INTENT_DATA.md)
+- [Agent 연동 계약](fowoco-knowledge/docs/AGENT_INTEGRATION.md)
+- [공식 데이터 파이프라인](fowoco-knowledge/docs/OFFICIAL_DATA_PIPELINE.md)
+- [E-9 신고·연장 Workflow](fowoco-knowledge/docs/E9_REPORTING_WORKFLOWS.md)
