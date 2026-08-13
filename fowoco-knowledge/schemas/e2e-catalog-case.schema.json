@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.dev/schemas/e2e-catalog-case.schema.json",
+  "title": "FOWOCO catalog and service E2E gold candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "input_mode",
+    "scenario_tags",
+    "hr_input",
+    "directory_context",
+    "expected_intents",
+    "expected_workflow_ids",
+    "expected_subject_lookup",
+    "expected_slots",
+    "expected_action",
+    "expected_routing_triggers",
+    "expected_guardrails",
+    "worker_notices",
+    "review",
+    "provenance"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^E2E-[0-9]{3}$"
+    },
+    "input_mode": {
+      "enum": [
+        "WORKER_MESSAGE",
+        "AGENT_TASK",
+        "INTERNAL_REQUEST"
+      ]
+    },
+    "scenario_tags": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "EXACT_NAME",
+          "SPACING_VARIANT",
+          "ROMANIZED_ALIAS",
+          "CASE_VARIANT",
+          "PHONETIC_ALIAS",
+          "AMBIGUOUS_NAME",
+          "COMPOSITE_REQUEST",
+          "BOUNDARY_INTENT",
+          "OUT_OF_SCOPE",
+          "VIETNAMESE_NOTICE",
+          "EXTERNAL_EXECUTION"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "hr_input": {
+      "type": "string",
+      "minLength": 5
+    },
+    "directory_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workers"
+      ],
+      "properties": {
+        "workers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/worker"
+          }
+        },
+        "selected_document_id": {
+          "type": "string",
+          "pattern": "^DOC-DEMO-[A-Z0-9-]+$"
+        }
+      }
+    },
+    "expected_intents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/intent"
+      },
+      "uniqueItems": true
+    },
+    "expected_workflow_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^WF-[A-Z]{3}-[0-9]{3}$"
+      },
+      "uniqueItems": true
+    },
+    "expected_subject_lookup": {
+      "$ref": "#/$defs/subjectLookup"
+    },
+    "expected_slots": {
+      "type": "object"
+    },
+    "expected_action": {
+      "enum": [
+        "CREATE_DRAFT_TASK",
+        "REQUEST_CLARIFICATION",
+        "REQUIRE_HR_REVIEW",
+        "SPLIT_AND_CONFIRM",
+        "OUT_OF_SCOPE"
+      ]
+    },
+    "expected_routing_triggers": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "OOD_Label_Count",
+          "Rule_Status",
+          "Rule_Action",
+          "Rule_Salary",
+          "Rule_Document",
+          "Low_Margin",
+          "Pass_BERT"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "expected_guardrails": {
+      "$ref": "#/$defs/guardrails"
+    },
+    "worker_notices": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/workerNotice"
+      }
+    },
+    "review": {
+      "$ref": "#/$defs/review"
+    },
+    "provenance": {
+      "const": "TEAM_SYNTHETIC"
+    }
+  },
+  "$defs": {
+    "intent": {
+      "enum": [
+        "WORK_INSTRUCTION",
+        "DOCUMENT_REQUEST",
+        "PAYROLL_EXPLANATION",
+        "WORKER_ONBOARDING",
+        "EMPLOYMENT_CHANGE",
+        "EXPIRY_RENEWAL",
+        "OUT_OF_SCOPE"
+      ]
+    },
+    "worker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "worker_id",
+        "canonical_name",
+        "aliases",
+        "phonetic_aliases"
+      ],
+      "properties": {
+        "worker_id": {
+          "type": "string",
+          "pattern": "^WRK-DEMO-[0-9]{3}$"
+        },
+        "canonical_name": {
+          "type": "string",
+          "minLength": 2
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 2
+          },
+          "uniqueItems": true
+        },
+        "phonetic_aliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 2
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "subjectLookup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "worker_id",
+        "matched_text",
+        "match_basis",
+        "requires_confirmation",
+        "candidate_worker_ids"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "MATCHED",
+            "AMBIGUOUS",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "worker_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "matched_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "match_basis": {
+          "enum": [
+            "EXACT_CANONICAL",
+            "NORMALIZED_SPACING",
+            "ROMANIZED_ALIAS",
+            "CASEFOLD_ALIAS",
+            "PHONETIC_ALIAS",
+            "MULTIPLE_CANDIDATES",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "requires_confirmation": {
+          "type": "boolean"
+        },
+        "candidate_worker_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^WRK-DEMO-[0-9]{3}$"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "guardrails": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "automatic_external_submission",
+        "automatic_worker_message_send",
+        "automatic_completion",
+        "hr_approval_required"
+      ],
+      "properties": {
+        "automatic_external_submission": {
+          "const": false
+        },
+        "automatic_worker_message_send": {
+          "const": false
+        },
+        "automatic_completion": {
+          "const": false
+        },
+        "hr_approval_required": {
+          "const": true
+        }
+      }
+    },
+    "workerNotice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "locale",
+        "text",
+        "critical_values"
+      ],
+      "properties": {
+        "locale": {
+          "enum": [
+            "ko-KR",
+            "vi-VN"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 10
+        },
+        "critical_values": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewer_a",
+        "reviewer_b",
+        "adjudication"
+      ],
+      "properties": {
+        "reviewer_a": {
+          "enum": [
+            "PENDING",
+            "AGREE",
+            "CHANGE"
+          ]
+        },
+        "reviewer_b": {
+          "enum": [
+            "PENDING",
+            "AGREE",
+            "CHANGE"
+          ]
+        },
+        "adjudication": {
+          "enum": [
+            "PENDING",
+            "AGREED",
+            "REJECTED"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -22,6 +22,11 @@ def test_compiled_context_is_cross_linked() -> None:
     context = KnowledgeRepository(ROOT).compile_context("WF-STY-001")
     assert context["intent"]["id"] == "EXPIRY_RENEWAL"
     assert context["slot_policy"]["required"] == ["worker_id", "due_at"]
+    worker_contract = context["slot_policy"]["slot_contracts"]["worker_id"]
+    assert worker_contract["display_name_ko"] == "대상 근로자"
+    assert worker_contract["required"] is True
+    assert worker_contract["source_priority"][0] == "HR_CONFIRMED_PROFILE"
+    assert "UNIQUE_SUBJECT_MATCH" in worker_contract["validation_rules"]
     assert {source["id"] for source in context["official_sources"]} == {
         "SRC-HIKOREA",
         "SRC-LAW-IMMIGRATION-ACT-25",

@@ -46,6 +46,43 @@ result = RequestEvaluator(repository).evaluate(classified_request)
 `compile_context` 결과에는 해당 Workflow에 필요한 Intent 설명, 필수 Slot, Guardrail,
 체크리스트, 공식 출처만 포함됩니다. 전체 지식 파일을 매번 프롬프트에 넣지 않습니다.
 
+### UI·Agent 공용 Slot 계약
+
+`context["slot_policy"]["slot_contracts"]`는 내부 Slot 키와 사용자 표현을 분리한다.
+
+```json
+{
+  "worker_id": {
+    "display_name_ko": "요청 대상 근로자",
+    "worker_prompt_easy_ko": "누구에게 서류를 요청할지 선택해 주세요.",
+    "source_priority": [
+      "HR_CONFIRMED_PROFILE",
+      "SELECTED_UI_CONTEXT",
+      "SYSTEM_RECORD",
+      "HR_INPUT",
+      "MODEL_EXTRACTION"
+    ],
+    "responsible_actor": "HR",
+    "required": true,
+    "validation_rules": [
+      "NON_EMPTY",
+      "KNOWN_WORKER_ID",
+      "UNIQUE_SUBJECT_MATCH"
+    ]
+  }
+}
+```
+
+- UI는 `display_name_ko`를 HR 입력 폼에 사용한다.
+- 근로자에게 되물을 때는 내부 키 대신 `worker_prompt_easy_ko`를 사용한다.
+- Agent는 `source_priority` 순서대로 확인된 값을 우선하고 모델 추출값은 후보로만 둔다.
+- `responsible_actor`는 최종 확인 책임을 나타내며 AI를 담당 주체로 두지 않는다.
+- `required`와 기존 `required` 배열은 CI에서 일치 여부를 검사한다.
+- `validation_rules`는 `required_slots.yaml`의 규칙 정의를 참조한다.
+
+내부 Slot·Intent·Workflow 키가 렌더링된 근로자 문장에 포함되면 Knowledge validation이
+실패한다.
+
 현재 구현은 **버전형 Context Pack**입니다. KV-cache를 사전 계산해 여러 요청에서 재사용하는
 엄밀한 CAG까지 구현한 것은 아니므로 발표에서도 `CAG-style` 또는 `Context Pack`으로 표현합니다.
 

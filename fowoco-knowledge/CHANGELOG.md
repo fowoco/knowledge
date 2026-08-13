@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Workflow Slot에 UI·Agent 공용 한글 표시명, 쉬운 표현, 출처 우선순위, 담당 주체와 검증 규칙 추가
+- 이름 변형·복합 요청·Intent 경계·OUT_OF_SCOPE·베트남어 안내 E2E Gold 후보 10건 추가
+- 대상 탐색, 핵심정보 보존, 내부 키 노출과 자동 실행 차단 검증 추가
 - 최종 검수 Intent 데이터 1,340건을 manifest의 기준 원본으로 지정
 - Train 1,072건 / Validation 268건의 실제 ID 경로·SHA-256·최종 라벨 분포 정정
 - 검수 전 데이터와 최종 데이터의 용도, Hugging Face와 Git LFS의 역할 구분
