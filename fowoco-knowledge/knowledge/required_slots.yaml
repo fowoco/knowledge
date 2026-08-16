@@ -25,6 +25,7 @@ validation_rule_definitions:
   EMPLOYMENT_CHANGE_TYPE: 승인된 고용변동 후보 코드인지 확인하고 HR 최종 확인을 요구한다.
   HR_CONFIRMATION_REQUIRED: 모델 추출값만으로 확정하지 않고 HR 확인 상태를 검사한다.
   REASON_WITH_EVIDENCE: 사유와 확인 근거 또는 담당자 메모가 함께 있는지 확인한다.
+  DOCUMENT_SUBMISSION_STATUS: MISSING·SUBMITTED·VERIFIED 중 하나인지 확인하고 원문 식별값을 포함하지 않는다.
 
 slot_definitions:
   worker_id:
@@ -45,6 +46,14 @@ slot_definitions:
   stay_expiry_date:
     type: date
     description: 현재 체류기간 만료일. 체류기간 연장 준비의 기준일로 사용한다.
+  passport_status:
+    type: enum
+    values: [MISSING, SUBMITTED, VERIFIED]
+    description: 최신 여권 사본의 제출·검증 상태. 여권번호나 원문 이미지를 포함하지 않는다.
+  arc_status:
+    type: enum
+    values: [MISSING, SUBMITTED, VERIFIED]
+    description: 최신 외국인등록증 사본의 제출·검증 상태. 등록번호나 원문 이미지를 포함하지 않는다.
   submission_channel:
     type: string
     description: 총무팀 방문, 보안 링크 업로드 등 제출 경로
@@ -98,8 +107,8 @@ workflow_requirements:
 
   WF-STY-001:
     required: [worker_id, due_at]
-    optional: [stay_expiry_date]
-    resolvable_from_context: [worker_id, due_at, stay_expiry_date]
+    optional: [stay_expiry_date, passport_status, arc_status]
+    resolvable_from_context: [worker_id, due_at, stay_expiry_date, passport_status, arc_status]
     slot_contracts:
       worker_id:
         display_name_ko: 대상 근로자
@@ -122,6 +131,20 @@ workflow_requirements:
         responsible_actor: HR
         required: false
         validation_rules: [ISO_DATE, HR_CONFIRMATION_REQUIRED]
+      passport_status:
+        display_name_ko: 여권 사본 준비 상태
+        worker_prompt_easy_ko: 담당자가 여권 사본의 제출 상태를 확인합니다.
+        source_priority: [VERIFIED_DOCUMENT, SYSTEM_RECORD]
+        responsible_actor: SYSTEM
+        required: false
+        validation_rules: [DOCUMENT_SUBMISSION_STATUS]
+      arc_status:
+        display_name_ko: 외국인등록증 사본 준비 상태
+        worker_prompt_easy_ko: 담당자가 외국인등록증 사본의 제출 상태를 확인합니다.
+        source_priority: [VERIFIED_DOCUMENT, SYSTEM_RECORD]
+        responsible_actor: SYSTEM
+        required: false
+        validation_rules: [DOCUMENT_SUBMISSION_STATUS]
 
   WF-CON-001:
     required: [worker_id, due_at]

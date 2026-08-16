@@ -36,7 +36,7 @@ Validation 결과에 맞춰 조정했으므로 독립 Test 성능이나 운영 �
 Gold Test 240건과 동일하지 않습니다. 현재 독립 Intent Gold Test는 저장소에 없습니다.
 
 `evaluation/e2e_catalog_cases.jsonl`은 이름 변형·복합 요청·Intent 경계·외부 실행
-차단·베트남어 안내를 함께 확인하는 대표 E2E 10건입니다. 현재는 독립 검수 전
+차단·베트남어 안내를 함께 확인하는 대표 E2E 11건입니다. 현재는 독립 검수 전
 **Gold 후보**이며, 검수 절차와 모델·서비스 팀 측정 항목은
 [`../docs/E2E_CATALOG_REVIEW.md`](../docs/E2E_CATALOG_REVIEW.md)를 따릅니다.
 

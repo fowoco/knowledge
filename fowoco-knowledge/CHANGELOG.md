@@ -3,7 +3,9 @@
 ## Unreleased
 
 - Workflow Slot에 UI·Agent 공용 한글 표시명, 쉬운 표현, 출처 우선순위, 담당 주체와 검증 규칙 추가
-- 이름 변형·복합 요청·Intent 경계·OUT_OF_SCOPE·베트남어 안내 E2E Gold 후보 10건 추가
+- 이름 변형·복합 요청·Intent 경계·OUT_OF_SCOPE·베트남어 안내 E2E Gold 후보 11건 추가
+- 여권·외국인등록증 제출 상태를 Knowledge 소유 조회형 Context Slot으로 정의
+- 단일 `EXPIRY_RENEWAL`에서 재계약 `WF-CON-001`과 체류연장 `WF-STY-001`을 분리·확인하는 대표 계약 추가
 - 대상 탐색, 핵심정보 보존, 내부 키 노출과 자동 실행 차단 검증 추가
 - 최종 검수 Intent 데이터 1,340건을 manifest의 기준 원본으로 지정
 - Train 1,072건 / Validation 268건의 실제 ID 경로·SHA-256·최종 라벨 분포 정정

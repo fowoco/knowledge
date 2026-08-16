@@ -58,7 +58,7 @@ def test_catalog_e2e_candidates_cover_subject_notice_and_guardrail_boundaries() 
         if line.strip()
     ]
 
-    assert len(cases) == 10
+    assert len(cases) == 11
     tags = {tag for case in cases for tag in case["scenario_tags"]}
     assert {
         "SPACING_VARIANT",
@@ -76,6 +76,10 @@ def test_catalog_e2e_candidates_cover_subject_notice_and_guardrail_boundaries() 
     assert all(not case["expected_guardrails"]["automatic_worker_message_send"] for case in cases)
     assert all(not case["expected_guardrails"]["automatic_completion"] for case in cases)
     assert all(case["review"]["adjudication"] == "PENDING" for case in cases)
+    renewal_chain = next(case for case in cases if case["case_id"] == "E2E-011")
+    assert renewal_chain["expected_intents"] == ["EXPIRY_RENEWAL"]
+    assert renewal_chain["expected_workflow_ids"] == ["WF-CON-001", "WF-STY-001"]
+    assert renewal_chain["expected_action"] == "SPLIT_AND_CONFIRM"
 
 
 def test_internal_key_leak_detector_matches_machine_identifiers_only() -> None:

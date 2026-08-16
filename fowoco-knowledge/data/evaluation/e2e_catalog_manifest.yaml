@@ -3,8 +3,8 @@ version: 0.1.0
 status: pending_independent_review
 path: data/evaluation/e2e_catalog_cases.jsonl
 schema: schemas/e2e-catalog-case.schema.json
-record_count: 10
-sha256: 8c8b93daf1468e2b90d7c5a103d34b6b2dc378029ac4b1ed936dc4b3120ad3e8
+record_count: 11
+sha256: d4ee932c5ba8ee544398b19947af15e22ac9661c1b58b4ad2a636554759d49a6
 contains_real_personal_data: false
 coverage:
   name_variants:
@@ -16,6 +16,7 @@ coverage:
     - ambiguous_name
   request_types:
     - composite_request
+    - single_intent_multi_workflow_renewal
     - boundary_intent
     - out_of_scope
     - external_execution
