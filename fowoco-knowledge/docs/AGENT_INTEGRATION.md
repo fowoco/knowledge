@@ -46,6 +46,77 @@ result = RequestEvaluator(repository).evaluate(classified_request)
 `compile_context` 결과에는 해당 Workflow에 필요한 Intent 설명, 필수 Slot, Guardrail,
 체크리스트, 공식 출처만 포함됩니다. 전체 지식 파일을 매번 프롬프트에 넣지 않습니다.
 
+### UI·Agent 공용 Slot 계약
+
+`context["slot_policy"]["slot_contracts"]`는 내부 Slot 키와 사용자 표현을 분리한다.
+
+```json
+{
+  "worker_id": {
+    "display_name_ko": "요청 대상 근로자",
+    "worker_prompt_easy_ko": "누구에게 서류를 요청할지 선택해 주세요.",
+    "source_priority": [
+      "HR_CONFIRMED_PROFILE",
+      "SELECTED_UI_CONTEXT",
+      "SYSTEM_RECORD",
+      "HR_INPUT",
+      "MODEL_EXTRACTION"
+    ],
+    "responsible_actor": "HR",
+    "required": true,
+    "validation_rules": [
+      "NON_EMPTY",
+      "KNOWN_WORKER_ID",
+      "UNIQUE_SUBJECT_MATCH"
+    ]
+  }
+}
+```
+
+- UI는 `display_name_ko`를 HR 입력 폼에 사용한다.
+- 근로자에게 되물을 때는 내부 키 대신 `worker_prompt_easy_ko`를 사용한다.
+- Agent는 `source_priority` 순서대로 확인된 값을 우선하고 모델 추출값은 후보로만 둔다.
+- `responsible_actor`는 최종 확인 책임을 나타내며 AI를 담당 주체로 두지 않는다.
+- `required`와 기존 `required` 배열은 CI에서 일치 여부를 검사한다.
+- `validation_rules`는 `required_slots.yaml`의 규칙 정의를 참조한다.
+
+내부 Slot·Intent·Workflow 키가 렌더링된 근로자 문장에 포함되면 Knowledge validation이
+실패한다.
+
+### 계약 원본과 소비 순서
+
+필드 이름, 필수 여부, Workflow 연결과 실행 시나리오의 원본은 이 저장소의 버전형
+Context Pack이다. AI나 Server에서 먼저 필드를 하드코딩한 뒤 Knowledge에 역으로
+맞추지 않는다.
+
+```text
+Knowledge 변경·검증
+  -> 버전형 Context Pack
+  -> AI가 Intent·Workflow·필수 Slot 조회
+  -> Server가 허용된 Context Slot만 tenant 범위에서 조회
+  -> Client가 HR·근로자 입력이 필요한 항목만 표시
+```
+
+- 새로운 필드가 필요하면 `required_slots.yaml`에 의미·타입·출처·책임·검증 규칙을 먼저 추가한다.
+- `resolvable_from_context`는 Server가 임의 SQL이 아니라 고정 Resolver로 조회할 수 있는 key다.
+- `passport_status`, `arc_status`는 개인정보 원문이 아니라 문서 제출 상태만 전달하는 조회형 Context Slot이다.
+- Server projection과 AI 내장 fallback은 Context Pack에서 생성하거나 같은 version으로 고정한다.
+- 데모·운영에서 Knowledge를 읽지 못하면 오래된 내장 규칙으로 조용히 실행하지 않고 계약 오류로 중단한다.
+
+### 재계약·체류연장 대표 시나리오
+
+`EXPIRY_RENEWAL` 하나는 발화 의미를 나타내며, 실제 업무는 두 Workflow로 나뉠 수 있다.
+
+```text
+EXPIRY_RENEWAL
+  -> WF-CON-001 근로계약 갱신·고용허가기간 연장 준비
+  -> WF-STY-001 체류기간 연장 준비·제출 추적
+```
+
+발화가 두 업무를 모두 명시하면 두 후보를 순서대로 제시하고 HR이 각각 승인·삭제한다.
+이는 복수 Intent를 강제하는 계약이 아니라, 하나의 Intent가 여러 독립 Workflow로
+구체화되는 경우다. 각 Workflow는 별도 상태와 완료 증빙을 유지한다.
+
 현재 구현은 **버전형 Context Pack**입니다. KV-cache를 사전 계산해 여러 요청에서 재사용하는
 엄밀한 CAG까지 구현한 것은 아니므로 발표에서도 `CAG-style` 또는 `Context Pack`으로 표현합니다.
 

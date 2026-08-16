@@ -1,7 +1,7 @@
 pack_id: FOWOCO-KNOWLEDGE
-version: 0.2.0
+version: 0.3.0
 status: draft
-released_at: 2026-07-16
+released_at: 2026-08-13
 default_locale: ko-KR
 supported_worker_locales:
   - vi-VN
@@ -35,6 +35,8 @@ datasets:
   intent_training_validation: data/intent/hr_intent_dataset_final.jsonl
   intent_pre_review_archive: data/intent/hr_intent_dataset.jsonl
   intent_split_manifest: data/intent/splits/manifest.yaml
+  catalog_e2e_manifest: data/evaluation/e2e_catalog_manifest.yaml
+  catalog_e2e_gold_candidates: data/evaluation/e2e_catalog_cases.jsonl
 review_policy:
   minimum_reviewers_for_official_knowledge: 2
   all_outbound_messages_require_hr_approval: true

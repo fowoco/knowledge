@@ -8,7 +8,7 @@ from pathlib import Path
 import yaml
 
 from fowoco_knowledge.repository import KnowledgeRepository
-from fowoco_knowledge.validation import KnowledgeValidator, split_codes
+from fowoco_knowledge.validation import KnowledgeValidator, find_internal_keys, split_codes
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -47,6 +47,48 @@ def test_evaluation_set_is_separate_and_has_compound_cases() -> None:
     assert len(cases) == 18
     assert any(len(case["expected_intents"]) > 1 for case in cases)
     assert any(case["expected_action"] == "OUT_OF_SCOPE" for case in cases)
+
+
+def test_catalog_e2e_candidates_cover_subject_notice_and_guardrail_boundaries() -> None:
+    cases = [
+        json.loads(line)
+        for line in (ROOT / "data/evaluation/e2e_catalog_cases.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+        if line.strip()
+    ]
+
+    assert len(cases) == 11
+    tags = {tag for case in cases for tag in case["scenario_tags"]}
+    assert {
+        "SPACING_VARIANT",
+        "ROMANIZED_ALIAS",
+        "PHONETIC_ALIAS",
+        "AMBIGUOUS_NAME",
+        "COMPOSITE_REQUEST",
+        "BOUNDARY_INTENT",
+        "OUT_OF_SCOPE",
+        "VIETNAMESE_NOTICE",
+        "EXTERNAL_EXECUTION",
+    } <= tags
+    assert any(notice["locale"] == "vi-VN" for case in cases for notice in case["worker_notices"])
+    assert all(not case["expected_guardrails"]["automatic_external_submission"] for case in cases)
+    assert all(not case["expected_guardrails"]["automatic_worker_message_send"] for case in cases)
+    assert all(not case["expected_guardrails"]["automatic_completion"] for case in cases)
+    assert all(case["review"]["adjudication"] == "PENDING" for case in cases)
+    renewal_chain = next(case for case in cases if case["case_id"] == "E2E-011")
+    assert renewal_chain["expected_intents"] == ["EXPIRY_RENEWAL"]
+    assert renewal_chain["expected_workflow_ids"] == ["WF-CON-001", "WF-STY-001"]
+    assert renewal_chain["expected_action"] == "SPLIT_AND_CONFIRM"
+
+
+def test_internal_key_leak_detector_matches_machine_identifiers_only() -> None:
+    internal_keys = {"worker_id", "WF-DOC-001", "DOCUMENT_REQUEST"}
+
+    assert find_internal_keys("worker_id를 근로자에게 보여주면 안 됩니다.", internal_keys) == [
+        "worker_id"
+    ]
+    assert find_internal_keys("여권 사본을 보안 링크에 제출해 주세요.", internal_keys) == []
 
 
 def test_final_intent_training_data_matches_documented_contract() -> None:

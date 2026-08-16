@@ -68,6 +68,16 @@ INTENT_DATA_PII_PATTERNS = {
 }
 
 
+def find_internal_keys(text: str, internal_keys: set[str]) -> list[str]:
+    """Return machine-facing identifiers exposed in user-facing text."""
+    found: list[str] = []
+    for key in sorted(internal_keys):
+        pattern = rf"(?<![A-Za-z0-9_]){re.escape(key)}(?![A-Za-z0-9_])"
+        if re.search(pattern, text, flags=re.IGNORECASE):
+            found.append(key)
+    return found
+
+
 def split_codes(raw: str | None) -> list[str]:
     return [item.strip() for item in (raw or "").split("|") if item.strip()]
 
@@ -82,9 +92,11 @@ class KnowledgeValidator:
         self._validate_manifest_files()
         self._validate_processed_datasets()
         self._validate_workflow_schema()
+        self._validate_required_slot_contracts()
         self._validate_cross_references()
         self._validate_seed_data()
         self._validate_evaluation_data()
+        self._validate_catalog_e2e_data()
         self._validate_intent_data()
         self._validate_intent_split()
         return self.errors
@@ -156,6 +168,72 @@ class KnowledgeValidator:
         for error in validator.iter_errors(catalog):
             path = ".".join(str(item) for item in error.path)
             self.errors.append(f"workflow schema [{path}]: {error.message}")
+
+    def _validate_required_slot_contracts(self) -> None:
+        config = self.repository.load_yaml("knowledge/required_slots.yaml")
+        schema = self.repository.load_json("schemas/required-slots.schema.json")
+        schema_errors = list(Draft202012Validator(schema).iter_errors(config))
+        for error in schema_errors:
+            path = ".".join(str(item) for item in error.path)
+            self.errors.append(f"required slots schema [{path}]: {error.message}")
+        if schema_errors:
+            return
+
+        known_slots = set(config["slot_definitions"])
+        known_sources = set(config["source_priority_definitions"])
+        known_rules = set(config["validation_rule_definitions"])
+        workflows = {
+            item["id"]: item
+            for item in self.repository.load_yaml("knowledge/workflow_catalog.yaml")["workflows"]
+        }
+        internal_keys = self._user_facing_internal_keys()
+
+        for workflow_id, requirement in config["workflow_requirements"].items():
+            if workflow_id not in workflows:
+                self.errors.append(f"slot contract: unknown workflow {workflow_id}")
+                continue
+            if workflows[workflow_id]["required_slots_ref"] != workflow_id:
+                self.errors.append(f"slot contract: workflow ref mismatch {workflow_id}")
+
+            required = set(requirement["required"])
+            optional = set(requirement.get("optional", []))
+            contracts = requirement["slot_contracts"]
+            contract_names = set(contracts)
+            if required & optional:
+                self.errors.append(f"slot contract {workflow_id}: required and optional overlap")
+            if contract_names != required | optional:
+                self.errors.append(
+                    f"slot contract {workflow_id}: contracts must match required and optional slots"
+                )
+            if not set(requirement["resolvable_from_context"]) <= contract_names:
+                self.errors.append(
+                    f"slot contract {workflow_id}: unknown resolvable_from_context slot"
+                )
+
+            for slot_name, contract in contracts.items():
+                if slot_name not in known_slots:
+                    self.errors.append(f"slot contract {workflow_id}: unknown slot {slot_name}")
+                if contract["required"] != (slot_name in required):
+                    self.errors.append(
+                        f"slot contract {workflow_id}.{slot_name}: required flag mismatch"
+                    )
+                for source in contract["source_priority"]:
+                    if source not in known_sources:
+                        self.errors.append(
+                            f"slot contract {workflow_id}.{slot_name}: unknown source {source}"
+                        )
+                for rule in contract["validation_rules"]:
+                    if rule not in known_rules:
+                        self.errors.append(
+                            f"slot contract {workflow_id}.{slot_name}: unknown rule {rule}"
+                        )
+                for field in ("display_name_ko", "worker_prompt_easy_ko"):
+                    leaked = find_internal_keys(contract[field], internal_keys)
+                    if leaked:
+                        self.errors.append(
+                            f"slot contract {workflow_id}.{slot_name}: internal key exposed "
+                            f"in {field} ({', '.join(leaked)})"
+                        )
 
     def _validate_cross_references(self) -> None:
         context = self.repository.load_context_files()
@@ -315,6 +393,159 @@ class KnowledgeValidator:
                 case.get("expected_workflow_ids", []),
                 known_workflows,
             )
+
+    def _validate_catalog_e2e_data(self) -> None:
+        manifest = self.repository.load_yaml("data/evaluation/e2e_catalog_manifest.yaml")
+        path = self.repository.root / manifest["path"]
+        schema = self.repository.load_json(manifest["schema"])
+        validator = Draft202012Validator(schema)
+        context = self.repository.load_context_files()
+        known_intents = {item["id"] for item in context["intents"]["intents"]} | {
+            context["intents"]["out_of_scope_label"]
+        }
+        known_workflows = {item["id"] for item in context["workflows"]["workflows"]}
+        known_slots = set(context["slots"]["slot_definitions"])
+        supported_locales = set(self.repository.manifest["supported_worker_locales"]) | {
+            self.repository.manifest["default_locale"]
+        }
+        internal_keys = self._user_facing_internal_keys()
+
+        if file_sha256(path) != manifest["sha256"]:
+            self.errors.append("catalog e2e data: checksum mismatch")
+
+        cases: list[dict[str, Any]] = []
+        seen_ids: set[str] = set()
+        for line_number, raw_line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), start=1
+        ):
+            if not raw_line.strip():
+                continue
+            try:
+                case = json.loads(raw_line)
+            except json.JSONDecodeError as exc:
+                self.errors.append(f"catalog e2e line {line_number}: invalid JSON ({exc})")
+                continue
+            cases.append(case)
+            for error in validator.iter_errors(case):
+                error_path = ".".join(str(item) for item in error.path)
+                location = f" [{error_path}]" if error_path else ""
+                self.errors.append(f"catalog e2e line {line_number}{location}: {error.message}")
+
+            case_id = case.get("case_id")
+            if case_id in seen_ids:
+                self.errors.append(f"catalog e2e line {line_number}: duplicate {case_id}")
+            seen_ids.add(case_id)
+            self._check_codes(
+                line_number, "intent", case.get("expected_intents", []), known_intents
+            )
+            self._check_codes(
+                line_number,
+                "workflow",
+                case.get("expected_workflow_ids", []),
+                known_workflows,
+            )
+            self._check_codes(
+                line_number,
+                "slot",
+                list(case.get("expected_slots", {})),
+                known_slots,
+            )
+
+            intents = case.get("expected_intents", [])
+            workflows = case.get("expected_workflow_ids", [])
+            if "OUT_OF_SCOPE" in intents and (len(intents) != 1 or workflows):
+                self.errors.append(
+                    f"catalog e2e line {line_number}: OUT_OF_SCOPE must not have workflows"
+                )
+
+            workers = {
+                worker["worker_id"]: worker
+                for worker in case.get("directory_context", {}).get("workers", [])
+            }
+            lookup = case.get("expected_subject_lookup", {})
+            worker_id = lookup.get("worker_id")
+            candidates = set(lookup.get("candidate_worker_ids", []))
+            if worker_id is not None and worker_id not in workers:
+                self.errors.append(
+                    f"catalog e2e line {line_number}: matched worker missing from directory"
+                )
+            if not candidates <= set(workers):
+                self.errors.append(
+                    f"catalog e2e line {line_number}: candidate worker missing from directory"
+                )
+            if lookup.get("status") == "AMBIGUOUS" and not lookup.get("requires_confirmation"):
+                self.errors.append(
+                    f"catalog e2e line {line_number}: ambiguous name must require confirmation"
+                )
+            if lookup.get("match_basis") == "PHONETIC_ALIAS" and not lookup.get(
+                "requires_confirmation"
+            ):
+                self.errors.append(
+                    f"catalog e2e line {line_number}: phonetic alias must require confirmation"
+                )
+
+            for notice in case.get("worker_notices", []):
+                if notice["locale"] not in supported_locales:
+                    self.errors.append(f"catalog e2e line {line_number}: unsupported notice locale")
+                missing_values = [
+                    value for value in notice["critical_values"] if value not in notice["text"]
+                ]
+                if missing_values:
+                    self.errors.append(
+                        f"catalog e2e line {line_number}: notice loses critical values "
+                        f"({', '.join(missing_values)})"
+                    )
+                leaked = find_internal_keys(notice["text"], internal_keys)
+                if leaked:
+                    self.errors.append(
+                        f"catalog e2e line {line_number}: notice exposes internal keys "
+                        f"({', '.join(leaked)})"
+                    )
+
+            for text in [
+                case.get("hr_input", ""),
+                *[n["text"] for n in case.get("worker_notices", [])],
+            ]:
+                for pii_kind, pattern in INTENT_DATA_PII_PATTERNS.items():
+                    if pattern.search(text):
+                        self.errors.append(
+                            f"catalog e2e line {line_number}: possible PII ({pii_kind})"
+                        )
+
+        if len(cases) != manifest["record_count"]:
+            self.errors.append("catalog e2e data: record count mismatch")
+
+        tags = {tag for case in cases for tag in case.get("scenario_tags", [])}
+        required_tags = {
+            "SPACING_VARIANT",
+            "ROMANIZED_ALIAS",
+            "CASE_VARIANT",
+            "PHONETIC_ALIAS",
+            "AMBIGUOUS_NAME",
+            "COMPOSITE_REQUEST",
+            "BOUNDARY_INTENT",
+            "OUT_OF_SCOPE",
+            "VIETNAMESE_NOTICE",
+            "EXTERNAL_EXECUTION",
+        }
+        if not required_tags <= tags:
+            self.errors.append("catalog e2e data: required scenario coverage is missing")
+        if manifest["status"] == "pending_independent_review" and any(
+            case.get("review", {}).get("adjudication") != "PENDING" for case in cases
+        ):
+            self.errors.append("catalog e2e data: review status conflicts with manifest")
+
+    def _user_facing_internal_keys(self) -> set[str]:
+        context = self.repository.load_context_files()
+        keys = set(context["slots"]["slot_definitions"])
+        keys.update(item["id"] for item in context["intents"]["intents"])
+        keys.add(context["intents"]["out_of_scope_label"])
+        for workflow in context["workflows"]["workflows"]:
+            keys.add(workflow["id"])
+            keys.update(step["id"] for step in workflow["steps"])
+            keys.update(step["output"] for step in workflow["steps"])
+        keys.update(item["id"] for item in context["sources"]["sources"])
+        return keys
 
     def _validate_intent_data(self) -> None:
         intent_manifest = self.repository.load_yaml("data/intent/manifest.yaml")

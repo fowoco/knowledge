@@ -1,4 +1,32 @@
-version: 0.2.0
+version: 0.3.0
+
+source_priority_definitions:
+  HR_CONFIRMED_PROFILE: HR이 확인한 근로자 기본정보
+  VERIFIED_DOCUMENT: HR이 원본과 대조한 문서 값
+  SYSTEM_RECORD: 운영 시스템에 저장된 최신 확인 값
+  SELECTED_UI_CONTEXT: HR이 현재 화면에서 선택한 대상·문서·업무
+  HR_INPUT: HR 담당자 발화에 명시된 값
+  WORKER_CONFIRMATION: 보안 링크에서 근로자가 확인한 값
+  MODEL_EXTRACTION: 모델이 입력에서 추출한 미확정 후보값
+
+validation_rule_definitions:
+  NON_EMPTY: 비어 있거나 공백뿐인 값을 허용하지 않는다.
+  KNOWN_WORKER_ID: 운영 DB에 존재하는 내부 근로자 ID인지 확인한다.
+  UNIQUE_SUBJECT_MATCH: 이름·별칭으로 찾은 후보가 한 명인지 확인하고 다수이면 HR에게 되묻는다.
+  DOCUMENT_TYPE_CATALOG: 승인된 문서 유형 코드와 표시명으로 변환 가능한지 확인한다.
+  ISO_DATE: YYYY-MM-DD 형식의 실제 날짜인지 확인한다.
+  ISO_DATETIME: 시간대가 포함된 ISO 8601 일시인지 확인한다.
+  DUE_DATE_KIND: 법정기한·기관 안내기한·내부 준비일 중 유형을 구분해 저장한다.
+  SUBMISSION_CHANNEL_CATALOG: 승인된 제출 경로이며 외부기관 자동 제출 채널이 아닌지 확인한다.
+  MONTH_YYYY_MM: YYYY-MM 형식의 실제 연월인지 확인한다.
+  SOURCE_DOCUMENT_EXISTS: 권한이 있는 암호화 저장소에 문서 ID가 존재하는지 확인한다.
+  CONCRETE_WORK_ACTION: 근로자가 수행할 한 가지 행동으로 표현됐는지 확인한다.
+  DISPLAYABLE_LOCATION: 내부 코드가 아닌 근로자가 이해할 수 있는 장소명인지 확인한다.
+  EMPLOYMENT_CHANGE_TYPE: 승인된 고용변동 후보 코드인지 확인하고 HR 최종 확인을 요구한다.
+  HR_CONFIRMATION_REQUIRED: 모델 추출값만으로 확정하지 않고 HR 확인 상태를 검사한다.
+  REASON_WITH_EVIDENCE: 사유와 확인 근거 또는 담당자 메모가 함께 있는지 확인한다.
+  DOCUMENT_SUBMISSION_STATUS: MISSING·SUBMITTED·VERIFIED 중 하나인지 확인하고 원문 식별값을 포함하지 않는다.
+
 slot_definitions:
   worker_id:
     type: string
@@ -18,6 +46,14 @@ slot_definitions:
   stay_expiry_date:
     type: date
     description: 현재 체류기간 만료일. 체류기간 연장 준비의 기준일로 사용한다.
+  passport_status:
+    type: enum
+    values: [MISSING, SUBMITTED, VERIFIED]
+    description: 최신 여권 사본의 제출·검증 상태. 여권번호나 원문 이미지를 포함하지 않는다.
+  arc_status:
+    type: enum
+    values: [MISSING, SUBMITTED, VERIFIED]
+    description: 최신 외국인등록증 사본의 제출·검증 상태. 등록번호나 원문 이미지를 포함하지 않는다.
   submission_channel:
     type: string
     description: 총무팀 방문, 보안 링크 업로드 등 제출 경로
@@ -60,30 +96,262 @@ workflow_requirements:
   WF-WRK-001:
     required: [source_document_id]
     resolvable_from_context: []
+    slot_contracts:
+      source_document_id:
+        display_name_ko: 등록에 사용할 확인 문서
+        worker_prompt_easy_ko: 담당자가 확인할 입사 서류를 선택해 주세요.
+        source_priority: [SELECTED_UI_CONTEXT, VERIFIED_DOCUMENT, SYSTEM_RECORD]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, SOURCE_DOCUMENT_EXISTS, HR_CONFIRMATION_REQUIRED]
+
   WF-STY-001:
     required: [worker_id, due_at]
-    optional: [stay_expiry_date]
-    resolvable_from_context: [worker_id, due_at, stay_expiry_date]
+    optional: [stay_expiry_date, passport_status, arc_status]
+    resolvable_from_context: [worker_id, due_at, stay_expiry_date, passport_status, arc_status]
+    slot_contracts:
+      worker_id:
+        display_name_ko: 대상 근로자
+        worker_prompt_easy_ko: 누구의 체류기간 연장 업무인지 선택해 주세요.
+        source_priority: [HR_CONFIRMED_PROFILE, SELECTED_UI_CONTEXT, SYSTEM_RECORD, HR_INPUT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, KNOWN_WORKER_ID, UNIQUE_SUBJECT_MATCH]
+      due_at:
+        display_name_ko: 준비 완료일
+        worker_prompt_easy_ko: 담당자가 준비를 마칠 날짜를 확인해 주세요.
+        source_priority: [SYSTEM_RECORD, HR_INPUT, SELECTED_UI_CONTEXT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, ISO_DATETIME, DUE_DATE_KIND, HR_CONFIRMATION_REQUIRED]
+      stay_expiry_date:
+        display_name_ko: 체류기간 만료일
+        worker_prompt_easy_ko: 체류기간이 끝나는 날짜를 확인해 주세요.
+        source_priority: [VERIFIED_DOCUMENT, SYSTEM_RECORD, WORKER_CONFIRMATION, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: false
+        validation_rules: [ISO_DATE, HR_CONFIRMATION_REQUIRED]
+      passport_status:
+        display_name_ko: 여권 사본 준비 상태
+        worker_prompt_easy_ko: 담당자가 여권 사본의 제출 상태를 확인합니다.
+        source_priority: [VERIFIED_DOCUMENT, SYSTEM_RECORD]
+        responsible_actor: SYSTEM
+        required: false
+        validation_rules: [DOCUMENT_SUBMISSION_STATUS]
+      arc_status:
+        display_name_ko: 외국인등록증 사본 준비 상태
+        worker_prompt_easy_ko: 담당자가 외국인등록증 사본의 제출 상태를 확인합니다.
+        source_priority: [VERIFIED_DOCUMENT, SYSTEM_RECORD]
+        responsible_actor: SYSTEM
+        required: false
+        validation_rules: [DOCUMENT_SUBMISSION_STATUS]
+
   WF-CON-001:
     required: [worker_id, due_at]
     optional: [contract_end_date]
     resolvable_from_context: [worker_id, due_at, contract_end_date]
+    slot_contracts:
+      worker_id:
+        display_name_ko: 대상 근로자
+        worker_prompt_easy_ko: 누구의 계약 갱신 업무인지 선택해 주세요.
+        source_priority: [HR_CONFIRMED_PROFILE, SELECTED_UI_CONTEXT, SYSTEM_RECORD, HR_INPUT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, KNOWN_WORKER_ID, UNIQUE_SUBJECT_MATCH]
+      due_at:
+        display_name_ko: 준비 완료일
+        worker_prompt_easy_ko: 재계약 준비를 마칠 날짜를 확인해 주세요.
+        source_priority: [SYSTEM_RECORD, HR_INPUT, SELECTED_UI_CONTEXT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, ISO_DATETIME, DUE_DATE_KIND, HR_CONFIRMATION_REQUIRED]
+      contract_end_date:
+        display_name_ko: 현재 계약 종료일
+        worker_prompt_easy_ko: 지금 계약이 끝나는 날짜를 확인해 주세요.
+        source_priority: [VERIFIED_DOCUMENT, SYSTEM_RECORD, HR_INPUT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: false
+        validation_rules: [ISO_DATE, HR_CONFIRMATION_REQUIRED]
+
   WF-DOC-001:
     required: [worker_id, document_type, due_at, submission_channel]
     resolvable_from_context: [worker_id]
+    slot_contracts:
+      worker_id:
+        display_name_ko: 요청 대상 근로자
+        worker_prompt_easy_ko: 누구에게 서류를 요청할지 선택해 주세요.
+        source_priority: [HR_CONFIRMED_PROFILE, SELECTED_UI_CONTEXT, SYSTEM_RECORD, HR_INPUT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, KNOWN_WORKER_ID, UNIQUE_SUBJECT_MATCH]
+      document_type:
+        display_name_ko: 요청 서류
+        worker_prompt_easy_ko: 어떤 서류를 제출해야 하는지 확인해 주세요.
+        source_priority: [HR_INPUT, SELECTED_UI_CONTEXT, VERIFIED_DOCUMENT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, DOCUMENT_TYPE_CATALOG, HR_CONFIRMATION_REQUIRED]
+      due_at:
+        display_name_ko: 제출 기한
+        worker_prompt_easy_ko: 이 날짜와 시간까지 서류를 제출해 주세요.
+        source_priority: [HR_INPUT, SYSTEM_RECORD, SELECTED_UI_CONTEXT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, ISO_DATETIME, DUE_DATE_KIND, HR_CONFIRMATION_REQUIRED]
+      submission_channel:
+        display_name_ko: 제출 방법
+        worker_prompt_easy_ko: 서류를 어디로 제출할지 확인해 주세요.
+        source_priority: [HR_INPUT, SYSTEM_RECORD, SELECTED_UI_CONTEXT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, SUBMISSION_CHANNEL_CATALOG, HR_CONFIRMATION_REQUIRED]
+
   WF-PAY-001:
     required: [worker_id, pay_period, source_document_id]
     optional: [comparison_period, pay_item]
     resolvable_from_context: [worker_id, source_document_id]
+    slot_contracts:
+      worker_id:
+        display_name_ko: 대상 근로자
+        worker_prompt_easy_ko: 누구의 급여명세서를 설명할지 선택해 주세요.
+        source_priority: [HR_CONFIRMED_PROFILE, SELECTED_UI_CONTEXT, SYSTEM_RECORD, HR_INPUT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, KNOWN_WORKER_ID, UNIQUE_SUBJECT_MATCH]
+      pay_period:
+        display_name_ko: 급여 귀속월
+        worker_prompt_easy_ko: 몇 월 급여인지 확인해 주세요.
+        source_priority: [VERIFIED_DOCUMENT, SELECTED_UI_CONTEXT, HR_INPUT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, MONTH_YYYY_MM, HR_CONFIRMATION_REQUIRED]
+      source_document_id:
+        display_name_ko: 확인할 급여명세서
+        worker_prompt_easy_ko: 담당자가 확인할 급여명세서를 선택해 주세요.
+        source_priority: [SELECTED_UI_CONTEXT, VERIFIED_DOCUMENT, SYSTEM_RECORD]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, SOURCE_DOCUMENT_EXISTS, HR_CONFIRMATION_REQUIRED]
+      comparison_period:
+        display_name_ko: 비교 급여월
+        worker_prompt_easy_ko: 어느 달 급여와 비교할지 확인해 주세요.
+        source_priority: [HR_INPUT, SELECTED_UI_CONTEXT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: false
+        validation_rules: [MONTH_YYYY_MM, HR_CONFIRMATION_REQUIRED]
+      pay_item:
+        display_name_ko: 설명할 급여 항목
+        worker_prompt_easy_ko: 어떤 급여 항목이 궁금한지 선택해 주세요.
+        source_priority: [VERIFIED_DOCUMENT, HR_INPUT, WORKER_CONFIRMATION, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: false
+        validation_rules: [HR_CONFIRMATION_REQUIRED]
+
   WF-INS-001:
     required: [worker_id, effective_at, work_action]
     optional: [work_location]
     resolvable_from_context: [worker_id]
+    slot_contracts:
+      worker_id:
+        display_name_ko: 안내 대상 근로자
+        worker_prompt_easy_ko: 누구에게 근무 안내를 보낼지 선택해 주세요.
+        source_priority: [HR_CONFIRMED_PROFILE, SELECTED_UI_CONTEXT, SYSTEM_RECORD, HR_INPUT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, KNOWN_WORKER_ID, UNIQUE_SUBJECT_MATCH]
+      effective_at:
+        display_name_ko: 적용 시작일시
+        worker_prompt_easy_ko: 언제부터 바뀌는지 확인해 주세요.
+        source_priority: [HR_INPUT, SYSTEM_RECORD, SELECTED_UI_CONTEXT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, ISO_DATETIME, HR_CONFIRMATION_REQUIRED]
+      work_action:
+        display_name_ko: 해야 할 일
+        worker_prompt_easy_ko: 해야 할 일을 한 가지씩 확인해 주세요.
+        source_priority: [HR_INPUT, SELECTED_UI_CONTEXT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, CONCRETE_WORK_ACTION, HR_CONFIRMATION_REQUIRED]
+      work_location:
+        display_name_ko: 근무 장소
+        worker_prompt_easy_ko: 일할 장소를 확인해 주세요.
+        source_priority: [SYSTEM_RECORD, HR_INPUT, SELECTED_UI_CONTEXT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: false
+        validation_rules: [DISPLAYABLE_LOCATION, HR_CONFIRMATION_REQUIRED]
+
   WF-CHG-001:
     required: [worker_id, change_type, incident_at]
     optional: [reason, awareness_at]
     resolvable_from_context: [worker_id]
+    slot_contracts:
+      worker_id:
+        display_name_ko: 확인 대상 근로자
+        worker_prompt_easy_ko: 누구의 고용상태 변동인지 선택해 주세요.
+        source_priority: [HR_CONFIRMED_PROFILE, SELECTED_UI_CONTEXT, SYSTEM_RECORD, HR_INPUT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, KNOWN_WORKER_ID, UNIQUE_SUBJECT_MATCH]
+      change_type:
+        display_name_ko: 고용변동 후보 유형
+        worker_prompt_easy_ko: 어떤 상황인지 담당자와 함께 확인해 주세요.
+        source_priority: [HR_INPUT, SYSTEM_RECORD, WORKER_CONFIRMATION, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, EMPLOYMENT_CHANGE_TYPE, HR_CONFIRMATION_REQUIRED]
+      incident_at:
+        display_name_ko: 사건 발생일시
+        worker_prompt_easy_ko: 일이 발생한 날짜와 시간을 확인해 주세요.
+        source_priority: [SYSTEM_RECORD, HR_INPUT, WORKER_CONFIRMATION, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, ISO_DATETIME, HR_CONFIRMATION_REQUIRED]
+      reason:
+        display_name_ko: 확인된 사유
+        worker_prompt_easy_ko: 담당자가 확인한 사유를 적어 주세요.
+        source_priority: [WORKER_CONFIRMATION, HR_INPUT, SYSTEM_RECORD, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: false
+        validation_rules: [REASON_WITH_EVIDENCE, HR_CONFIRMATION_REQUIRED]
+      awareness_at:
+        display_name_ko: 담당자 인지일시
+        worker_prompt_easy_ko: 담당자가 상황을 알게 된 날짜와 시간을 확인해 주세요.
+        source_priority: [SYSTEM_RECORD, HR_INPUT]
+        responsible_actor: HR
+        required: false
+        validation_rules: [ISO_DATETIME, HR_CONFIRMATION_REQUIRED]
+
   WF-ADM-001:
     required: [worker_id, document_type, due_at]
     optional: [submission_channel]
     resolvable_from_context: [worker_id]
+    slot_contracts:
+      worker_id:
+        display_name_ko: 발급 대상 근로자
+        worker_prompt_easy_ko: 누구의 증명서가 필요한지 선택해 주세요.
+        source_priority: [HR_CONFIRMED_PROFILE, SELECTED_UI_CONTEXT, SYSTEM_RECORD, HR_INPUT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, KNOWN_WORKER_ID, UNIQUE_SUBJECT_MATCH]
+      document_type:
+        display_name_ko: 발급할 증명서
+        worker_prompt_easy_ko: 어떤 증명서가 필요한지 확인해 주세요.
+        source_priority: [HR_INPUT, WORKER_CONFIRMATION, SELECTED_UI_CONTEXT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, DOCUMENT_TYPE_CATALOG, HR_CONFIRMATION_REQUIRED]
+      due_at:
+        display_name_ko: 필요한 날짜
+        worker_prompt_easy_ko: 언제까지 필요한지 확인해 주세요.
+        source_priority: [HR_INPUT, WORKER_CONFIRMATION, SELECTED_UI_CONTEXT, MODEL_EXTRACTION]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, ISO_DATETIME, DUE_DATE_KIND, HR_CONFIRMATION_REQUIRED]
+      submission_channel:
+        display_name_ko: 전달 방법
+        worker_prompt_easy_ko: 증명서를 어떻게 받을지 확인해 주세요.
+        source_priority: [WORKER_CONFIRMATION, HR_INPUT, SYSTEM_RECORD]
+        responsible_actor: HR
+        required: false
+        validation_rules: [SUBMISSION_CHANNEL_CATALOG, HR_CONFIRMATION_REQUIRED]

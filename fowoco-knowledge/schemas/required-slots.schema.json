@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.dev/schemas/required-slots.schema.json",
+  "title": "FOWOCO Workflow Slot Contracts",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "source_priority_definitions",
+    "validation_rule_definitions",
+    "slot_definitions",
+    "workflow_requirements"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "source_priority_definitions": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 2
+      }
+    },
+    "validation_rule_definitions": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 2
+      }
+    },
+    "slot_definitions": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/slotDefinition"
+      }
+    },
+    "workflow_requirements": {
+      "type": "object",
+      "minProperties": 1,
+      "patternProperties": {
+        "^WF-[A-Z]{3}-[0-9]{3}$": {
+          "$ref": "#/$defs/workflowRequirement"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "slotName": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]+$"
+    },
+    "slotDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "description"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "string",
+            "date",
+            "datetime",
+            "month",
+            "enum"
+          ]
+        },
+        "values": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "description": {
+          "type": "string",
+          "minLength": 2
+        }
+      }
+    },
+    "workflowRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "resolvable_from_context",
+        "slot_contracts"
+      ],
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/slotName"
+          },
+          "uniqueItems": true
+        },
+        "optional": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slotName"
+          },
+          "uniqueItems": true
+        },
+        "resolvable_from_context": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slotName"
+          },
+          "uniqueItems": true
+        },
+        "slot_contracts": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/slotContract"
+          }
+        }
+      }
+    },
+    "slotContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name_ko",
+        "worker_prompt_easy_ko",
+        "source_priority",
+        "responsible_actor",
+        "required",
+        "validation_rules"
+      ],
+      "properties": {
+        "display_name_ko": {
+          "type": "string",
+          "minLength": 2
+        },
+        "worker_prompt_easy_ko": {
+          "type": "string",
+          "minLength": 5
+        },
+        "source_priority": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]+$"
+          },
+          "uniqueItems": true
+        },
+        "responsible_actor": {
+          "enum": [
+            "HR",
+            "WORKER",
+            "SYSTEM"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "validation_rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]+$"
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}
