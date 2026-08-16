@@ -49,6 +49,31 @@ procedures:
       - next_review_at
     source_ids: [SRC-LAW-IMMIGRATION-ACT-25, SRC-HIKOREA]
 
+  - id: PROC-STAY-EXPIRED-VERIFICATION-001
+    name: 체류기간 만료 경과 긴급 확인
+    workflow_id: WF-STY-EXC-001
+    trigger_type: expiry_exception
+    submission_pattern: evidence_then_human_branch
+    responsible_party: EMPLOYER_HR
+    official_channel: HIKOREA_OR_IMMIGRATION_OFFICE
+    deadline_rule:
+      kind: immediate_internal_review
+      input_field: stay_expiry_date
+      action: 기록상 만료 경과 원인과 최신 공식 상태 확인
+      note: 기록상 날짜 경과만으로 법적 체류상태·근무 가능 여부·퇴사 여부를 확정하지 않음
+    status_routes:
+      APPROVED: 새 만료일과 승인 결과 문서를 HR 확인 후 반영
+      APPLICATION_PENDING: 접수증과 다음 확인일을 기록하고 외부 결과 대기
+      UNKNOWN: 공식기관 확인 업무와 확인 메모를 요구
+      NOT_APPLIED: 자동 완료하지 않고 고위험 HR 검토 유지
+      EMPLOYMENT_ENDED: HR 확인 후 WF-CHG-001 후보만 생성
+    stage_outputs:
+      - confirmed_stay_verification_status
+      - stay_status_evidence_or_official_note
+      - next_action
+    next_workflow_ids: [WF-STY-001, WF-CHG-001]
+    source_ids: [SRC-LAW-IMMIGRATION-ACT-25, SRC-LAW-IMMIGRATION-ACT-19, SRC-HIKOREA]
+
   - id: PROC-EMPLOYMENT-CHANGE-REPORT-001
     name: 외국인근로자 고용변동 등 신고
     workflow_id: WF-CHG-001

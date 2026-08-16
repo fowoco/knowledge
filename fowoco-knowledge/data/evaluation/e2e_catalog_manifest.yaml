@@ -3,8 +3,8 @@ version: 0.1.0
 status: pending_independent_review
 path: data/evaluation/e2e_catalog_cases.jsonl
 schema: schemas/e2e-catalog-case.schema.json
-record_count: 11
-sha256: d4ee932c5ba8ee544398b19947af15e22ac9661c1b58b4ad2a636554759d49a6
+record_count: 16
+sha256: a06af649b596b33adfce4ab73374382f25067f3c35daed496ba387d31bf95828
 contains_real_personal_data: false
 coverage:
   name_variants:
@@ -20,6 +20,7 @@ coverage:
     - boundary_intent
     - out_of_scope
     - external_execution
+    - expired_stay_exception
   worker_notice_locales: [ko-KR, vi-VN]
 model_service_handoff:
   compare_paths: [BERT_ONLY, BERT_TO_AX]

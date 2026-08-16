@@ -1,0 +1,19 @@
+{
+  "request": {
+    "worker_id": "WRK-DEMO-001",
+    "stay_expiry_date": "2026-08-10",
+    "stay_verification_status": "APPLICATION_PENDING",
+    "status_checked_at": "2026-08-17T10:00:00+09:00",
+    "extension_applied_at": "2026-08-08T14:30:00+09:00",
+    "extension_receipt_document_id": "DOC-DEMO-STAY-RECEIPT-001",
+    "next_review_at": "2026-08-24T10:00:00+09:00"
+  },
+  "expected_response": {
+    "intent": "EXPIRY_RENEWAL",
+    "workflow_id": "WF-STY-EXC-001",
+    "variant": "EXPIRED_STAY_EXCEPTION",
+    "next_action": "WAIT_EXTERNAL_AND_RECHECK",
+    "legal_conclusion": null,
+    "employment_change_candidate": null
+  }
+}

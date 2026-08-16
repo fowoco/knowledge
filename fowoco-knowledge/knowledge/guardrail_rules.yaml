@@ -53,3 +53,15 @@ rules:
     rule: 암호화 문서 원본을 LLM 프롬프트에 직접 넣지 않고 필요한 필드만 마스킹해 전달한다.
     validation: document_access_policy
     failure_action: BLOCK
+  - id: GRD-008
+    applies_to: [EXPIRY_RENEWAL]
+    severity: critical
+    rule: 기록상 체류기간 만료만으로 불법체류·근무 불가·퇴사·해고를 확정하지 않는다.
+    validation: require_stay_status_human_confirmation
+    failure_action: BLOCK_AND_REVIEW
+  - id: GRD-009
+    applies_to: [EXPIRY_RENEWAL, EMPLOYMENT_CHANGE]
+    severity: critical
+    rule: HR이 증빙과 확인 일시로 고용 종료를 확인한 경우에만 고용변동 Workflow 후보를 제시한다.
+    validation: require_employment_end_evidence
+    failure_action: BLOCK_AND_REVIEW

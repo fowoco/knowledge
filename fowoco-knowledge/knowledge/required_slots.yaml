@@ -1,4 +1,4 @@
-version: 0.3.0
+version: 0.3.1
 
 source_priority_definitions:
   HR_CONFIRMED_PROFILE: HR이 확인한 근로자 기본정보
@@ -26,6 +26,10 @@ validation_rule_definitions:
   HR_CONFIRMATION_REQUIRED: 모델 추출값만으로 확정하지 않고 HR 확인 상태를 검사한다.
   REASON_WITH_EVIDENCE: 사유와 확인 근거 또는 담당자 메모가 함께 있는지 확인한다.
   DOCUMENT_SUBMISSION_STATUS: MISSING·SUBMITTED·VERIFIED 중 하나인지 확인하고 원문 식별값을 포함하지 않는다.
+  STAY_VERIFICATION_STATUS: 승인·심사 중·불명확·미신청·고용 종료 중 HR이 확인한 상태인지 검사한다.
+  EVIDENCE_OR_OFFICIAL_NOTE: 승인 결과·접수증 또는 공식기관 확인 메모 중 하나 이상 있는지 검사한다.
+  NEW_EXPIRY_AFTER_CURRENT: 새 체류 만료일이 기존 기록상 만료일보다 이후인지 검사한다.
+  EMPLOYMENT_END_CONFIRMATION: 고용 종료 일시와 HR 확인이 함께 존재하는지 검사한다.
 
 slot_definitions:
   worker_id:
@@ -91,6 +95,34 @@ slot_definitions:
   source_document_id:
     type: string
     description: OCR·급여 비교에 사용한 암호화 문서의 내부 식별자
+  stay_verification_status:
+    type: enum
+    values: [APPROVED, APPLICATION_PENDING, UNKNOWN, NOT_APPLIED, EMPLOYMENT_ENDED]
+    description: HR이 증빙 또는 공식 확인을 바탕으로 선택한 체류상태 확인 결과
+  status_checked_at:
+    type: datetime
+    description: HR이 체류상태를 마지막으로 확인한 일시
+  extension_applied_at:
+    type: datetime
+    description: 체류기간 연장 신청 접수 일시
+  extension_receipt_document_id:
+    type: string
+    description: 연장 신청 접수증 문서의 내부 식별자
+  approval_result_document_id:
+    type: string
+    description: 체류기간 연장 승인 결과 문서의 내부 식별자
+  new_stay_expiry_date:
+    type: date
+    description: 승인 결과 문서로 확인한 새로운 체류기간 만료일
+  official_consultation_note:
+    type: string
+    description: 공식기관에 확인한 내용과 확인 경로를 기록한 HR 메모
+  employment_end_confirmed_at:
+    type: datetime
+    description: HR이 출국 또는 고용 종료 사실을 확인한 일시
+  next_review_at:
+    type: datetime
+    description: 심사 중이거나 상태가 불명확할 때 다시 확인할 일시
 
 workflow_requirements:
   WF-WRK-001:
@@ -145,6 +177,89 @@ workflow_requirements:
         responsible_actor: SYSTEM
         required: false
         validation_rules: [DOCUMENT_SUBMISSION_STATUS]
+
+  WF-STY-EXC-001:
+    required: [worker_id, stay_expiry_date, stay_verification_status, status_checked_at]
+    optional: [extension_applied_at, extension_receipt_document_id, approval_result_document_id, new_stay_expiry_date, official_consultation_note, employment_end_confirmed_at, next_review_at]
+    resolvable_from_context: [worker_id, stay_expiry_date, extension_applied_at, extension_receipt_document_id, approval_result_document_id]
+    slot_contracts:
+      worker_id:
+        display_name_ko: 확인 대상 근로자
+        worker_prompt_easy_ko: 체류상태를 확인할 근로자를 선택해 주세요.
+        source_priority: [SELECTED_UI_CONTEXT, HR_CONFIRMED_PROFILE, SYSTEM_RECORD]
+        responsible_actor: HR
+        required: true
+        validation_rules: [NON_EMPTY, KNOWN_WORKER_ID, UNIQUE_SUBJECT_MATCH]
+      stay_expiry_date:
+        display_name_ko: 기록상 체류기간 만료일
+        worker_prompt_easy_ko: 현재 시스템에 기록된 체류기간 만료일을 확인해 주세요.
+        source_priority: [VERIFIED_DOCUMENT, SYSTEM_RECORD]
+        responsible_actor: SYSTEM
+        required: true
+        validation_rules: [ISO_DATE, HR_CONFIRMATION_REQUIRED]
+      stay_verification_status:
+        display_name_ko: 체류상태 확인 결과
+        worker_prompt_easy_ko: 공식 자료를 확인한 뒤 현재 상태를 선택해 주세요.
+        source_priority: [HR_INPUT, VERIFIED_DOCUMENT, SYSTEM_RECORD]
+        responsible_actor: HR
+        required: true
+        validation_rules: [STAY_VERIFICATION_STATUS, HR_CONFIRMATION_REQUIRED]
+      status_checked_at:
+        display_name_ko: 상태 확인 시각
+        worker_prompt_easy_ko: 담당자가 상태를 확인한 날짜와 시간을 기록해 주세요.
+        source_priority: [SYSTEM_RECORD, HR_INPUT]
+        responsible_actor: HR
+        required: true
+        validation_rules: [ISO_DATETIME, HR_CONFIRMATION_REQUIRED]
+      extension_applied_at:
+        display_name_ko: 연장 신청 접수 일시
+        worker_prompt_easy_ko: 연장 신청을 접수한 날짜와 시간을 확인해 주세요.
+        source_priority: [VERIFIED_DOCUMENT, HR_INPUT, SYSTEM_RECORD]
+        responsible_actor: HR
+        required: false
+        validation_rules: [ISO_DATETIME, HR_CONFIRMATION_REQUIRED]
+      extension_receipt_document_id:
+        display_name_ko: 연장 신청 접수증
+        worker_prompt_easy_ko: 연장 신청 접수증을 선택해 주세요.
+        source_priority: [VERIFIED_DOCUMENT, SELECTED_UI_CONTEXT]
+        responsible_actor: HR
+        required: false
+        validation_rules: [SOURCE_DOCUMENT_EXISTS, HR_CONFIRMATION_REQUIRED]
+      approval_result_document_id:
+        display_name_ko: 연장 승인 결과 문서
+        worker_prompt_easy_ko: 새로운 체류기간을 확인할 승인 결과 문서를 선택해 주세요.
+        source_priority: [VERIFIED_DOCUMENT, SELECTED_UI_CONTEXT]
+        responsible_actor: HR
+        required: false
+        validation_rules: [SOURCE_DOCUMENT_EXISTS, HR_CONFIRMATION_REQUIRED]
+      new_stay_expiry_date:
+        display_name_ko: 새 체류기간 만료일
+        worker_prompt_easy_ko: 승인 결과에 적힌 새로운 체류기간 만료일을 입력해 주세요.
+        source_priority: [VERIFIED_DOCUMENT, HR_INPUT]
+        responsible_actor: HR
+        required: false
+        validation_rules: [ISO_DATE, NEW_EXPIRY_AFTER_CURRENT, HR_CONFIRMATION_REQUIRED]
+      official_consultation_note:
+        display_name_ko: 공식기관 확인 메모
+        worker_prompt_easy_ko: 공식기관에 확인한 내용과 확인 방법을 적어 주세요.
+        source_priority: [HR_INPUT, SYSTEM_RECORD]
+        responsible_actor: HR
+        required: false
+        validation_rules: [NON_EMPTY, HR_CONFIRMATION_REQUIRED]
+      employment_end_confirmed_at:
+        display_name_ko: 고용 종료 확인 일시
+        worker_prompt_easy_ko: 출국 또는 고용 종료를 확인한 날짜와 시간을 입력해 주세요.
+        source_priority: [HR_INPUT, VERIFIED_DOCUMENT, SYSTEM_RECORD]
+        responsible_actor: HR
+        required: false
+        validation_rules: [ISO_DATETIME, EMPLOYMENT_END_CONFIRMATION, HR_CONFIRMATION_REQUIRED]
+      next_review_at:
+        display_name_ko: 다음 확인 일시
+        worker_prompt_easy_ko: 심사 결과를 다시 확인할 날짜와 시간을 입력해 주세요.
+        source_priority: [HR_INPUT, SYSTEM_RECORD]
+        responsible_actor: HR
+        required: false
+        validation_rules: [ISO_DATETIME, HR_CONFIRMATION_REQUIRED]
 
   WF-CON-001:
     required: [worker_id, due_at]

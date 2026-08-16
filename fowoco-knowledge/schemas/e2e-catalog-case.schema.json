@@ -88,7 +88,7 @@
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^WF-[A-Z]{3}-[0-9]{3}$"
+        "pattern": "^WF-[A-Z]{3}(?:-[A-Z]{3})?-[0-9]{3}$"
       },
       "uniqueItems": true
     },
