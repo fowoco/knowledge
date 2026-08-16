@@ -26,7 +26,7 @@
           "completion_evidence"
         ],
         "properties": {
-          "id": { "type": "string", "pattern": "^WF-[A-Z]{3}-[0-9]{3}$" },
+          "id": { "type": "string", "pattern": "^WF-[A-Z]{3}(?:-[A-Z]{3})?-[0-9]{3}$" },
           "name": { "type": "string", "minLength": 2 },
           "intent": { "type": "string" },
           "domains": {

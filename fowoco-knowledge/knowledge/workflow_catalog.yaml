@@ -92,6 +92,53 @@ workflows:
         output: completed_task
     completion_evidence: [hr_approval_id, stay_extension_receipt_or_note, next_review_at]
 
+  - id: WF-STY-EXC-001
+    name: 체류기간 만료 경과 긴급 확인
+    intent: EXPIRY_RENEWAL
+    domains: [STAY, DOCUMENT, EMPLOYMENT_STATUS]
+    sensitivity: critical
+    supported_input_modes: [AGENT_TASK, INTERNAL_REQUEST]
+    triggers:
+      - type: schedule
+        field: stay_expiry_date
+        condition: before_today
+        note: 기록상 만료 경과만 감지하며 법적 체류상태나 고용 종료를 확정하지 않음
+      - type: natural_language
+    required_slots_ref: WF-STY-EXC-001
+    source_ids:
+      - SRC-HIKOREA
+      - SRC-LAW-IMMIGRATION-ACT-25
+      - SRC-LAW-IMMIGRATION-ACT-19
+    steps:
+      - id: create_verification_case
+        actor: RULE_ENGINE
+        action: 근로자와 기록상 만료일을 기준으로 중복 없는 긴급 확인 업무를 생성
+        output: stay_verification_case
+      - id: collect_current_evidence
+        actor: HR
+        action: 접수증·승인 결과·공식기관 확인 메모 중 현재 상태를 뒷받침할 자료를 등록
+        output: stay_status_evidence
+        gate: required
+      - id: confirm_status
+        actor: HR
+        action: 승인·심사 중·불명확·미신청·고용 종료 중 확인된 상태를 선택
+        output: confirmed_stay_verification_status
+        gate: required
+      - id: route_next_action
+        actor: RULE_ENGINE
+        action: 확인 상태와 증빙에 따라 만료일 갱신·재확인·공식 확인·고위험 검토를 분기
+        output: next_action
+      - id: propose_employment_change
+        actor: WORKFLOW_AGENT
+        action: HR이 고용 종료를 확인한 경우에만 고용변동 Workflow 후보를 제시
+        output: employment_change_candidate
+        gate: hr_approval
+      - id: close_verification
+        actor: HR
+        action: 확인 시각과 증빙 또는 공식 확인 메모를 남기고 긴급 확인 업무를 완료
+        output: completed_verification_case
+    completion_evidence: [status_checked_at, stay_status_evidence_or_official_note]
+
   - id: WF-CON-001
     name: 근로계약 갱신과 고용허가기간 연장 준비
     intent: EXPIRY_RENEWAL

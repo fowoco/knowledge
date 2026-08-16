@@ -9,7 +9,7 @@
     "reference_at": { "type": "string", "format": "date-time" },
     "input_mode": { "enum": ["WORKER_MESSAGE", "AGENT_TASK", "INTERNAL_REQUEST"] },
     "utterance": { "type": "string", "minLength": 1 },
-    "workflow_id": { "type": "string", "pattern": "^WF-[A-Z]{3}-[0-9]{3}$" },
+    "workflow_id": { "type": "string", "pattern": "^WF-[A-Z]{3}(?:-[A-Z]{3})?-[0-9]{3}$" },
     "intent_candidates": {
       "type": "array",
       "items": {

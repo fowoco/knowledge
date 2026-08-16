@@ -9,9 +9,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_lists_mvp_workflows() -> None:
     workflows = KnowledgeRepository(ROOT).list_workflows()
-    assert len(workflows) == 8
+    assert len(workflows) == 9
     assert {workflow["id"] for workflow in workflows} >= {
         "WF-STY-001",
+        "WF-STY-EXC-001",
         "WF-DOC-001",
         "WF-PAY-001",
         "WF-CHG-001",
