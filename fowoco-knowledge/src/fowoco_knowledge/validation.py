@@ -241,9 +241,7 @@ class KnowledgeValidator:
         domains = self._index_unique(context["domains"]["domains"], "domain")
         sources = self._index_unique(context["sources"]["sources"], "source")
         workflows = self._index_unique(context["workflows"]["workflows"], "workflow")
-        case_templates = self._index_unique(
-            context["workflows"]["case_templates"], "case template"
-        )
+        case_templates = self._index_unique(context["workflows"]["case_templates"], "case template")
         checklists = self._index_unique(context["checklists"]["checklists"], "checklist")
         procedures = self._index_unique(context["procedures"]["procedures"], "procedure")
         slot_refs = context["slots"]["workflow_requirements"]

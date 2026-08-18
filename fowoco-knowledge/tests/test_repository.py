@@ -100,6 +100,4 @@ def test_expiry_renewal_demo_pack_matches_case_template() -> None:
     assert [task["task_type"] for task in demo["expected_case"]["tasks"]] == [
         task["task_type"] for task in template["tasks"]
     ]
-    assert all(
-        value is False for value in demo["guardrails"].values()
-    )
+    assert all(value is False for value in demo["guardrails"].values())
