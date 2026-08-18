@@ -183,3 +183,27 @@ def test_git_lfs_pointer_exposes_artifact_checksum_and_size(tmp_path: Path) -> N
         "abf0d7d3bdb89a5ac34abc8cc41a77396bf024f02de6939591b3c555446bd48b",
         442518124,
     )
+
+
+def test_six_workflow_runtime_profiles_have_three_e2e_paths_each() -> None:
+    runtime = yaml.safe_load((ROOT / "knowledge/workflow_runtime.yaml").read_text(encoding="utf-8"))
+    cases = [
+        json.loads(line)
+        for line in (ROOT / "data/evaluation/workflow_runtime_cases.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+        if line.strip()
+    ]
+
+    assert len(runtime["profiles"]) == 6
+    assert len(cases) == 18
+    for profile in runtime["profiles"]:
+        profile_cases = [case for case in cases if case["profile_id"] == profile["id"]]
+        assert {case["path"] for case in profile_cases} == {
+            "HAPPY_PATH",
+            "MISSING_INPUT",
+            "MANUAL_REVIEW",
+        }
+        assert all(stage["completion_evidence"] for stage in profile["stages"])
+    assert all(not case["guardrails"]["automatic_external_submission"] for case in cases)
+    assert all(not case["guardrails"]["automatic_completion"] for case in cases)

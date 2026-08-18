@@ -1,0 +1,8 @@
+dataset_id: FOWOCO-WORKFLOW-RUNTIME-E2E
+version: 1.0.0
+path: data/evaluation/workflow_runtime_cases.jsonl
+schema: schemas/workflow-runtime-case.schema.json
+record_count: 18
+sha256: ac096b8b75175b74ccc36476b92a41968fc05d0b10f9c13e21a776082521681a
+required_paths: [HAPPY_PATH, MISSING_INPUT, MANUAL_REVIEW]
+cases_per_profile: 3

@@ -1,0 +1,214 @@
+version: 1.0.0
+policy:
+  states: [DRAFT, NEEDS_INFO, READY, IN_PROGRESS, WAITING_WORKER, WAITING_EXTERNAL, REVIEW_REQUIRED, COMPLETED, CANCELLED, MANUAL_REVIEW]
+  transitions:
+    - {from: DRAFT, event: REQUIRED_CONTEXT_RESOLVED, to: READY}
+    - {from: DRAFT, event: REQUIRED_CONTEXT_MISSING, to: NEEDS_INFO}
+    - {from: NEEDS_INFO, event: ANSWERS_SUBMITTED, to: READY}
+    - {from: READY, event: EXECUTION_STARTED, to: IN_PROGRESS}
+    - {from: IN_PROGRESS, event: WORKER_INPUT_REQUESTED, to: WAITING_WORKER}
+    - {from: WAITING_WORKER, event: WORKER_RESPONSE_RECEIVED, to: IN_PROGRESS}
+    - {from: IN_PROGRESS, event: EXTERNAL_RESULT_REQUIRED, to: WAITING_EXTERNAL}
+    - {from: WAITING_EXTERNAL, event: EXTERNAL_RESULT_RECORDED, to: REVIEW_REQUIRED}
+    - {from: IN_PROGRESS, event: HUMAN_REVIEW_REQUIRED, to: REVIEW_REQUIRED}
+    - {from: REVIEW_REQUIRED, event: HUMAN_APPROVED, to: COMPLETED}
+    - {from: DRAFT, event: CANCELLED_BY_HR, to: CANCELLED}
+    - {from: IN_PROGRESS, event: UNSUPPORTED_EXCEPTION, to: MANUAL_REVIEW}
+  parallel_ready_rule: ALL_DEPENDENCIES_COMPLETED
+  completion_rule: EVIDENCE_PRESENT_AND_HUMAN_GATE_SATISFIED
+event_contract:
+  supported_types: [NATURAL_LANGUAGE, DEADLINE_REACHED, OCR_COMPLETED, WORKER_RESPONSE_RECEIVED]
+  idempotency_required: true
+composite_intent_policy:
+  strategy: SPLIT_TO_WORKFLOW_CANDIDATES
+  representative_intent: FIRST_EVIDENCE_ORDER
+  confirmation_required: true
+
+profiles:
+  - id: RUN-EXPIRY-RENEWAL
+    intent: EXPIRY_RENEWAL
+    kind: MASTER
+    master_workflow_id: WF-STY-001
+    included_workflow_ids: [WF-CON-001, WF-DOC-001, WF-STY-001]
+    reusable_subflow_ids: [WF-DOC-001]
+    applicability:
+      subject: WORKER
+      conditions: [E-9 근로자의 재계약·취업활동기간·체류기간 연장 준비]
+    required_slots_ref: WF-STY-001
+    stages:
+      - id: confirm_contract
+        catalog_steps: [WF-CON-001.confirm_company_intent, WF-CON-001.confirm_worker_intent, WF-CON-001.prepare_contract, WF-CON-001.review_and_sign]
+        depends_on: []
+        condition: ALWAYS
+        completion_evidence: [worker_intent, signed_contract_record, hr_approval_id]
+        human_gate: HR_CONFIRMATION
+        parallel_group: PREPARATION
+      - id: collect_identity_documents
+        catalog_steps: [WF-DOC-001.validate_request, WF-DOC-001.generate_notice, WF-DOC-001.approve_notice, WF-DOC-001.collect_response, WF-DOC-001.verify_submission, WF-DOC-001.close_or_ticket]
+        depends_on: []
+        condition: MISSING_INFORMATION
+        completion_evidence: [approved_notice_id, verified_document_id]
+        human_gate: HR_APPROVAL
+        parallel_group: PREPARATION
+      - id: extend_employment_period
+        catalog_steps: [WF-CON-001.prepare_permit_extension, WF-CON-001.manual_external_process, WF-CON-001.close_task]
+        depends_on: [confirm_contract, collect_identity_documents]
+        condition: ALL_DEPENDENCIES_COMPLETED
+        completion_evidence: [employment_permit_extension_receipt_or_note, hr_approval_id]
+        human_gate: MANUAL_EXTERNAL_ACTION
+      - id: extend_stay_period
+        catalog_steps: [WF-STY-001.create_task, WF-STY-001.load_current_checklist, WF-STY-001.check_prerequisite, WF-STY-001.compare_documents, WF-STY-001.request_worker_documents, WF-STY-001.manual_external_process, WF-STY-001.close_task]
+        depends_on: [extend_employment_period]
+        condition: ALL_DEPENDENCIES_COMPLETED
+        completion_evidence: [stay_extension_receipt_or_note, next_review_at, hr_approval_id]
+        human_gate: MANUAL_EXTERNAL_ACTION
+
+  - id: RUN-WORKER-ONBOARDING
+    intent: WORKER_ONBOARDING
+    kind: MASTER
+    master_workflow_id: WF-WRK-001
+    included_workflow_ids: [WF-WRK-001]
+    reusable_subflow_ids: [WF-DOC-001]
+    applicability:
+      subject: WORKER
+      conditions: [입사 서류가 있고 HR이 신규 근로자 등록을 요청함]
+    required_slots_ref: WF-WRK-001
+    stages:
+      - id: ingest_source
+        catalog_steps: [WF-WRK-001.ingest_document]
+        depends_on: []
+        condition: ALWAYS
+        completion_evidence: [source_document_id]
+        human_gate: NONE
+      - id: extract_and_validate
+        catalog_steps: [WF-WRK-001.extract_fields, WF-WRK-001.validate_fields]
+        depends_on: [ingest_source]
+        condition: ALL_DEPENDENCIES_COMPLETED
+        completion_evidence: [worker_profile_draft, validation_report]
+        human_gate: NONE
+      - id: approve_and_persist
+        catalog_steps: [WF-WRK-001.review_draft, WF-WRK-001.persist_profile]
+        depends_on: [extract_and_validate]
+        condition: ALL_DEPENDENCIES_COMPLETED
+        completion_evidence: [hr_approval_id, worker_id]
+        human_gate: HR_APPROVAL
+
+  - id: RUN-EMPLOYMENT-CHANGE
+    intent: EMPLOYMENT_CHANGE
+    kind: MASTER
+    master_workflow_id: WF-CHG-001
+    included_workflow_ids: [WF-CHG-001]
+    reusable_subflow_ids: [WF-DOC-001]
+    applicability:
+      subject: WORKER
+      conditions: [퇴사·결근·연락두절·사업장변경 후보 사건이 발생함]
+    required_slots_ref: WF-CHG-001
+    stages:
+      - id: capture_and_confirm_incident
+        catalog_steps: [WF-CHG-001.capture_incident, WF-CHG-001.confirm_facts]
+        depends_on: []
+        condition: ALWAYS
+        completion_evidence: [confirmed_event_and_base_date]
+        human_gate: HR_CONFIRMATION
+      - id: prepare_report
+        catalog_steps: [WF-CHG-001.calculate_candidate_deadline, WF-CHG-001.load_official_guidance, WF-CHG-001.create_actions]
+        depends_on: [capture_and_confirm_incident]
+        condition: ALL_DEPENDENCIES_COMPLETED
+        completion_evidence: [report_due_at_candidate, guidance_pack, action_tasks]
+        human_gate: NONE
+      - id: report_and_close
+        catalog_steps: [WF-CHG-001.manual_report, WF-CHG-001.close_task]
+        depends_on: [prepare_report]
+        condition: ALL_DEPENDENCIES_COMPLETED
+        completion_evidence: [external_receipt_or_manual_note, confirmed_incident_id]
+        human_gate: MANUAL_EXTERNAL_ACTION
+
+  - id: RUN-DOCUMENT-REQUEST
+    intent: DOCUMENT_REQUEST
+    kind: SUBFLOW
+    master_workflow_id: WF-DOC-001
+    included_workflow_ids: [WF-DOC-001]
+    reusable_subflow_ids: []
+    applicability:
+      subject: WORKER
+      conditions: [승인된 문서 유형을 근로자에게 요청하거나 제출을 추적함]
+    required_slots_ref: WF-DOC-001
+    stages:
+      - id: prepare_notice
+        catalog_steps: [WF-DOC-001.validate_request, WF-DOC-001.generate_notice, WF-DOC-001.approve_notice]
+        depends_on: []
+        condition: ALWAYS
+        completion_evidence: [approved_notice_id]
+        human_gate: HR_APPROVAL
+      - id: collect_submission
+        catalog_steps: [WF-DOC-001.collect_response]
+        depends_on: [prepare_notice]
+        condition: ALL_DEPENDENCIES_COMPLETED
+        completion_evidence: [worker_response]
+        human_gate: NONE
+      - id: verify_or_follow_up
+        catalog_steps: [WF-DOC-001.verify_submission, WF-DOC-001.close_or_ticket]
+        depends_on: [collect_submission]
+        condition: ALL_DEPENDENCIES_COMPLETED
+        completion_evidence: [verified_document_id]
+        human_gate: HR_CONFIRMATION
+
+  - id: RUN-PAYROLL-EXPLANATION
+    intent: PAYROLL_EXPLANATION
+    kind: MASTER
+    master_workflow_id: WF-PAY-001
+    included_workflow_ids: [WF-PAY-001]
+    reusable_subflow_ids: []
+    applicability:
+      subject: WORKER
+      conditions: [검증할 급여명세서와 귀속월이 선택됨]
+    required_slots_ref: WF-PAY-001
+    stages:
+      - id: calculate_payroll_difference
+        catalog_steps: [WF-PAY-001.parse_payslip, WF-PAY-001.calculate_difference]
+        depends_on: []
+        condition: ALWAYS
+        completion_evidence: [payroll_fields, calculation_trace]
+        human_gate: NONE
+      - id: explain_and_review
+        catalog_steps: [WF-PAY-001.generate_explanation, WF-PAY-001.review_explanation]
+        depends_on: [calculate_payroll_difference]
+        condition: ALL_DEPENDENCIES_COMPLETED
+        completion_evidence: [approved_explanation, hr_approval_id]
+        human_gate: HR_APPROVAL
+      - id: collect_and_route_question
+        catalog_steps: [WF-PAY-001.collect_question, WF-PAY-001.escalate_if_needed]
+        depends_on: [explain_and_review]
+        condition: ALL_DEPENDENCIES_COMPLETED
+        completion_evidence: [worker_response, task_or_ticket]
+        human_gate: HR_CONFIRMATION
+
+  - id: RUN-WORK-INSTRUCTION
+    intent: WORK_INSTRUCTION
+    kind: MASTER
+    master_workflow_id: WF-INS-001
+    included_workflow_ids: [WF-INS-001]
+    reusable_subflow_ids: []
+    applicability:
+      subject: WORKER
+      conditions: [근무일정·작업·장소를 근로자에게 안내함]
+    required_slots_ref: WF-INS-001
+    stages:
+      - id: prepare_instruction
+        catalog_steps: [WF-INS-001.validate_instruction, WF-INS-001.generate_notice, WF-INS-001.approve_notice]
+        depends_on: []
+        condition: ALWAYS
+        completion_evidence: [approved_notice_id]
+        human_gate: HR_APPROVAL
+      - id: collect_acknowledgement
+        catalog_steps: [WF-INS-001.collect_response]
+        depends_on: [prepare_instruction]
+        condition: ALL_DEPENDENCIES_COMPLETED
+        completion_evidence: [worker_response]
+        human_gate: NONE
+      - id: follow_up_if_needed
+        catalog_steps: [WF-INS-001.follow_up]
+        depends_on: [collect_acknowledgement]
+        condition: EXCEPTION_DETECTED
+        completion_evidence: [task_or_ticket]
+        human_gate: HR_CONFIRMATION
