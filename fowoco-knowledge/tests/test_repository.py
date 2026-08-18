@@ -76,6 +76,15 @@ def test_expiry_renewal_case_template_keeps_full_business_order() -> None:
     assert template["tasks"][2]["depends_on"] == ["recontract"]
     assert template["tasks"][3]["depends_on"] == ["employment_period_extension"]
     assert len(template["tasks"][0]["checklist_items"]) == 6
+    identity_checklists = template["tasks"][1]["checklist_items"]
+    assert [item["item_code"] for item in identity_checklists if item["required"]] == [
+        "WORKER_DOCUMENT_REQUEST_APPROVED"
+    ]
+    assert [item["item_code"] for item in identity_checklists if not item["required"]] == [
+        "SECURE_LINK_DELIVERY_RECORDED",
+        "IDENTITY_DOCUMENTS_SUBMITTED",
+        "OCR_RESULT_HR_REVIEWED",
+    ]
 
 
 def test_expiry_renewal_demo_pack_matches_case_template() -> None:

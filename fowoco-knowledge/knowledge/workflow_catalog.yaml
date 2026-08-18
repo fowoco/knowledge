@@ -444,13 +444,13 @@ case_templates:
             required: true
           - item_code: SECURE_LINK_DELIVERY_RECORDED
             label: 보안 링크 전달 완료 기록
-            required: true
+            required: false
           - item_code: IDENTITY_DOCUMENTS_SUBMITTED
             label: 근로자 여권·외국인등록증 제출 확인
-            required: true
+            required: false
           - item_code: OCR_RESULT_HR_REVIEWED
             label: OCR 추출값과 원본을 HR이 대조 검토
-            required: true
+            required: false
         completion_evidence:
           - approved_notice_id
           - verified_document_id
