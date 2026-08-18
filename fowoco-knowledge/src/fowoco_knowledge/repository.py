@@ -87,6 +87,15 @@ class KnowledgeRepository:
     def list_case_templates(self) -> list[dict[str, Any]]:
         return self.load_yaml("knowledge/workflow_catalog.yaml")["case_templates"]
 
+    def list_document_types(self) -> list[dict[str, Any]]:
+        return self.load_yaml("knowledge/document_type_catalog.yaml")["document_types"]
+
+    def get_document_type(self, document_type: str) -> dict[str, Any]:
+        for definition in self.list_document_types():
+            if definition["id"] == document_type:
+                return definition
+        raise KeyError(f"Unknown document_type: {document_type}")
+
     def get_case_template(self, case_template_id: str) -> dict[str, Any]:
         for template in self.list_case_templates():
             if template["id"] == case_template_id:

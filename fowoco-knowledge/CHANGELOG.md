@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- PDF·이미지·HWP·HWPX·XLSX·CSV 공통 Document IR과 Field Evidence 계약 추가
+- 공식 Template과 회사 전용 Tenant Template의 소유권·승격·격리 정책 추가
+- Excel 수식·cache·날짜·숨김·병합 Cell과 행별 오류 보존 규칙 및 6개 Fixture 추가
 - 6대 Workflow의 Master/Subflow 관계, 공통 상태·이벤트·단계 의존성·완료 증빙 계약 추가
 - Workflow별 정상·정보 누락·수동 검토 경로를 고정한 Runtime E2E Fixture 18건 추가
 - 외부기관 처리와 민감 판단의 HR Gate, 병렬 READY 조건, 복합 Intent 분해 정책 검증 추가

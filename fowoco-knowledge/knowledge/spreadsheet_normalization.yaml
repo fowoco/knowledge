@@ -1,0 +1,32 @@
+version: 1.0.0
+sheet_selection:
+  ignore_fully_hidden_sheets: true
+  prefer_sheet_with_required_headers: true
+  multiple_candidate_sheets: REVIEW_REQUIRED
+header_detection:
+  scan_first_rows: 30
+  normalize_whitespace: true
+  duplicate_header: REVIEW_REQUIRED
+  merged_header: EXPAND_LABEL_WITH_SOURCE_RANGE
+structure:
+  preserve_hidden_rows_and_columns: true
+  skip_fully_empty_rows: true
+  keep_source_row_number: true
+values:
+  date_serial: PRESERVE_RAW_AND_NORMALIZE_ISO_DATE
+  currency: PRESERVE_RAW_AND_NORMALIZE_DECIMAL
+  percentage: PRESERVE_RAW_AND_NORMALIZE_RATIO
+  numeric_text: PRESERVE_RAW_AND_NORMALIZE_WHEN_UNAMBIGUOUS
+formula:
+  preserve_formula: true
+  preserve_cached_value: true
+  recalculate: false
+  record_recalculated_flag: true
+csv:
+  detect_encodings: [UTF-8, UTF-8-BOM, CP949]
+  detect_delimiters: [COMMA, SEMICOLON, TAB, PIPE]
+  preserve_line_ending: true
+row_error_policy:
+  valid_rows_survive_other_row_errors: true
+  row_statuses: [VALID, REVIEW_REQUIRED, REJECTED]
+  full_import_failure_only_for: [UNSUPPORTED_FORMAT, ENCRYPTED_FILE, NO_READABLE_SHEET, HEADER_NOT_FOUND]

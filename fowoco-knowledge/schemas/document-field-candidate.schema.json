@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.dev/schemas/document-field-candidate.schema.json",
+  "title": "Document field candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["field_key", "data_type", "raw_value", "normalized_value", "extractor", "confidence", "review_status", "evidence"],
+  "properties": {
+    "field_key": {"type": "string", "pattern": "^[a-z][a-z0-9_.]+$"},
+    "data_type": {"enum": ["STRING", "DATE", "DATETIME", "NUMBER", "MONEY", "PERCENTAGE", "BOOLEAN"]},
+    "raw_value": {"type": ["string", "number", "boolean", "null"]},
+    "normalized_value": {"type": ["string", "number", "boolean", "null"]},
+    "extractor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "mode"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "mode": {"enum": ["RULE", "OCR", "PARSER", "AI", "MANUAL"]}
+      }
+    },
+    "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "review_status": {"enum": ["UNREVIEWED", "ACCEPTED", "CORRECTED", "REJECTED", "UNAVAILABLE"]},
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["AVAILABLE", "UNAVAILABLE"]},
+        "source_text": {"type": "string"},
+        "page": {"type": "integer", "minimum": 1},
+        "sheet_name": {"type": "string", "minLength": 1},
+        "cell_range": {"type": "string", "pattern": "^[A-Z]+[1-9][0-9]*(?::[A-Z]+[1-9][0-9]*)?$"},
+        "bounding_box": {
+          "type": "array",
+          "prefixItems": [
+            {"type": "number", "minimum": 0},
+            {"type": "number", "minimum": 0},
+            {"type": "number", "exclusiveMinimum": 0},
+            {"type": "number", "exclusiveMinimum": 0}
+          ],
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "unavailable_reason": {"type": "string", "minLength": 3}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "AVAILABLE"}}},
+          "then": {
+            "required": ["source_text"],
+            "anyOf": [
+              {"required": ["page"]},
+              {"required": ["sheet_name", "cell_range"]}
+            ]
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "UNAVAILABLE"}}},
+          "then": {
+            "required": ["unavailable_reason"],
+            "properties": {
+              "source_text": false,
+              "page": false,
+              "sheet_name": false,
+              "cell_range": false,
+              "bounding_box": false
+            }
+          }
+        }
+      ]
+    },
+    "value_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "formula": {"type": ["string", "null"]},
+        "cached_value": {"type": ["string", "number", "boolean", "null"]},
+        "recalculated": {"type": "boolean"},
+        "original_number_format": {"type": ["string", "null"]}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"review_status": {"const": "UNAVAILABLE"}}},
+      "then": {
+        "properties": {
+          "raw_value": {"const": null},
+          "normalized_value": {"const": null},
+          "confidence": {"const": null},
+          "evidence": {"properties": {"status": {"const": "UNAVAILABLE"}}}
+        }
+      }
+    }
+  ]
+}

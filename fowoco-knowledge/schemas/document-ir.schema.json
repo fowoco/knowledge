@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.dev/schemas/document-ir.schema.json",
+  "title": "FOWOCO Document Intermediate Representation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "document_ref", "company_ref", "source_file", "role", "document_type", "processing_status", "parser_route", "template", "fields", "errors", "requires_human_review", "automatic_persistence_allowed"],
+  "properties": {
+    "contract_version": {"const": "1.0.0"},
+    "document_ref": {"type": "string", "pattern": "^DOC-[A-Z0-9-]+$"},
+    "company_ref": {"type": "string", "pattern": "^COMPANY-[A-Z0-9-]+$"},
+    "source_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file_name", "format", "media_type", "sha256", "bytes"],
+      "properties": {
+        "file_name": {"type": "string", "minLength": 1},
+        "format": {"enum": ["PDF", "IMAGE", "HWP", "HWPX", "XLSX", "CSV"]},
+        "media_type": {"type": "string", "minLength": 3},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "role": {"enum": ["EVIDENCE", "FORM_TEMPLATE", "REFERENCE", "GENERATED_OUTPUT", "COMMUNICATION_ATTACHMENT", "UNKNOWN"]},
+    "document_type": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"},
+    "processing_status": {"enum": ["UPLOADED", "SCANNING", "PARSING", "CLASSIFYING", "REVIEW_REQUIRED", "VERIFIED", "FAILED"]},
+    "parser_route": {"enum": ["KNOWN_TEMPLATE", "SIMILAR_TEMPLATE", "UNCLASSIFIED", "UNSUPPORTED"]},
+    "template": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "template_id", "owner_company_ref", "version", "visible_to_other_companies"],
+      "properties": {
+        "scope": {"enum": ["OFFICIAL", "TENANT", "NONE"]},
+        "template_id": {"type": ["string", "null"]},
+        "owner_company_ref": {"type": ["string", "null"], "pattern": "^COMPANY-[A-Z0-9-]+$"},
+        "version": {"type": ["string", "null"]},
+        "visible_to_other_companies": {"type": "boolean"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"scope": {"const": "TENANT"}}},
+          "then": {
+            "properties": {
+              "template_id": {"type": "string", "minLength": 1},
+              "owner_company_ref": {"type": "string", "pattern": "^COMPANY-[A-Z0-9-]+$"},
+              "version": {"type": "string", "minLength": 1},
+              "visible_to_other_companies": {"const": false}
+            },
+            "required": ["owner_company_ref", "template_id", "version"]
+          }
+        },
+        {
+          "if": {"properties": {"scope": {"const": "OFFICIAL"}}},
+          "then": {
+            "properties": {
+              "template_id": {"type": "string", "minLength": 1},
+              "owner_company_ref": {"const": null},
+              "version": {"type": "string", "minLength": 1},
+              "visible_to_other_companies": {"const": true}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"scope": {"const": "NONE"}}},
+          "then": {
+            "properties": {
+              "template_id": {"const": null},
+              "owner_company_ref": {"const": null},
+              "version": {"const": null},
+              "visible_to_other_companies": {"const": false}
+            }
+          }
+        }
+      ]
+    },
+    "fields": {
+      "type": "array",
+      "items": {"$ref": "https://fowoco.dev/schemas/document-field-candidate.schema.json"}
+    },
+    "spreadsheet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selected_sheet", "header_row", "hidden_rows", "hidden_columns", "merged_ranges", "formula_policy", "row_results"],
+      "properties": {
+        "selected_sheet": {"type": "string", "minLength": 1},
+        "header_row": {"type": "integer", "minimum": 1},
+        "hidden_rows": {"type": "array", "items": {"type": "integer", "minimum": 1}},
+        "hidden_columns": {"type": "array", "items": {"type": "string", "pattern": "^[A-Z]+$"}},
+        "merged_ranges": {"type": "array", "items": {"type": "string"}},
+        "formula_policy": {"enum": ["PRESERVE_FORMULA_AND_CACHE", "NOT_APPLICABLE"]},
+        "csv_detection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["encoding", "delimiter", "line_ending"],
+          "properties": {
+            "encoding": {"type": "string"},
+            "delimiter": {"enum": [",", ";", "\\t", "|"]},
+            "line_ending": {"enum": ["LF", "CRLF", "CR"]}
+          }
+        },
+        "row_results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["row_number", "status", "error_codes"],
+            "properties": {
+              "row_number": {"type": "integer", "minimum": 1},
+              "status": {"enum": ["VALID", "REVIEW_REQUIRED", "REJECTED"]},
+              "error_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+            }
+          }
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "scope", "location", "recoverable", "message"],
+        "properties": {
+          "code": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"},
+          "scope": {"enum": ["DOCUMENT", "PAGE", "SHEET", "ROW", "FIELD"]},
+          "location": {"type": ["string", "null"]},
+          "recoverable": {"type": "boolean"},
+          "message": {"type": "string", "minLength": 3}
+        }
+      }
+    },
+    "requires_human_review": {"type": "boolean"},
+    "automatic_persistence_allowed": {"type": "boolean"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"source_file": {"properties": {"format": {"enum": ["XLSX", "CSV"]}}}}},
+      "then": {"required": ["spreadsheet"]}
+    },
+    {
+      "if": {"properties": {"parser_route": {"enum": ["UNCLASSIFIED", "UNSUPPORTED"]}}},
+      "then": {
+        "properties": {
+          "requires_human_review": {"const": true},
+          "automatic_persistence_allowed": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"processing_status": {"const": "FAILED"}}},
+      "then": {"properties": {"automatic_persistence_allowed": {"const": false}}}
+    }
+  ]
+}

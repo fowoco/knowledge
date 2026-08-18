@@ -146,7 +146,7 @@ make check
 - Train/Validation 중복·누락과 template leakage
 - 외국인등록번호·여권번호·전화번호 형태의 개인정보 패턴
 - 6대 Workflow Runtime의 의존성·완료 증빙·HR Gate와 E2E 경로 18건
-- 전체 자동화 테스트 25개
+- 전체 자동화 테스트 27개
 
 ## 저장소 구성
 
@@ -188,6 +188,7 @@ make check
 - [Intent 라벨 기준](fowoco-knowledge/docs/INTENT_DATA.md)
 - [Agent 연동 계약](fowoco-knowledge/docs/AGENT_INTEGRATION.md)
 - [6대 Workflow 공통 실행 계약](fowoco-knowledge/docs/WORKFLOW_RUNTIME.md)
+- [범용 문서·Excel 처리 계약](fowoco-knowledge/docs/DOCUMENT_PROCESSING_CONTRACT.md)
 - [공식 데이터 파이프라인](fowoco-knowledge/docs/OFFICIAL_DATA_PIPELINE.md)
 - [E-9 신고·연장 Workflow](fowoco-knowledge/docs/E9_REPORTING_WORKFLOWS.md)
 - [모델 서빙 실행 방법](fowoco-knowledge/hr-intent-service/README.md)

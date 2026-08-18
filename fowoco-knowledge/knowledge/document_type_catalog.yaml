@@ -1,0 +1,38 @@
+version: 1.0.0
+document_types:
+  - id: PASSPORT_COPY
+    display_name_ko: 여권 사본
+    allowed_roles: [EVIDENCE]
+    formats: [PDF, IMAGE]
+    sensitivity: critical
+    required_review: true
+  - id: ALIEN_REGISTRATION_CARD_COPY
+    display_name_ko: 외국인등록증 사본
+    allowed_roles: [EVIDENCE]
+    formats: [PDF, IMAGE]
+    sensitivity: critical
+    required_review: true
+  - id: STANDARD_EMPLOYMENT_CONTRACT
+    display_name_ko: 표준근로계약서
+    allowed_roles: [EVIDENCE, FORM_TEMPLATE, REFERENCE, GENERATED_OUTPUT]
+    formats: [PDF, HWP, HWPX]
+    sensitivity: high
+    required_review: true
+  - id: PAYSLIP
+    display_name_ko: 급여명세서
+    allowed_roles: [EVIDENCE]
+    formats: [PDF, IMAGE, XLSX]
+    sensitivity: critical
+    required_review: true
+  - id: WORKER_IMPORT_SHEET
+    display_name_ko: 근로자 일괄 등록표
+    allowed_roles: [EVIDENCE, REFERENCE]
+    formats: [XLSX, CSV]
+    sensitivity: high
+    required_review: true
+  - id: UNKNOWN
+    display_name_ko: 분류되지 않은 문서
+    allowed_roles: [UNKNOWN]
+    formats: [PDF, IMAGE, HWP, HWPX, XLSX, CSV]
+    sensitivity: high
+    required_review: true

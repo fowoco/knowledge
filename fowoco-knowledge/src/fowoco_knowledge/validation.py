@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator
+from referencing import Registry, Resource
 
 from .ingestion import file_sha256
 from .repository import KnowledgeRepository
@@ -114,6 +115,7 @@ class KnowledgeValidator:
         self._validate_processed_datasets()
         self._validate_workflow_schema()
         self._validate_workflow_runtime()
+        self._validate_document_contracts()
         self._validate_required_slot_contracts()
         self._validate_cross_references()
         self._validate_seed_data()
@@ -419,6 +421,132 @@ class KnowledgeValidator:
             }
             if profile_paths != required_paths:
                 self.errors.append(f"workflow runtime fixtures: {profile_id} paths are incomplete")
+
+    def _validate_document_contracts(self) -> None:
+        roles = self.repository.load_yaml("knowledge/document_roles.yaml")
+        expected_roles = {
+            "EVIDENCE",
+            "FORM_TEMPLATE",
+            "REFERENCE",
+            "GENERATED_OUTPUT",
+            "COMMUNICATION_ATTACHMENT",
+            "UNKNOWN",
+        }
+        expected_states = {
+            "UPLOADED",
+            "SCANNING",
+            "PARSING",
+            "CLASSIFYING",
+            "REVIEW_REQUIRED",
+            "VERIFIED",
+            "FAILED",
+        }
+        if set(roles["roles"]) != expected_roles:
+            self.errors.append("document contract: role catalog mismatch")
+        if set(roles["processing_states"]) != expected_states:
+            self.errors.append("document contract: processing state catalog mismatch")
+        if any(route["automatic_persistence_allowed"] for route in roles["parser_routes"].values()):
+            self.errors.append("document contract: parser route cannot auto-persist")
+
+        type_catalog = self.repository.load_yaml("knowledge/document_type_catalog.yaml")
+        document_types = {item["id"]: item for item in type_catalog["document_types"]}
+        if len(document_types) != len(type_catalog["document_types"]):
+            self.errors.append("document contract: duplicate document type")
+        for document_type, definition in document_types.items():
+            if not set(definition["allowed_roles"]) <= expected_roles:
+                self.errors.append(f"document contract {document_type}: unknown allowed role")
+
+        template_policy = self.repository.load_yaml("knowledge/company_template_policy.yaml")
+        if template_policy["scopes"]["TENANT"]["visibility"] != "OWNER_COMPANY_ONLY":
+            self.errors.append("document contract: tenant template must be company-only")
+        if not template_policy["tenant_isolation"]["cross_company_search_forbidden"]:
+            self.errors.append("document contract: cross-company template search must be blocked")
+
+        spreadsheet_policy = self.repository.load_yaml("knowledge/spreadsheet_normalization.yaml")
+        if spreadsheet_policy["formula"]["recalculate"]:
+            self.errors.append("document contract: parser must not recalculate formulas")
+        if not spreadsheet_policy["row_error_policy"]["valid_rows_survive_other_row_errors"]:
+            self.errors.append("document contract: valid spreadsheet rows must be preserved")
+
+        manifest = self.repository.load_yaml("data/evaluation/document_ir_manifest.yaml")
+        fixture_path = self.repository.root / manifest["path"]
+        if file_sha256(fixture_path) != manifest["sha256"]:
+            self.errors.append("document IR fixtures: checksum mismatch")
+        field_schema = self.repository.load_json(manifest["field_schema"])
+        ir_schema = self.repository.load_json(manifest["schema"])
+        registry = Registry().with_resource(
+            field_schema["$id"], Resource.from_contents(field_schema)
+        )
+        validator = Draft202012Validator(ir_schema, registry=registry)
+
+        fixtures: list[dict[str, Any]] = []
+        seen_ids: set[str] = set()
+        for line_number, raw_line in enumerate(
+            fixture_path.read_text(encoding="utf-8").splitlines(), start=1
+        ):
+            if not raw_line.strip():
+                continue
+            try:
+                document = json.loads(raw_line)
+            except json.JSONDecodeError as exc:
+                self.errors.append(f"document IR line {line_number}: invalid JSON ({exc})")
+                continue
+            fixtures.append(document)
+            for error in validator.iter_errors(document):
+                path = ".".join(str(item) for item in error.path)
+                self.errors.append(f"document IR line {line_number} [{path}]: {error.message}")
+
+            document_ref = document.get("document_ref")
+            if document_ref in seen_ids:
+                self.errors.append(f"document IR line {line_number}: duplicate {document_ref}")
+            seen_ids.add(document_ref)
+            definition = document_types.get(document.get("document_type"))
+            if not definition:
+                self.errors.append(f"document IR line {line_number}: unknown document type")
+            else:
+                if document.get("role") not in definition["allowed_roles"]:
+                    self.errors.append(
+                        f"document IR line {line_number}: role not allowed for document type"
+                    )
+                if document.get("source_file", {}).get("format") not in definition["formats"]:
+                    self.errors.append(
+                        f"document IR line {line_number}: format not allowed for document type"
+                    )
+
+            template = document.get("template", {})
+            if template.get("scope") == "TENANT":
+                if template.get("owner_company_ref") != document.get("company_ref"):
+                    self.errors.append(
+                        f"document IR line {line_number}: tenant template owner mismatch"
+                    )
+                if template.get("visible_to_other_companies"):
+                    self.errors.append(
+                        f"document IR line {line_number}: tenant template visibility leak"
+                    )
+            if document.get("parser_route") in {"UNCLASSIFIED", "UNSUPPORTED"} and document.get(
+                "automatic_persistence_allowed"
+            ):
+                self.errors.append(
+                    f"document IR line {line_number}: unclassified document cannot auto-persist"
+                )
+
+        if len(fixtures) != manifest["record_count"]:
+            self.errors.append("document IR fixtures: record count mismatch")
+        formats = {fixture["source_file"]["format"] for fixture in fixtures}
+        if formats != set(manifest["required_formats"]):
+            self.errors.append("document IR fixtures: required format coverage missing")
+        xlsx_fixture = next(
+            (fixture for fixture in fixtures if fixture["source_file"]["format"] == "XLSX"),
+            None,
+        )
+        expected_row_statuses = {"VALID", "REVIEW_REQUIRED"}
+        actual_row_statuses = (
+            {row["status"] for row in xlsx_fixture["spreadsheet"]["row_results"]}
+            if xlsx_fixture
+            else set()
+        )
+        if actual_row_statuses != expected_row_statuses:
+            self.errors.append("document IR fixtures: XLSX partial row handling missing")
 
     def _validate_required_slot_contracts(self) -> None:
         config = self.repository.load_yaml("knowledge/required_slots.yaml")
