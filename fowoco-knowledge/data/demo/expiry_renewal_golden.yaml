@@ -1,0 +1,82 @@
+scenario_id: DEMO-EXPIRY-RENEWAL-001
+status: synthetic_demo
+contains_real_personal_data: false
+case_template_id: CASE-EXPIRY-RENEWAL-001
+intent: EXPIRY_RENEWAL
+workflow_ids: [WF-CON-001, WF-DOC-001, WF-STY-001]
+
+company:
+  display_name: FOWOCO Demo Company
+
+worker:
+  worker_ref: 92000000-0000-0000-0000-000000000006
+  display_name: 응웬반A
+  legal_name: NGUYEN VAN AN
+  nationality_code: VN
+  preferred_language: vi
+  work_status: ACTIVE
+  date_policy: Server 실행일을 기준으로 Seed에서 상대 날짜를 계산
+  stay_expiry_days_from_seed_date: 45
+  contract_end_days_from_seed_date: 180
+  employment_permit_end_days_from_seed_date: null
+  employment_activity_end_days_from_seed_date: null
+
+request:
+  instruction: 응웬반A의 재계약과 취업활동기간·체류기간 연장을 준비해줘
+  expected_intent: EXPIRY_RENEWAL
+  expected_primary_workflow_id: WF-STY-001
+
+hr_answers:
+  target_completion_date: 실행 당일로부터 7일 뒤
+  company_recontract_intent: true
+  monthly_wage_krw: 2500000
+  daily_work_hours: 8
+  job_description: 자동차 부품 조립 및 검사
+  work_location: FOWOCO 제1공장
+  accommodation_provided: true
+  accommodation_description: 사업장 제공 기숙사
+
+worker_submission:
+  delivery_locale: vi
+  response_type: SLOT_ANSWERS_SUBMITTED
+  answers:
+    worker_continued_employment_intent: true
+  requested_documents: [ARC]
+  synthetic_fixture_names:
+    - 외국인등록증_앞면_응웬반A.png
+
+expected_case:
+  title: E-9 재계약·취업활동기간·체류기간 연장
+  tasks:
+    - order: 1
+      task_type: RECONTRACT
+      title: 재계약 의사와 근로조건 확정
+    - order: 2
+      task_type: DOCUMENT_REQUEST
+      title: 신분서류 보완
+      conditional: 신분서류가 없거나 유효성을 확인하지 못한 경우에만 생성
+    - order: 3
+      task_type: EMPLOYMENT_PERIOD_EXTENSION
+      title: 취업활동기간 연장 준비
+      depends_on: [RECONTRACT, DOCUMENT_REQUEST_IF_PRESENT]
+    - order: 4
+      task_type: STAY_PERIOD_EXTENSION
+      title: 체류기간 연장 준비와 결과 추적
+      depends_on: [EMPLOYMENT_PERIOD_EXTENSION, DOCUMENT_REQUEST_IF_PRESENT]
+
+expected_generated_documents:
+  - template_id: standard_labor_contract_v6
+    display_name: 별지 제6호 표준근로계약서 초안
+    requires_hr_review: true
+  - template_id: employment_period_extension_application
+    display_name: 취업활동기간 연장신청서 초안
+    requires_hr_review: true
+  - template_id: integrated_application
+    display_name: 통합신청서 초안
+    requires_hr_review: true
+
+guardrails:
+  automatic_external_submission: false
+  automatic_document_approval: false
+  automatic_worker_message_send: false
+  ocr_updates_worker_profile_automatically: false
