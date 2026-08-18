@@ -1,0 +1,27 @@
+version: 1.0.0
+roles:
+  EVIDENCE: 업무 사실과 상태를 확인하는 제출 문서
+  FORM_TEMPLATE: 값을 채워 새 문서를 생성하는 승인된 양식
+  REFERENCE: 사람이 내용을 참고하지만 자동 입력에는 사용하지 않는 자료
+  GENERATED_OUTPUT: 승인된 Template과 값으로 생성한 결과물
+  COMMUNICATION_ATTACHMENT: 근로자·HR 소통 과정의 첨부파일
+  UNKNOWN: 역할을 분류하지 못해 수동 검토가 필요한 문서
+processing_states: [UPLOADED, SCANNING, PARSING, CLASSIFYING, REVIEW_REQUIRED, VERIFIED, FAILED]
+parser_routes:
+  KNOWN_TEMPLATE:
+    next_state: REVIEW_REQUIRED
+    automatic_persistence_allowed: false
+  SIMILAR_TEMPLATE:
+    next_state: REVIEW_REQUIRED
+    automatic_persistence_allowed: false
+  UNCLASSIFIED:
+    next_state: REVIEW_REQUIRED
+    automatic_persistence_allowed: false
+  UNSUPPORTED:
+    next_state: FAILED
+    automatic_persistence_allowed: false
+policy:
+  unknown_document_never_updates_business_data: true
+  field_candidates_require_evidence_or_unavailable_reason: true
+  verified_state_requires_hr_review: true
+  generated_output_never_auto_sent: true

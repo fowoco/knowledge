@@ -24,6 +24,8 @@ Slot·공식 출처·Guardrail을 조회하고, 데이터 계약과 교차참조
 [`docs/MODEL_ARTIFACT_POLICY.md`](docs/MODEL_ARTIFACT_POLICY.md)를 따릅니다.
 여섯 대표 업무의 단계 의존성·완료 증빙·HR 승인 계약은
 [`docs/WORKFLOW_RUNTIME.md`](docs/WORKFLOW_RUNTIME.md)를 기준으로 공유합니다.
+문서 Parser와 OCR이 공통으로 반환할 IR, Template 격리, Excel 정규화 기준은
+[`docs/DOCUMENT_PROCESSING_CONTRACT.md`](docs/DOCUMENT_PROCESSING_CONTRACT.md)를 따릅니다.
 
 ## 데이터 기준
 

@@ -1,0 +1,9 @@
+dataset_id: FOWOCO-DOCUMENT-IR-GOLDEN
+version: 1.0.0
+path: data/evaluation/document_ir_cases.jsonl
+schema: schemas/document-ir.schema.json
+field_schema: schemas/document-field-candidate.schema.json
+record_count: 6
+sha256: b6e6d84d48d8248ddad7f8afd13ea23ac738a15c0723d4c0c7f0aa91f3e6eabc
+required_formats: [PDF, IMAGE, HWP, HWPX, XLSX, CSV]
+contains_real_personal_data: false

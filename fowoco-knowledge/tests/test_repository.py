@@ -21,6 +21,15 @@ def test_lists_mvp_workflows() -> None:
     }
 
 
+def test_document_type_catalog_exposes_safe_unknown_fallback() -> None:
+    repository = KnowledgeRepository(ROOT)
+
+    assert repository.get_document_type("PASSPORT_COPY")["sensitivity"] == "critical"
+    unknown = repository.get_document_type("UNKNOWN")
+    assert unknown["allowed_roles"] == ["UNKNOWN"]
+    assert unknown["required_review"] is True
+
+
 def test_compiled_context_is_cross_linked() -> None:
     context = KnowledgeRepository(ROOT).compile_context("WF-STY-001")
     assert context["intent"]["id"] == "EXPIRY_RENEWAL"

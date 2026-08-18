@@ -1,0 +1,26 @@
+version: 1.0.0
+scopes:
+  OFFICIAL:
+    owner: FOWOCO
+    visibility: ALL_COMPANIES
+    activation_requires: [source_verified, locator_test_passed, hr_approval]
+  TENANT:
+    owner: COMPANY
+    visibility: OWNER_COMPANY_ONLY
+    activation_requires: [company_id_bound, sample_reviewed, locator_test_passed, company_hr_approval]
+lifecycle: [DRAFT, REVIEW_REQUIRED, ACTIVE, RETIRED]
+promotion_rules:
+  ai_proposal_starts_as: DRAFT
+  active_requires_human: true
+  tenant_to_official_automatic_promotion: false
+  retired_template_new_processing: false
+versioning:
+  immutable_active_version: true
+  layout_fingerprint_required: true
+  source_file_sha256_required: true
+  knowledge_version_required: true
+  parser_rule_version_required: true
+tenant_isolation:
+  owner_company_ref_required: true
+  cross_company_search_forbidden: true
+  cross_company_fixture_expected_result: NOT_FOUND

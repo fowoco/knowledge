@@ -27,6 +27,10 @@ files:
   multilingual_templates: knowledge/multilingual_templates.yaml
   guardrails: knowledge/guardrail_rules.yaml
   workflow_runtime: knowledge/workflow_runtime.yaml
+  document_roles: knowledge/document_roles.yaml
+  document_types: knowledge/document_type_catalog.yaml
+  company_template_policy: knowledge/company_template_policy.yaml
+  spreadsheet_normalization: knowledge/spreadsheet_normalization.yaml
 datasets:
   source_manifest: data/external/source_manifest.yaml
   processed_manifest: data/processed/manifest.yaml
@@ -41,6 +45,8 @@ datasets:
   demo_expiry_renewal: data/demo/expiry_renewal_golden.yaml
   workflow_runtime_manifest: data/evaluation/workflow_runtime_manifest.yaml
   workflow_runtime_cases: data/evaluation/workflow_runtime_cases.jsonl
+  document_ir_manifest: data/evaluation/document_ir_manifest.yaml
+  document_ir_cases: data/evaluation/document_ir_cases.jsonl
 artifacts:
   intent_models: hr-intent-service/models/artifact-manifest.yaml
   intent_model_schema: schemas/model-artifact-manifest.schema.json

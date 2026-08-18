@@ -207,3 +207,34 @@ def test_six_workflow_runtime_profiles_have_three_e2e_paths_each() -> None:
         assert all(stage["completion_evidence"] for stage in profile["stages"])
     assert all(not case["guardrails"]["automatic_external_submission"] for case in cases)
     assert all(not case["guardrails"]["automatic_completion"] for case in cases)
+
+
+def test_document_ir_fixtures_cover_six_formats_and_never_auto_persist() -> None:
+    fixtures = [
+        json.loads(line)
+        for line in (ROOT / "data/evaluation/document_ir_cases.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+        if line.strip()
+    ]
+
+    assert {fixture["source_file"]["format"] for fixture in fixtures} == {
+        "PDF",
+        "IMAGE",
+        "HWP",
+        "HWPX",
+        "XLSX",
+        "CSV",
+    }
+    assert all(not fixture["automatic_persistence_allowed"] for fixture in fixtures)
+    assert all(
+        field["evidence"]["status"] in {"AVAILABLE", "UNAVAILABLE"}
+        for fixture in fixtures
+        for field in fixture["fields"]
+    )
+    tenant_templates = [fixture for fixture in fixtures if fixture["template"]["scope"] == "TENANT"]
+    assert all(
+        fixture["template"]["owner_company_ref"] == fixture["company_ref"]
+        and not fixture["template"]["visible_to_other_companies"]
+        for fixture in tenant_templates
+    )
