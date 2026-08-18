@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.dev/schemas/workflow-runtime-case.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["case_id", "profile_id", "path", "trigger_type", "provided_slots", "missing_slots", "expected_state", "expected_ready_stage_ids", "guardrails"],
+  "properties": {
+    "case_id": {"type": "string", "pattern": "^RUNTIME-[A-Z0-9-]+-[0-9]{3}$"},
+    "profile_id": {"type": "string", "pattern": "^RUN-"},
+    "path": {"enum": ["HAPPY_PATH", "MISSING_INPUT", "MANUAL_REVIEW"]},
+    "trigger_type": {"enum": ["NATURAL_LANGUAGE", "DEADLINE_REACHED", "OCR_COMPLETED", "WORKER_RESPONSE_RECEIVED"]},
+    "provided_slots": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "missing_slots": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "expected_state": {"enum": ["READY", "NEEDS_INFO", "MANUAL_REVIEW"]},
+    "expected_ready_stage_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "guardrails": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["human_approval_required", "automatic_external_submission", "automatic_completion"],
+      "properties": {
+        "human_approval_required": {"const": true},
+        "automatic_external_submission": {"const": false},
+        "automatic_completion": {"const": false}
+      }
+    }
+  }
+}

@@ -48,6 +48,7 @@ def test_compiled_context_is_cross_linked() -> None:
     assert context["checklist"]["id"] == "CHK-STAY-RENEW-001"
     assert context["administrative_procedure"]["id"] == "PROC-STAY-PERIOD-EXTENSION-001"
     assert any(rule["id"] == "GRD-003" for rule in context["guardrails"])
+    assert {profile["id"] for profile in context["runtime_profiles"]} == {"RUN-EXPIRY-RENEWAL"}
 
 
 def test_employment_change_context_uses_one_stop_reporting_procedure() -> None:

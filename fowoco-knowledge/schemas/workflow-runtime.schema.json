@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.dev/schemas/workflow-runtime.schema.json",
+  "title": "FOWOCO Workflow Runtime Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "policy", "event_contract", "composite_intent_policy", "profiles"],
+  "properties": {
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["states", "transitions", "parallel_ready_rule", "completion_rule"],
+      "properties": {
+        "states": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["DRAFT", "NEEDS_INFO", "READY", "IN_PROGRESS", "WAITING_WORKER", "WAITING_EXTERNAL", "REVIEW_REQUIRED", "COMPLETED", "CANCELLED", "MANUAL_REVIEW"]}
+        },
+        "transitions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["from", "event", "to"],
+            "properties": {
+              "from": {"type": "string"},
+              "event": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"},
+              "to": {"type": "string"}
+            }
+          }
+        },
+        "parallel_ready_rule": {"const": "ALL_DEPENDENCIES_COMPLETED"},
+        "completion_rule": {"const": "EVIDENCE_PRESENT_AND_HUMAN_GATE_SATISFIED"}
+      }
+    },
+    "event_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supported_types", "idempotency_required"],
+      "properties": {
+        "supported_types": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["NATURAL_LANGUAGE", "DEADLINE_REACHED", "OCR_COMPLETED", "WORKER_RESPONSE_RECEIVED"]}
+        },
+        "idempotency_required": {"const": true}
+      }
+    },
+    "composite_intent_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strategy", "representative_intent", "confirmation_required"],
+      "properties": {
+        "strategy": {"const": "SPLIT_TO_WORKFLOW_CANDIDATES"},
+        "representative_intent": {"const": "FIRST_EVIDENCE_ORDER"},
+        "confirmation_required": {"const": true}
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "intent", "kind", "master_workflow_id", "included_workflow_ids", "reusable_subflow_ids", "applicability", "required_slots_ref", "stages"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^RUN-[A-Z0-9-]+$"},
+          "intent": {"type": "string"},
+          "kind": {"enum": ["MASTER", "SUBFLOW"]},
+          "master_workflow_id": {"type": "string", "pattern": "^WF-"},
+          "included_workflow_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^WF-"}},
+          "reusable_subflow_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^WF-"}},
+          "applicability": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["subject", "conditions"],
+            "properties": {
+              "subject": {"enum": ["WORKER", "COMPANY"]},
+              "conditions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 3}}
+            }
+          },
+          "required_slots_ref": {"type": "string", "pattern": "^WF-"},
+          "stages": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "catalog_steps", "depends_on", "condition", "completion_evidence", "human_gate"],
+              "properties": {
+                "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]+$"},
+                "catalog_steps": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^WF-[A-Z0-9-]+\\.[a-z][a-z0-9_]+$"}},
+                "depends_on": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]+$"}},
+                "condition": {"enum": ["ALWAYS", "ALL_DEPENDENCIES_COMPLETED", "MISSING_INFORMATION", "EXCEPTION_DETECTED"]},
+                "completion_evidence": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]+$"}},
+                "human_gate": {"enum": ["NONE", "HR_APPROVAL", "HR_CONFIRMATION", "MANUAL_EXTERNAL_ACTION"]},
+                "parallel_group": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

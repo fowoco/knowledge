@@ -113,6 +113,7 @@ class KnowledgeValidator:
         self._validate_manifest_files()
         self._validate_processed_datasets()
         self._validate_workflow_schema()
+        self._validate_workflow_runtime()
         self._validate_required_slot_contracts()
         self._validate_cross_references()
         self._validate_seed_data()
@@ -248,6 +249,176 @@ class KnowledgeValidator:
         for error in validator.iter_errors(catalog):
             path = ".".join(str(item) for item in error.path)
             self.errors.append(f"workflow schema [{path}]: {error.message}")
+
+    def _validate_workflow_runtime(self) -> None:
+        runtime = self.repository.load_yaml("knowledge/workflow_runtime.yaml")
+        schema = self.repository.load_json("schemas/workflow-runtime.schema.json")
+        schema_errors = list(Draft202012Validator(schema).iter_errors(runtime))
+        for error in schema_errors:
+            path = ".".join(str(item) for item in error.path)
+            self.errors.append(f"workflow runtime schema [{path}]: {error.message}")
+        if schema_errors:
+            return
+
+        catalog = self.repository.load_yaml("knowledge/workflow_catalog.yaml")
+        workflows = {workflow["id"]: workflow for workflow in catalog["workflows"]}
+        slot_requirements = self.repository.load_yaml("knowledge/required_slots.yaml")[
+            "workflow_requirements"
+        ]
+        profiles = {profile["id"]: profile for profile in runtime["profiles"]}
+        if len(profiles) != len(runtime["profiles"]):
+            self.errors.append("workflow runtime: duplicate profile id")
+
+        expected_intents = {
+            "EXPIRY_RENEWAL",
+            "WORKER_ONBOARDING",
+            "EMPLOYMENT_CHANGE",
+            "DOCUMENT_REQUEST",
+            "PAYROLL_EXPLANATION",
+            "WORK_INSTRUCTION",
+        }
+        if {profile["intent"] for profile in profiles.values()} != expected_intents:
+            self.errors.append("workflow runtime: six MVP intents must have one profile each")
+
+        for profile_id, profile in profiles.items():
+            included_workflow_ids = set(profile["included_workflow_ids"])
+            if profile["master_workflow_id"] not in included_workflow_ids:
+                self.errors.append(f"workflow runtime {profile_id}: master must be included")
+            for workflow_id in included_workflow_ids | set(profile["reusable_subflow_ids"]):
+                if workflow_id not in workflows:
+                    self.errors.append(
+                        f"workflow runtime {profile_id}: unknown workflow {workflow_id}"
+                    )
+            master = workflows.get(profile["master_workflow_id"])
+            if master and master["intent"] != profile["intent"]:
+                self.errors.append(f"workflow runtime {profile_id}: master intent mismatch")
+            if profile["required_slots_ref"] not in slot_requirements:
+                self.errors.append(f"workflow runtime {profile_id}: unknown required slots ref")
+
+            stages = {stage["id"]: stage for stage in profile["stages"]}
+            if len(stages) != len(profile["stages"]):
+                self.errors.append(f"workflow runtime {profile_id}: duplicate stage id")
+            stage_order = {stage["id"]: index for index, stage in enumerate(profile["stages"])}
+            referenced_steps: set[str] = set()
+            for stage in profile["stages"]:
+                for dependency in stage["depends_on"]:
+                    if dependency not in stages:
+                        self.errors.append(
+                            f"workflow runtime {profile_id}.{stage['id']}: "
+                            f"unknown dependency {dependency}"
+                        )
+                    elif stage_order[dependency] >= stage_order[stage["id"]]:
+                        self.errors.append(
+                            f"workflow runtime {profile_id}.{stage['id']}: "
+                            f"dependency {dependency} must be earlier"
+                        )
+                for step_reference in stage["catalog_steps"]:
+                    workflow_id, step_id = step_reference.split(".", maxsplit=1)
+                    if workflow_id not in included_workflow_ids:
+                        self.errors.append(
+                            f"workflow runtime {profile_id}: step outside included workflow "
+                            f"{step_reference}"
+                        )
+                        continue
+                    known_steps = {step["id"]: step for step in workflows[workflow_id]["steps"]}
+                    if step_id not in known_steps:
+                        self.errors.append(
+                            f"workflow runtime {profile_id}: unknown step {step_reference}"
+                        )
+                        continue
+                    if step_reference in referenced_steps:
+                        self.errors.append(
+                            f"workflow runtime {profile_id}: duplicate step {step_reference}"
+                        )
+                    referenced_steps.add(step_reference)
+                    catalog_step = known_steps[step_id]
+                    if (catalog_step["actor"] == "HR" or catalog_step.get("gate")) and stage[
+                        "human_gate"
+                    ] == "NONE":
+                        self.errors.append(
+                            f"workflow runtime {profile_id}.{stage['id']}: "
+                            "human-controlled step requires a human gate"
+                        )
+                    if (
+                        step_id in {"manual_external_process", "manual_report"}
+                        and stage["human_gate"] != "MANUAL_EXTERNAL_ACTION"
+                    ):
+                        self.errors.append(
+                            f"workflow runtime {profile_id}.{stage['id']}: "
+                            "external action must remain manual"
+                        )
+
+            expected_steps = {
+                f"{workflow_id}.{step['id']}"
+                for workflow_id in included_workflow_ids
+                for step in workflows[workflow_id]["steps"]
+            }
+            if referenced_steps != expected_steps:
+                self.errors.append(
+                    f"workflow runtime {profile_id}: all included catalog steps must be mapped"
+                )
+
+        fixture_manifest = self.repository.load_yaml(
+            "data/evaluation/workflow_runtime_manifest.yaml"
+        )
+        fixture_schema = self.repository.load_json(fixture_manifest["schema"])
+        fixture_path = self.repository.root / fixture_manifest["path"]
+        if file_sha256(fixture_path) != fixture_manifest["sha256"]:
+            self.errors.append("workflow runtime fixtures: checksum mismatch")
+
+        cases: list[dict[str, Any]] = []
+        seen_case_ids: set[str] = set()
+        for line_number, raw_line in enumerate(
+            fixture_path.read_text(encoding="utf-8").splitlines(), start=1
+        ):
+            if not raw_line.strip():
+                continue
+            try:
+                case = json.loads(raw_line)
+            except json.JSONDecodeError as exc:
+                self.errors.append(f"workflow runtime fixture line {line_number}: {exc}")
+                continue
+            cases.append(case)
+            for error in Draft202012Validator(fixture_schema).iter_errors(case):
+                path = ".".join(str(item) for item in error.path)
+                self.errors.append(
+                    f"workflow runtime fixture line {line_number} [{path}]: {error.message}"
+                )
+            case_id = case.get("case_id")
+            if case_id in seen_case_ids:
+                self.errors.append(f"workflow runtime fixture: duplicate {case_id}")
+            seen_case_ids.add(case_id)
+            profile = profiles.get(case.get("profile_id"))
+            if not profile:
+                self.errors.append(f"workflow runtime fixture line {line_number}: unknown profile")
+                continue
+            stage_ids = {stage["id"] for stage in profile["stages"]}
+            if not set(case.get("expected_ready_stage_ids", [])) <= stage_ids:
+                self.errors.append(
+                    f"workflow runtime fixture line {line_number}: unknown ready stage"
+                )
+            if set(case.get("provided_slots", [])) & set(case.get("missing_slots", [])):
+                self.errors.append(
+                    f"workflow runtime fixture line {line_number}: "
+                    "slot cannot be provided and missing"
+                )
+            if case.get("path") == "MISSING_INPUT" and not case.get("missing_slots"):
+                self.errors.append(
+                    f"workflow runtime fixture line {line_number}: missing path needs missing slots"
+                )
+
+        if len(cases) != fixture_manifest["record_count"]:
+            self.errors.append("workflow runtime fixtures: record count mismatch")
+        cases_by_profile = Counter(case.get("profile_id") for case in cases)
+        required_paths = set(fixture_manifest["required_paths"])
+        for profile_id in profiles:
+            if cases_by_profile[profile_id] != fixture_manifest["cases_per_profile"]:
+                self.errors.append(f"workflow runtime fixtures: {profile_id} must have three cases")
+            profile_paths = {
+                case.get("path") for case in cases if case.get("profile_id") == profile_id
+            }
+            if profile_paths != required_paths:
+                self.errors.append(f"workflow runtime fixtures: {profile_id} paths are incomplete")
 
     def _validate_required_slot_contracts(self) -> None:
         config = self.repository.load_yaml("knowledge/required_slots.yaml")

@@ -165,6 +165,11 @@ class KnowledgeRepository:
             ),
             None,
         )
+        runtime_profiles = [
+            profile
+            for profile in context["workflow_runtime"]["profiles"]
+            if workflow_id in profile["included_workflow_ids"]
+        ]
 
         return {
             "pack": {
@@ -183,4 +188,5 @@ class KnowledgeRepository:
             "checklist": checklist,
             "official_sources": sources,
             "administrative_procedure": administrative_procedure,
+            "runtime_profiles": runtime_profiles,
         }

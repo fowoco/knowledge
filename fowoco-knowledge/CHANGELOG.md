@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- 6대 Workflow의 Master/Subflow 관계, 공통 상태·이벤트·단계 의존성·완료 증빙 계약 추가
+- Workflow별 정상·정보 누락·수동 검토 경로를 고정한 Runtime E2E Fixture 18건 추가
+- 외부기관 처리와 민감 판단의 HR Gate, 병렬 READY 조건, 복합 Intent 분해 정책 검증 추가
 - Workflow Slot에 UI·Agent 공용 한글 표시명, 쉬운 표현, 출처 우선순위, 담당 주체와 검증 규칙 추가
 - 이름 변형·복합 요청·Intent 경계·OUT_OF_SCOPE·베트남어 안내 E2E Gold 후보 11건 추가
 - 여권·외국인등록증 제출 상태를 Knowledge 소유 조회형 Context Slot으로 정의

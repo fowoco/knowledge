@@ -22,6 +22,8 @@ Slot·공식 출처·Guardrail을 조회하고, 데이터 계약과 교차참조
 `hr-intent-service/`는 프로젝트 결과 재현과 AI 저장소 인계를 위한 스냅샷입니다.
 파일 SHA·학습 데이터 계보·Secret 관리 기준은
 [`docs/MODEL_ARTIFACT_POLICY.md`](docs/MODEL_ARTIFACT_POLICY.md)를 따릅니다.
+여섯 대표 업무의 단계 의존성·완료 증빙·HR 승인 계약은
+[`docs/WORKFLOW_RUNTIME.md`](docs/WORKFLOW_RUNTIME.md)를 기준으로 공유합니다.
 
 ## 데이터 기준
 
