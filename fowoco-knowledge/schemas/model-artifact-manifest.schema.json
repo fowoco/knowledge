@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fowoco.dev/schemas/model-artifact-manifest.schema.json",
+  "title": "FOWOCO intent model artifact manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest_version",
+    "canonical_distribution",
+    "training_dataset",
+    "models",
+    "secret_policy"
+  ],
+  "properties": {
+    "manifest_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "canonical_distribution": {"const": "HUGGING_FACE_PRIVATE"},
+    "training_dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "sha256", "current_dataset_version", "matches_current_dataset"],
+      "properties": {
+        "version": {"type": "string"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "current_dataset_version": {"type": "string"},
+        "matches_current_dataset": {"type": "boolean"}
+      }
+    },
+    "models": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "role",
+          "hugging_face_repo",
+          "access",
+          "revision_policy",
+          "runtime_owner",
+          "snapshot_files"
+        ],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+          "role": {"enum": ["PRIMARY_CLASSIFIER", "FALLBACK_ADAPTER"]},
+          "base_model": {"type": "string", "minLength": 1},
+          "hugging_face_repo": {"type": "string", "pattern": "^fowoco/[A-Za-z0-9._-]+$"},
+          "access": {"const": "PRIVATE"},
+          "revision_policy": {"const": "PIN_COMMIT_SHA_AT_DEPLOYMENT"},
+          "runtime_owner": {"const": "fowoco/ai"},
+          "snapshot_files": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "sha256", "bytes"],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^hr-intent-service/models/[A-Za-z0-9._/-]+$"
+                },
+                "sha256": {"$ref": "#/$defs/sha256"},
+                "bytes": {"type": "integer", "minimum": 1}
+              }
+            }
+          }
+        }
+      }
+    },
+    "secret_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["environment_variable", "repository_storage_forbidden", "owner"],
+      "properties": {
+        "environment_variable": {"const": "HF_TOKEN"},
+        "repository_storage_forbidden": {"const": true},
+        "owner": {"const": "deployment-operator"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

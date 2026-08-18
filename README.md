@@ -167,6 +167,11 @@ make check
 기준 위치는 [FOWOCO Hugging Face](https://huggingface.co/fowoco)이며, 운영 서빙 코드의
 장기 소유권은 `fowoco/ai`에 둡니다.
 
+모델 파일의 SHA·학습 데이터 계보·비공개 HF 배포 기준은
+[`MODEL_ARTIFACT_POLICY.md`](fowoco-knowledge/docs/MODEL_ARTIFACT_POLICY.md)와
+[`artifact-manifest.yaml`](fowoco-knowledge/hr-intent-service/models/artifact-manifest.yaml)에
+고정했습니다. 운영 배포는 HF `main`이 아니라 인증 후 확인한 commit SHA를 사용합니다.
+
 ## 안전 원칙과 현재 한계
 
 - 모델 출력만으로 법률·체류·계약·급여·신고 결론을 확정하지 않습니다.
@@ -184,3 +189,4 @@ make check
 - [공식 데이터 파이프라인](fowoco-knowledge/docs/OFFICIAL_DATA_PIPELINE.md)
 - [E-9 신고·연장 Workflow](fowoco-knowledge/docs/E9_REPORTING_WORKFLOWS.md)
 - [모델 서빙 실행 방법](fowoco-knowledge/hr-intent-service/README.md)
+- [모델 산출물 보관·배포 정책](fowoco-knowledge/docs/MODEL_ARTIFACT_POLICY.md)

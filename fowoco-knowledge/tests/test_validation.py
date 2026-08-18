@@ -147,3 +147,19 @@ def test_intent_split_uses_final_data_without_overlap_or_missing_ids() -> None:
     assert len(validation_ids) == 268
     assert train_ids.isdisjoint(validation_ids)
     assert train_ids | validation_ids == {case["id"] for case in final_cases}
+
+
+def test_model_artifact_manifest_pins_snapshot_and_runtime_ownership() -> None:
+    manifest = yaml.safe_load(
+        (ROOT / "hr-intent-service/models/artifact-manifest.yaml").read_text(encoding="utf-8")
+    )
+
+    assert manifest["canonical_distribution"] == "HUGGING_FACE_PRIVATE"
+    assert manifest["training_dataset"]["version"] == "1.2.0"
+    assert manifest["training_dataset"]["matches_current_dataset"] is False
+    assert {model["runtime_owner"] for model in manifest["models"]} == {"fowoco/ai"}
+    assert {model["revision_policy"] for model in manifest["models"]} == {
+        "PIN_COMMIT_SHA_AT_DEPLOYMENT"
+    }
+    assert all(model["snapshot_files"] for model in manifest["models"])
+    assert manifest["secret_policy"]["repository_storage_forbidden"] is True

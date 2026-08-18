@@ -99,6 +99,7 @@ class KnowledgeValidator:
         self._validate_catalog_e2e_data()
         self._validate_intent_data()
         self._validate_intent_split()
+        self._validate_model_artifacts()
         return self.errors
 
     def _validate_manifest_files(self) -> None:
@@ -109,6 +110,56 @@ class KnowledgeValidator:
         for key, relative_path in manifest.get("datasets", {}).items():
             if not (self.repository.root / relative_path).is_file():
                 self.errors.append(f"manifest dataset missing: {key} -> {relative_path}")
+        for key, relative_path in manifest.get("artifacts", {}).items():
+            if not (self.repository.root / relative_path).is_file():
+                self.errors.append(f"manifest artifact missing: {key} -> {relative_path}")
+
+    def _validate_model_artifacts(self) -> None:
+        relative_path = self.repository.manifest.get("artifacts", {}).get("intent_models")
+        schema_path = self.repository.manifest.get("artifacts", {}).get("intent_model_schema")
+        if not relative_path or not schema_path:
+            return
+
+        manifest = self.repository.load_yaml(relative_path)
+        schema = self.repository.load_json(schema_path)
+        schema_errors = list(Draft202012Validator(schema).iter_errors(manifest))
+        for error in schema_errors:
+            path = ".".join(str(item) for item in error.path)
+            self.errors.append(f"model artifact schema [{path}]: {error.message}")
+        if schema_errors:
+            return
+
+        intent_manifest = self.repository.load_yaml("data/intent/manifest.yaml")
+        known_snapshot = intent_manifest["known_model_training_snapshot"]
+        training_dataset = manifest["training_dataset"]
+        if training_dataset["version"] != known_snapshot["dataset_version"]:
+            self.errors.append("model artifact: training dataset version mismatch")
+        if training_dataset["sha256"] != known_snapshot["sha256"]:
+            self.errors.append("model artifact: training dataset checksum mismatch")
+        if training_dataset["current_dataset_version"] != intent_manifest["version"]:
+            self.errors.append("model artifact: current dataset version mismatch")
+        if training_dataset["matches_current_dataset"] != known_snapshot["matches_current_dataset"]:
+            self.errors.append("model artifact: current dataset match flag mismatch")
+
+        seen_model_ids: set[str] = set()
+        seen_paths: set[str] = set()
+        for model in manifest["models"]:
+            if model["id"] in seen_model_ids:
+                self.errors.append(f"model artifact: duplicate model id {model['id']}")
+            seen_model_ids.add(model["id"])
+            for artifact in model["snapshot_files"]:
+                artifact_path = artifact["path"]
+                if artifact_path in seen_paths:
+                    self.errors.append(f"model artifact: duplicate file {artifact_path}")
+                seen_paths.add(artifact_path)
+                path = self.repository.root / artifact_path
+                if not path.is_file():
+                    self.errors.append(f"model artifact: missing file {artifact_path}")
+                    continue
+                if path.stat().st_size != artifact["bytes"]:
+                    self.errors.append(f"model artifact: size mismatch {artifact_path}")
+                if file_sha256(path) != artifact["sha256"]:
+                    self.errors.append(f"model artifact: checksum mismatch {artifact_path}")
 
     def _validate_processed_datasets(self) -> None:
         processed_manifest_path = self.repository.root / "data/processed/manifest.yaml"

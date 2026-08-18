@@ -38,6 +38,9 @@ datasets:
   catalog_e2e_manifest: data/evaluation/e2e_catalog_manifest.yaml
   catalog_e2e_gold_candidates: data/evaluation/e2e_catalog_cases.jsonl
   demo_expiry_renewal: data/demo/expiry_renewal_golden.yaml
+artifacts:
+  intent_models: hr-intent-service/models/artifact-manifest.yaml
+  intent_model_schema: schemas/model-artifact-manifest.schema.json
 review_policy:
   minimum_reviewers_for_official_knowledge: 2
   all_outbound_messages_require_hr_approval: true
