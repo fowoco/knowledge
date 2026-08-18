@@ -37,6 +37,7 @@ datasets:
   intent_split_manifest: data/intent/splits/manifest.yaml
   catalog_e2e_manifest: data/evaluation/e2e_catalog_manifest.yaml
   catalog_e2e_gold_candidates: data/evaluation/e2e_catalog_cases.jsonl
+  demo_expiry_renewal: data/demo/expiry_renewal_golden.yaml
 review_policy:
   minimum_reviewers_for_official_knowledge: 2
   all_outbound_messages_require_hr_approval: true

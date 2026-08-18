@@ -241,6 +241,9 @@ class KnowledgeValidator:
         domains = self._index_unique(context["domains"]["domains"], "domain")
         sources = self._index_unique(context["sources"]["sources"], "source")
         workflows = self._index_unique(context["workflows"]["workflows"], "workflow")
+        case_templates = self._index_unique(
+            context["workflows"]["case_templates"], "case template"
+        )
         checklists = self._index_unique(context["checklists"]["checklists"], "checklist")
         procedures = self._index_unique(context["procedures"]["procedures"], "procedure")
         slot_refs = context["slots"]["workflow_requirements"]
@@ -261,6 +264,42 @@ class KnowledgeValidator:
             checklist_id = workflow.get("checklist_id")
             if checklist_id and checklist_id not in checklists:
                 self.errors.append(f"{workflow_id}: unknown checklist {checklist_id}")
+
+        for template_id, template in case_templates.items():
+            if template["intent"] not in intents:
+                self.errors.append(f"{template_id}: unknown intent {template['intent']}")
+            for workflow_id in template["workflow_ids"]:
+                if workflow_id not in workflows:
+                    self.errors.append(f"{template_id}: unknown workflow {workflow_id}")
+            task_keys = {task["key"] for task in template["tasks"]}
+            tasks_by_key = {task["key"]: task for task in template["tasks"]}
+            if len(task_keys) != len(template["tasks"]):
+                self.errors.append(f"{template_id}: duplicate task key")
+            task_orders = {task["order"] for task in template["tasks"]}
+            if len(task_orders) != len(template["tasks"]):
+                self.errors.append(f"{template_id}: duplicate task order")
+            for task in template["tasks"]:
+                if task["workflow_id"] not in template["workflow_ids"]:
+                    self.errors.append(
+                        f"{template_id}.{task['key']}: workflow not declared by template"
+                    )
+                dependencies = task["depends_on"] + task["depends_on_if_present"]
+                for dependency in dependencies:
+                    if dependency not in task_keys:
+                        self.errors.append(
+                            f"{template_id}.{task['key']}: unknown dependency {dependency}"
+                        )
+                    if dependency == task["key"]:
+                        self.errors.append(
+                            f"{template_id}.{task['key']}: task cannot depend on itself"
+                        )
+                    elif dependency in tasks_by_key and (
+                        tasks_by_key[dependency]["order"] >= task["order"]
+                    ):
+                        self.errors.append(
+                            f"{template_id}.{task['key']}: dependency {dependency} "
+                            "must have a lower order"
+                        )
 
         document_types = set(context["checklists"]["document_types"])
         for checklist_id, checklist in checklists.items():

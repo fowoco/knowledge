@@ -1,4 +1,4 @@
-version: 0.1.0
+version: 0.2.0
 policy:
   state_model: [DRAFT, NEEDS_INFO, READY_FOR_REVIEW, APPROVED, IN_PROGRESS, WAITING_WORKER, WAITING_EXTERNAL, COMPLETED, CANCELLED]
   all_external_actions_require_human: true
@@ -384,3 +384,133 @@ workflows:
         action: 회사 정책에 따른 채널로 전달
         output: delivery_record
     completion_evidence: [approved_certificate_id, delivery_record]
+
+case_templates:
+  - id: CASE-EXPIRY-RENEWAL-001
+    name: E-9 재계약·취업활동기간·체류기간 연장
+    intent: EXPIRY_RENEWAL
+    workflow_ids: [WF-CON-001, WF-DOC-001, WF-STY-001]
+    tasks:
+      - key: recontract
+        order: 1
+        task_type: RECONTRACT
+        workflow_id: WF-CON-001
+        title: 재계약 의사와 근로조건 확정
+        description: 회사와 근로자의 재계약 의사, 네 가지 기준일, 변경 근로조건을 확인하고 표준근로계약서 초안을 검토합니다.
+        activation:
+          mode: ALWAYS
+        depends_on: []
+        depends_on_if_present: []
+        checklist_items:
+          - item_code: COMPANY_RECONTRACT_INTENT_CONFIRMED
+            label: 회사의 재계약 의사 확인
+            required: true
+          - item_code: WORKER_CONTINUED_EMPLOYMENT_INTENT_CONFIRMED
+            label: 근로자의 계속 근무 의사 확인
+            required: true
+          - item_code: FOUR_KEY_DATES_VERIFIED
+            label: 계약 시작일·계약 종료일·취업활동기간 만료일·체류기간 만료일 확인
+            required: true
+          - item_code: CHANGED_EMPLOYMENT_CONDITIONS_CONFIRMED
+            label: 임금·근무시간·업무·근무지·숙소 변경조건 확인
+            required: true
+          - item_code: CURRENT_STANDARD_CONTRACT_DRAFT_REVIEWED
+            label: 최신 표준근로계약서 초안 검토
+            required: true
+          - item_code: SIGNED_CONTRACT_STORED
+            label: 당사자 서명본 보관
+            required: true
+        completion_evidence:
+          - company_intent
+          - worker_intent
+          - confirmed_contract_conditions
+          - signed_contract_record
+          - hr_approval_id
+
+      - key: identity_documents
+        order: 2
+        task_type: DOCUMENT_REQUEST
+        workflow_id: WF-DOC-001
+        title: 신분서류 보완
+        description: 보유하지 않았거나 유효성을 확인하지 못한 신분서류만 근로자 보안 링크로 요청하고 HR이 제출물을 검토합니다.
+        activation:
+          mode: MISSING_ANY
+          field_keys: [passport_status, arc_status]
+        depends_on: []
+        depends_on_if_present: []
+        checklist_items:
+          - item_code: WORKER_DOCUMENT_REQUEST_APPROVED
+            label: 근로자 안내문과 요청 서류 검토
+            required: true
+          - item_code: SECURE_LINK_DELIVERY_RECORDED
+            label: 보안 링크 전달 완료 기록
+            required: true
+          - item_code: IDENTITY_DOCUMENTS_SUBMITTED
+            label: 근로자 여권·외국인등록증 제출 확인
+            required: true
+          - item_code: OCR_RESULT_HR_REVIEWED
+            label: OCR 추출값과 원본을 HR이 대조 검토
+            required: true
+        completion_evidence:
+          - approved_notice_id
+          - verified_document_id
+          - ocr_review_id
+
+      - key: employment_period_extension
+        order: 3
+        task_type: EMPLOYMENT_PERIOD_EXTENSION
+        workflow_id: WF-CON-001
+        title: 취업활동기간 연장 준비
+        description: 서명된 근로계약서와 공식 안내를 기준으로 고용허가 관련 연장 신청을 준비하고 HR이 처리 결과를 기록합니다.
+        activation:
+          mode: ALWAYS
+        depends_on: [recontract]
+        depends_on_if_present: [identity_documents]
+        checklist_items:
+          - item_code: SIGNED_CONTRACT_READY_FOR_EXTENSION
+            label: 서명된 표준근로계약서 준비 확인
+            required: true
+          - item_code: EMPLOYMENT_EXTENSION_REQUIREMENTS_REVIEWED
+            label: 취업활동기간 연장 신청정보와 필요서류 확인
+            required: true
+          - item_code: EMPLOYMENT_EXTENSION_MANUALLY_SUBMITTED
+            label: HR이 공식 채널에서 직접 제출
+            required: true
+          - item_code: EMPLOYMENT_EXTENSION_RESULT_RECORDED
+            label: 접수증 또는 처리결과 기록
+            required: true
+        completion_evidence:
+          - signed_contract_record
+          - employment_permit_extension_receipt_or_note
+          - hr_approval_id
+
+      - key: stay_period_extension
+        order: 4
+        task_type: STAY_PERIOD_EXTENSION
+        workflow_id: WF-STY-001
+        title: 체류기간 연장 준비와 결과 추적
+        description: 앞선 재계약·취업활동기간 연장 결과와 신분서류를 바탕으로 통합신청서 초안을 검토하고 HR이 제출 결과를 기록합니다.
+        activation:
+          mode: ALWAYS
+        depends_on: [employment_period_extension]
+        depends_on_if_present: [identity_documents]
+        checklist_items:
+          - item_code: PASSPORT_AND_ARC_CURRENT_VERIFIED
+            label: 여권·외국인등록증 보유 및 유효 상태 확인
+            required: true
+          - item_code: EMPLOYMENT_EXTENSION_RESULT_AVAILABLE
+            label: 취업활동기간 연장 처리결과 확인
+            required: true
+          - item_code: INTEGRATED_APPLICATION_DRAFT_REVIEWED
+            label: 통합신청서 초안과 체류 관련 증빙 검토
+            required: true
+          - item_code: STAY_EXTENSION_MANUALLY_SUBMITTED
+            label: HR이 하이코리아 또는 관할 기관에서 직접 제출
+            required: true
+          - item_code: STAY_EXTENSION_RESULT_AND_NEXT_REVIEW_RECORDED
+            label: 처리결과와 다음 확인일 기록
+            required: true
+        completion_evidence:
+          - stay_extension_receipt_or_note
+          - next_review_at
+          - hr_approval_id

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import yaml
+
 from fowoco_knowledge.repository import KnowledgeRepository
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -55,3 +57,40 @@ def test_employment_change_context_uses_one_stop_reporting_procedure() -> None:
     assert procedure["submission_pattern"] == "one_stop_report"
     assert procedure["deadline_rule"]["value"] == 15
     assert "SRC-LAW-IMMIGRATION-DECREE-24" in context["workflow"]["source_ids"]
+
+
+def test_expiry_renewal_case_template_keeps_full_business_order() -> None:
+    template = KnowledgeRepository(ROOT).get_case_template("CASE-EXPIRY-RENEWAL-001")
+
+    assert template["workflow_ids"] == ["WF-CON-001", "WF-DOC-001", "WF-STY-001"]
+    assert [task["key"] for task in template["tasks"]] == [
+        "recontract",
+        "identity_documents",
+        "employment_period_extension",
+        "stay_period_extension",
+    ]
+    assert template["tasks"][1]["activation"] == {
+        "mode": "MISSING_ANY",
+        "field_keys": ["passport_status", "arc_status"],
+    }
+    assert template["tasks"][2]["depends_on"] == ["recontract"]
+    assert template["tasks"][3]["depends_on"] == ["employment_period_extension"]
+    assert len(template["tasks"][0]["checklist_items"]) == 6
+
+
+def test_expiry_renewal_demo_pack_matches_case_template() -> None:
+    repository = KnowledgeRepository(ROOT)
+    template = repository.get_case_template("CASE-EXPIRY-RENEWAL-001")
+    demo = yaml.safe_load(
+        (ROOT / "data/demo/expiry_renewal_golden.yaml").read_text(encoding="utf-8")
+    )
+
+    assert demo["contains_real_personal_data"] is False
+    assert demo["case_template_id"] == template["id"]
+    assert demo["workflow_ids"] == template["workflow_ids"]
+    assert [task["task_type"] for task in demo["expected_case"]["tasks"]] == [
+        task["task_type"] for task in template["tasks"]
+    ]
+    assert all(
+        value is False for value in demo["guardrails"].values()
+    )

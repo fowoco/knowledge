@@ -84,6 +84,15 @@ class KnowledgeRepository:
     def list_workflows(self) -> list[dict[str, Any]]:
         return self.load_yaml("knowledge/workflow_catalog.yaml")["workflows"]
 
+    def list_case_templates(self) -> list[dict[str, Any]]:
+        return self.load_yaml("knowledge/workflow_catalog.yaml")["case_templates"]
+
+    def get_case_template(self, case_template_id: str) -> dict[str, Any]:
+        for template in self.list_case_templates():
+            if template["id"] == case_template_id:
+                return template
+        raise KeyError(f"Unknown case_template_id: {case_template_id}")
+
     def get_workflow(self, workflow_id: str) -> dict[str, Any]:
         for workflow in self.list_workflows():
             if workflow["id"] == workflow_id:
