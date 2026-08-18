@@ -475,10 +475,10 @@ case_templates:
             required: true
           - item_code: EMPLOYMENT_EXTENSION_MANUALLY_SUBMITTED
             label: HR이 공식 채널에서 직접 제출
-            required: true
+            required: false
           - item_code: EMPLOYMENT_EXTENSION_RESULT_RECORDED
             label: 접수증 또는 처리결과 기록
-            required: true
+            required: false
         completion_evidence:
           - signed_contract_record
           - employment_permit_extension_receipt_or_note
@@ -506,10 +506,10 @@ case_templates:
             required: true
           - item_code: STAY_EXTENSION_MANUALLY_SUBMITTED
             label: HR이 하이코리아 또는 관할 기관에서 직접 제출
-            required: true
+            required: false
           - item_code: STAY_EXTENSION_RESULT_AND_NEXT_REVIEW_RECORDED
             label: 처리결과와 다음 확인일 기록
-            required: true
+            required: false
         completion_evidence:
           - stay_extension_receipt_or_note
           - next_review_at
