@@ -20,6 +20,8 @@ Slot·공식 출처·Guardrail을 조회하고, 데이터 계약과 교차참조
 
 모델 가중치의 배포 기준 위치는 [FOWOCO Hugging Face](https://huggingface.co/fowoco)입니다.
 `hr-intent-service/`는 프로젝트 결과 재현과 AI 저장소 인계를 위한 스냅샷입니다.
+파일 SHA·학습 데이터 계보·Secret 관리 기준은
+[`docs/MODEL_ARTIFACT_POLICY.md`](docs/MODEL_ARTIFACT_POLICY.md)를 따릅니다.
 
 ## 데이터 기준
 

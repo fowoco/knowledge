@@ -4,6 +4,7 @@ import csv
 import json
 import re
 from collections import Counter
+from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator
@@ -67,6 +68,12 @@ INTENT_DATA_PII_PATTERNS = {
     "passport_number": re.compile(r"(?<![A-Z0-9])[A-Z]{1,2}\d{7,8}(?![A-Z0-9])"),
 }
 
+GIT_LFS_POINTER_PATTERN = re.compile(
+    r"\Aversion https://git-lfs\.github\.com/spec/v1\n"
+    r"oid sha256:([a-f0-9]{64})\n"
+    r"size ([1-9][0-9]*)\n?\Z"
+)
+
 
 def find_internal_keys(text: str, internal_keys: set[str]) -> list[str]:
     """Return machine-facing identifiers exposed in user-facing text."""
@@ -80,6 +87,20 @@ def find_internal_keys(text: str, internal_keys: set[str]) -> list[str]:
 
 def split_codes(raw: str | None) -> list[str]:
     return [item.strip() for item in (raw or "").split("|") if item.strip()]
+
+
+def read_git_lfs_pointer(path: Path) -> tuple[str, int] | None:
+    """Read an LFS pointer without loading a potentially large model into memory."""
+    if path.stat().st_size > 256:
+        return None
+    try:
+        content = path.read_text(encoding="ascii")
+    except UnicodeDecodeError:
+        return None
+    match = GIT_LFS_POINTER_PATTERN.fullmatch(content)
+    if not match:
+        return None
+    return match.group(1), int(match.group(2))
 
 
 class KnowledgeValidator:
@@ -99,6 +120,7 @@ class KnowledgeValidator:
         self._validate_catalog_e2e_data()
         self._validate_intent_data()
         self._validate_intent_split()
+        self._validate_model_artifacts()
         return self.errors
 
     def _validate_manifest_files(self) -> None:
@@ -109,6 +131,64 @@ class KnowledgeValidator:
         for key, relative_path in manifest.get("datasets", {}).items():
             if not (self.repository.root / relative_path).is_file():
                 self.errors.append(f"manifest dataset missing: {key} -> {relative_path}")
+        for key, relative_path in manifest.get("artifacts", {}).items():
+            if not (self.repository.root / relative_path).is_file():
+                self.errors.append(f"manifest artifact missing: {key} -> {relative_path}")
+
+    def _validate_model_artifacts(self) -> None:
+        relative_path = self.repository.manifest.get("artifacts", {}).get("intent_models")
+        schema_path = self.repository.manifest.get("artifacts", {}).get("intent_model_schema")
+        if not relative_path or not schema_path:
+            return
+
+        manifest = self.repository.load_yaml(relative_path)
+        schema = self.repository.load_json(schema_path)
+        schema_errors = list(Draft202012Validator(schema).iter_errors(manifest))
+        for error in schema_errors:
+            path = ".".join(str(item) for item in error.path)
+            self.errors.append(f"model artifact schema [{path}]: {error.message}")
+        if schema_errors:
+            return
+
+        intent_manifest = self.repository.load_yaml("data/intent/manifest.yaml")
+        known_snapshot = intent_manifest["known_model_training_snapshot"]
+        training_dataset = manifest["training_dataset"]
+        if training_dataset["version"] != known_snapshot["dataset_version"]:
+            self.errors.append("model artifact: training dataset version mismatch")
+        if training_dataset["sha256"] != known_snapshot["sha256"]:
+            self.errors.append("model artifact: training dataset checksum mismatch")
+        if training_dataset["current_dataset_version"] != intent_manifest["version"]:
+            self.errors.append("model artifact: current dataset version mismatch")
+        if training_dataset["matches_current_dataset"] != known_snapshot["matches_current_dataset"]:
+            self.errors.append("model artifact: current dataset match flag mismatch")
+
+        seen_model_ids: set[str] = set()
+        seen_paths: set[str] = set()
+        for model in manifest["models"]:
+            if model["id"] in seen_model_ids:
+                self.errors.append(f"model artifact: duplicate model id {model['id']}")
+            seen_model_ids.add(model["id"])
+            for artifact in model["snapshot_files"]:
+                artifact_path = artifact["path"]
+                if artifact_path in seen_paths:
+                    self.errors.append(f"model artifact: duplicate file {artifact_path}")
+                seen_paths.add(artifact_path)
+                path = self.repository.root / artifact_path
+                if not path.is_file():
+                    self.errors.append(f"model artifact: missing file {artifact_path}")
+                    continue
+                lfs_pointer = read_git_lfs_pointer(path)
+                if lfs_pointer:
+                    pointer_sha256, pointer_bytes = lfs_pointer
+                    if pointer_bytes != artifact["bytes"]:
+                        self.errors.append(f"model artifact: LFS size mismatch {artifact_path}")
+                    if pointer_sha256 != artifact["sha256"]:
+                        self.errors.append(f"model artifact: LFS checksum mismatch {artifact_path}")
+                    continue
+                if path.stat().st_size != artifact["bytes"]:
+                    self.errors.append(f"model artifact: size mismatch {artifact_path}")
+                if file_sha256(path) != artifact["sha256"]:
+                    self.errors.append(f"model artifact: checksum mismatch {artifact_path}")
 
     def _validate_processed_datasets(self) -> None:
         processed_manifest_path = self.repository.root / "data/processed/manifest.yaml"

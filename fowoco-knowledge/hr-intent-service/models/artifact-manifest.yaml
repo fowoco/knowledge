@@ -1,0 +1,55 @@
+manifest_version: 1.0.0
+canonical_distribution: HUGGING_FACE_PRIVATE
+training_dataset:
+  version: 1.2.0
+  sha256: 447174a992e31bd44ec8abe658dc4082d3197bf284e0cc08b7ac5e3e6341a237
+  current_dataset_version: 1.2.1
+  matches_current_dataset: false
+models:
+  - id: KLUE_ROBERTA_INTENT
+    role: PRIMARY_CLASSIFIER
+    base_model: klue/roberta-base
+    hugging_face_repo: fowoco/klue-roberta-base-intent-classifier
+    access: PRIVATE
+    revision_policy: PIN_COMMIT_SHA_AT_DEPLOYMENT
+    runtime_owner: fowoco/ai
+    snapshot_files:
+      - path: hr-intent-service/models/klue-roberta-base-intent-classifier/config.json
+        sha256: e061cd96d6dd2fea2cade4cca60cb578cf8a7045f0173bbd0b3c7825848ea537
+        bytes: 1242
+      - path: hr-intent-service/models/klue-roberta-base-intent-classifier/model.safetensors
+        sha256: abf0d7d3bdb89a5ac34abc8cc41a77396bf024f02de6939591b3c555446bd48b
+        bytes: 442518124
+      - path: hr-intent-service/models/klue-roberta-base-intent-classifier/tokenizer.json
+        sha256: 5eebbce20f3196cbe82aa65376cd211151a0635614999a9191b0cb8f1b04f86b
+        bytes: 752096
+      - path: hr-intent-service/models/klue-roberta-base-intent-classifier/tokenizer_config.json
+        sha256: 6e7bb997371020d3c04d4c08798aad63113a59406957a90bc51bb908309ca0ae
+        bytes: 641
+  - id: AX_INTENT_QLORA
+    role: FALLBACK_ADAPTER
+    base_model: skt/A.X-4.0-Light
+    hugging_face_repo: fowoco/ax-intent-qlora
+    access: PRIVATE
+    revision_policy: PIN_COMMIT_SHA_AT_DEPLOYMENT
+    runtime_owner: fowoco/ai
+    snapshot_files:
+      - path: hr-intent-service/models/ax-4.0-light-qlora-classifier/adapter_config.json
+        sha256: 3b92a54bc112f250e041d828726b610bc2062f8b87cfb0b1759b6ba7a609c307
+        bytes: 1096
+      - path: hr-intent-service/models/ax-4.0-light-qlora-classifier/adapter_model.safetensors
+        sha256: 8bbf957ae0939de40b5b34fd88c34a5f7196c4f8f53e054024e17d755883bac3
+        bytes: 80792880
+      - path: hr-intent-service/models/ax-4.0-light-qlora-classifier/chat_template.jinja
+        sha256: 15f2d4a602c42c90a1f03e13fe353510d745422a5c61b9abdefe47d5b77b5113
+        bytes: 4003
+      - path: hr-intent-service/models/ax-4.0-light-qlora-classifier/tokenizer.json
+        sha256: 4050a8c9791364e3a81b1b813a32a6423e09ba7608e2eada83cc73e28a92c0eb
+        bytes: 8495509
+      - path: hr-intent-service/models/ax-4.0-light-qlora-classifier/tokenizer_config.json
+        sha256: 4f878003210156bd1e60a9eadfe20b0dd936ddd542736a4d5db865cd0303e437
+        bytes: 1319
+secret_policy:
+  environment_variable: HF_TOKEN
+  repository_storage_forbidden: true
+  owner: deployment-operator

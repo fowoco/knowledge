@@ -67,6 +67,11 @@ HF_TOKEN=<fowoco 조직 접근 권한이 있는 개인 토큰 : intent 모델 �
 
 `HF_TOKEN`은 절대 코드나 `Dockerfile`에 하드코딩하지 않는다. `.env`(`.gitignore`로 제외됨) 또는 배포 시 Secret으로 주입한다.
 
+HF 저장소는 비공개이므로 배포 전에 인증된 계정으로 commit SHA를 조회하고 모델 경로를
+해당 revision에 고정한다. 로컬 스냅샷의 파일 목록·SHA·크기는
+[`models/artifact-manifest.yaml`](models/artifact-manifest.yaml), 전체 정책은
+[`docs/MODEL_ARTIFACT_POLICY.md`](../docs/MODEL_ARTIFACT_POLICY.md)를 기준으로 한다.
+
 
 ## 로컬 실행 - 가상환경
 
