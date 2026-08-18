@@ -4,6 +4,7 @@ import csv
 import json
 import re
 from collections import Counter
+from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator
@@ -67,6 +68,12 @@ INTENT_DATA_PII_PATTERNS = {
     "passport_number": re.compile(r"(?<![A-Z0-9])[A-Z]{1,2}\d{7,8}(?![A-Z0-9])"),
 }
 
+GIT_LFS_POINTER_PATTERN = re.compile(
+    r"\Aversion https://git-lfs\.github\.com/spec/v1\n"
+    r"oid sha256:([a-f0-9]{64})\n"
+    r"size ([1-9][0-9]*)\n?\Z"
+)
+
 
 def find_internal_keys(text: str, internal_keys: set[str]) -> list[str]:
     """Return machine-facing identifiers exposed in user-facing text."""
@@ -80,6 +87,20 @@ def find_internal_keys(text: str, internal_keys: set[str]) -> list[str]:
 
 def split_codes(raw: str | None) -> list[str]:
     return [item.strip() for item in (raw or "").split("|") if item.strip()]
+
+
+def read_git_lfs_pointer(path: Path) -> tuple[str, int] | None:
+    """Read an LFS pointer without loading a potentially large model into memory."""
+    if path.stat().st_size > 256:
+        return None
+    try:
+        content = path.read_text(encoding="ascii")
+    except UnicodeDecodeError:
+        return None
+    match = GIT_LFS_POINTER_PATTERN.fullmatch(content)
+    if not match:
+        return None
+    return match.group(1), int(match.group(2))
 
 
 class KnowledgeValidator:
@@ -155,6 +176,14 @@ class KnowledgeValidator:
                 path = self.repository.root / artifact_path
                 if not path.is_file():
                     self.errors.append(f"model artifact: missing file {artifact_path}")
+                    continue
+                lfs_pointer = read_git_lfs_pointer(path)
+                if lfs_pointer:
+                    pointer_sha256, pointer_bytes = lfs_pointer
+                    if pointer_bytes != artifact["bytes"]:
+                        self.errors.append(f"model artifact: LFS size mismatch {artifact_path}")
+                    if pointer_sha256 != artifact["sha256"]:
+                        self.errors.append(f"model artifact: LFS checksum mismatch {artifact_path}")
                     continue
                 if path.stat().st_size != artifact["bytes"]:
                     self.errors.append(f"model artifact: size mismatch {artifact_path}")

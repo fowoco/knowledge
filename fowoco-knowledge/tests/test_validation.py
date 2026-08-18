@@ -8,7 +8,12 @@ from pathlib import Path
 import yaml
 
 from fowoco_knowledge.repository import KnowledgeRepository
-from fowoco_knowledge.validation import KnowledgeValidator, find_internal_keys, split_codes
+from fowoco_knowledge.validation import (
+    KnowledgeValidator,
+    find_internal_keys,
+    read_git_lfs_pointer,
+    split_codes,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -163,3 +168,18 @@ def test_model_artifact_manifest_pins_snapshot_and_runtime_ownership() -> None:
     }
     assert all(model["snapshot_files"] for model in manifest["models"])
     assert manifest["secret_policy"]["repository_storage_forbidden"] is True
+
+
+def test_git_lfs_pointer_exposes_artifact_checksum_and_size(tmp_path: Path) -> None:
+    pointer = tmp_path / "model.safetensors"
+    pointer.write_text(
+        "version https://git-lfs.github.com/spec/v1\n"
+        "oid sha256:abf0d7d3bdb89a5ac34abc8cc41a77396bf024f02de6939591b3c555446bd48b\n"
+        "size 442518124\n",
+        encoding="ascii",
+    )
+
+    assert read_git_lfs_pointer(pointer) == (
+        "abf0d7d3bdb89a5ac34abc8cc41a77396bf024f02de6939591b3c555446bd48b",
+        442518124,
+    )
